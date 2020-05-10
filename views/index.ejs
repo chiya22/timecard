@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+  <% userlist.forEach(function(user){ %>
+  <div>
+    <a href="time/<%= user.id %>"><%= user.name %></a>
+  </div>
+  <% }) %>
+</body>
+
+</html>

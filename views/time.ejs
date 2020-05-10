@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+
+<body>
+    <div>
+        <form method="POST" name="timeform" action="/time/start">
+            <h2><%= user.name %></h2>
+            <h3><%= user.id %></h3>
+            <div>
+                <p id="startbtn">出勤</p>
+                <p><%= starttime %></p>
+            </div>
+            <div>
+                <p id="endbtn">退勤</p>
+                <p><%= endtime %></p>
+            </div>
+            <input type="hidden" name="starttime" value="<%= starttime %>">
+            <input type="hidden" name="endtime" value="<%= endtime %>">
+            <input type="hidden" name="kubun" value="" id="kubun">
+            <input type="hidden" name="id" value="<%= user.id %>">
+        </form>
+    </div>
+    <script>
+        let startbtn = document.getElementById("startbtn");
+        let endbtn = document.getElementById("endbtn");
+        startbtn.addEventListener('click', function(){
+            document.getElementById("kubun").value = "start";
+            document.timeform.submit();
+        });
+        endbtn.addEventListener('click', function(){
+            document.getElementById("kubun").value = "end";
+            document.timeform.submit();
+        });
+    </script>
+</body>
+
+</html>
