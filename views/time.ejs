@@ -11,6 +11,7 @@
         <form method="POST" name="timeform" action="/time/start">
             <h2><%= user.name %></h2>
             <h3><%= user.id %></h3>
+            <h3><%= ymd %></h3>
             <div>
                 <p id="startbtn">出勤</p>
                 <p><%= starttime %></p>
@@ -19,6 +20,7 @@
                 <p id="endbtn">退勤</p>
                 <p><%= endtime %></p>
             </div>
+            <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
             <input type="hidden" name="starttime" value="<%= starttime %>">
             <input type="hidden" name="endtime" value="<%= endtime %>">
             <input type="hidden" name="kubun" value="" id="kubun">

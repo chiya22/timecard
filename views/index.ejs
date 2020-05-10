@@ -9,11 +9,19 @@
 <body>
   <h1><%= title %></h1>
   <p>Welcome to <%= title %></p>
+  <h2>社員</h2>
   <% userlist.forEach(function(user){ %>
   <div>
     <a href="time/<%= user.id %>"><%= user.name %></a>
   </div>
   <% }) %>
+  <h2>アルバイト</h2>
+  <% parttimeuserlist.forEach(function(user){ %>
+    <div>
+      <a href="time/<%= user.id %>"><%= user.name %></a>
+    </div>
+  <% }) %>
+    
 </body>
 
 </html>

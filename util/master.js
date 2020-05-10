@@ -33,19 +33,31 @@ const initialize = function () {
 }
 /*
 マスタに登録されているユーザ情報を配列で返却する
+kubun：指定なし→全員、1→社員のみ、2→アルバイトのみ
 */
-const getUserList = () => {
+const getUserList = (kubun) => {
     let ret = [];
     let filecontent = fs.readFileSync(masterfile, 'utf-8');
     const userlist = filecontent.split('\n');
+
     userlist.forEach( (user) => {
-        if (user !== ''){
+        if (user !== '') {
             let userinfo = user.split(',');
-            ret.push({
-                'id': userinfo[0],
-                'name': userinfo[1],
-                'kubun': userinfo[2],
-            })
+            if (!kubun) {
+                ret.push({
+                    'id': userinfo[0],
+                    'name': userinfo[1],
+                    'kubun': userinfo[2],
+                })
+            }else{
+                if (userinfo[2] == kubun){
+                    ret.push({
+                        'id': userinfo[0],
+                        'name': userinfo[1],
+                        'kubun': userinfo[2],
+                    })
+                }
+            }
         }
     })
     return ret;
