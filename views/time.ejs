@@ -14,16 +14,20 @@
             <h3><%= ymd %></h3>
             <div>
                 <p id="startbtn">出勤</p>
-                <p><%= starttime %></p>
+                <p><%= time.starttime %></p>
+                <p><%= time.starttimeupd %></p>
             </div>
             <div>
                 <p id="endbtn">退勤</p>
-                <p><%= endtime %></p>
+                <p><%= time.endtime %></p>
+                <p><%= time.endtimeupd %></p>
             </div>
             <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
-            <input type="hidden" name="starttime" value="<%= starttime %>">
-            <input type="hidden" name="endtime" value="<%= endtime %>">
-            <input type="hidden" name="kubun" value="" id="kubun">
+            <input type="hidden" name="starttime" value="<%= time.starttime %>">
+            <input type="hidden" name="starttimeupd" value="<%= time.starttimeupd %>">
+            <input type="hidden" name="endtime" value="<%= time.endtime %>">
+            <input type="hidden" name="endtimeupd" value="<%= time.endtimeupd %>">
+            <input type="hidden" name="shorikubun" value="" id="shorikubun">
             <input type="hidden" name="id" value="<%= user.id %>">
         </form>
     </div>
@@ -31,11 +35,11 @@
         let startbtn = document.getElementById("startbtn");
         let endbtn = document.getElementById("endbtn");
         startbtn.addEventListener('click', function(){
-            document.getElementById("kubun").value = "start";
+            document.getElementById("shorikubun").value = "start";
             document.timeform.submit();
         });
         endbtn.addEventListener('click', function(){
-            document.getElementById("kubun").value = "end";
+            document.getElementById("shorikubun").value = "end";
             document.timeform.submit();
         });
     </script>
