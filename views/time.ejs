@@ -9,24 +9,16 @@
 <body>
     <div>
         <form method="POST" name="timeform" action="/time/start">
-            <h2><%= user.name %></h2>
-            <h3><%= user.id %></h3>
-            <h3><%= ymd %></h3>
+            <h2><%= title + user.name %></h2>
             <div>
-                <p id="startbtn">出勤</p>
-                <p><%= time.starttime %></p>
-                <p><%= time.starttimeupd %></p>
+                <p id="startbtn"><%= time.starttime %></p>
             </div>
             <div>
-                <p id="endbtn">退勤</p>
-                <p><%= time.endtime %></p>
-                <p><%= time.endtimeupd %></p>
+                <p id="endbtn"><%= time.endtime %></p>
             </div>
             <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
             <input type="hidden" name="starttime" value="<%= time.starttime %>">
-            <input type="hidden" name="starttimeupd" value="<%= time.starttimeupd %>">
             <input type="hidden" name="endtime" value="<%= time.endtime %>">
-            <input type="hidden" name="endtimeupd" value="<%= time.endtimeupd %>">
             <input type="hidden" name="shorikubun" value="" id="shorikubun">
             <input type="hidden" name="id" value="<%= user.id %>">
         </form>

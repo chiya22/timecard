@@ -5,16 +5,13 @@ const getTimedata = function (id, yyyy_mm_dd) {
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
     const yyyymm = yyyymmdd.slice(0,6);
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
-    //★fs.statsyncを使用するべき
     try {
         fs.statSync(iddatedir);
     } catch (err) {
         if (err.code === "ENOENT") {
             return {
-                starttime: null,
-                endtime: null,
-                starttimeupd: null,
-                endtimeupd: null,
+                starttime: '出勤',
+                endtime: '退勤',
             }
         }
     }
@@ -23,23 +20,28 @@ const getTimedata = function (id, yyyy_mm_dd) {
     const timelist = filecontent.split('\n');
     let starttime = null;
     let endtime = null;
-    let starttimeupd = null;
-    let endtimeupd = null;
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
-        if (timedataarray[0] === yyyymmdd) {
+        // todo ここは共通化する
+        if (timedataarray[1] === ''){
+            starttime = '出勤';
+        }else if (timedataarray[3] === ''){
             starttime = timedataarray[1];
+        }else{
+            starttime = timedataarray[3];
+        }
+        if (timedataarray[2] === ''){
+            endtime = '退勤';
+        }else if (timedataarray[4] === '') {
             endtime = timedataarray[2];
-            starttimeupd = timedataarray[3];
-            endtimeupd = timedataarray[4];
+        }else{
+            endtime = timedataarray[4]
         }
     });
     
     return {
         starttime: starttime,
         endtime: endtime,
-        starttimeupd: starttimeupd,
-        endtimeupd: endtimeupd,
     };
 }
 
@@ -56,9 +58,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
             fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`);
             return {
                 starttime: hhmmss,
-                endtime:null,
-                starttimeupd:null,
-                endtimeupd:null,
+                endtime:'退勤',
             };
         } else {
             throw new Error("get timecard error");
@@ -69,33 +69,40 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
     const timelist = filecontent.split('\n');
     let starttime = null;
     let endtime = null;
-    let starttimeupd = null;
-    let endtimeupd = null;
     fs.writeFileSync(iddatedir, '');
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
-            starttime = timedataarray[1];
-            endtime = timedataarray[2];
-            starttimeupd = timedataarray[3];
-            endtimeupd = timedataarray[4];
+            //todo ここは共通化する
+            if (timedataarray[1] === ''){
+                starttime = '出勤';
+            }else if (timedataarray[3] === ''){
+                starttime = timedataarray[1];
+            }else{
+                starttime = timedataarray[3];
+            }
+            if (timedataarray[2] === ''){
+                endtime = '退勤';
+            }else if (timedataarray[4] === '') {
+                endtime = timedataarray[2];
+            }else{
+                endtime = timedataarray[4]
+            }
             if (shorikubun === 'start'){
                 if (timedataarray[1] === '') {
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`);
-                    starttime = hhmmss;
                 } else {
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},`);
-                    starttimeupd = hhmmss;
                 }
+                starttime = hhmmss;
             } else {
                 if (timedataarray[2] === '') {
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},`);
-                    endtime = hhmmss;
                 } else {
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss}`);
-                    endtimeupd = hhmmss;
                 }
+                endtime = hhmmss;
             };
         }else{
             fs.appendFileSync(iddatedir, time);
@@ -108,8 +115,6 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
     return {
         starttime: starttime,
         endtime:endtime,
-        starttimeupd:starttimeupd,
-        endtimeupd:endtimeupd,
     };
 };
 

@@ -47,25 +47,21 @@ router.post('/time/start', function (req, res) {
 
       let starttime = req.body.starttime;
       let endtime = req.body.endtime;
-      let starttimeupd = req.body.starttimeupd;
-      let endtimeupd = req.body.endtimeupd;
 
       let date = new Date();
       let timeinfo = {
         starttime: starttime,
         endtime: endtime,
-        starttimeupd: starttimeupd,
-        endtimeupd: endtimeupd,
       };
 
       //ファイルへ書き込む
       if (req.body.shorikubun === 'start') {
-        if (starttime === '') {
+        if (starttime === '出勤') {
           starttime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
           timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, starttime);
         }
       } else {
-        if (endtime === '') {
+        if (endtime === '退勤') {
           endtime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
           timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, endtime);
         }
