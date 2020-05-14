@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const master = require('../util/master');
 const time = require('../util/time');
+const common = require('../util/common');
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -11,25 +12,25 @@ router.get('/', function (req, res) {
   let ret = master.getUserList(1);
   let parttimeret = master.getUserList(2);
   res.render('index', {
-    title: 'Express',
+    title: common.getYmdyoubi(),
     userlist: ret,
     parttimeuserlist: parttimeret,
   });
 
 });
 
-router.get('/time/:id', function(req,res){
+router.get('/time/:id', function (req, res) {
 
   let date = new Date();
-  let ymd = date.getFullYear() + "/" + ("0" + date.getMonth()).slice(-2) + "/" + ("0"+ date.getDay()).slice(-2);
+  let ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
 
   let ret = master.getUserList();
-  ret.forEach( (userinfo) => {
-    if (userinfo.id === req.params.id){
+  ret.forEach((userinfo) => {
+    if (userinfo.id === req.params.id) {
       let timeinfo = {};
-      timeinfo = time.gettimedata(req.params.id, ymd);
+      timeinfo = time.getTimedata(req.params.id, ymd);
       res.render('time', {
-        title: 'Express',
+        title: common.getYmdyoubi(),
         ymd: ymd,
         user: userinfo,
         time: timeinfo,
@@ -39,10 +40,10 @@ router.get('/time/:id', function(req,res){
 
 });
 
-router.post('/time/start', function(req,res){
+router.post('/time/start', function (req, res) {
   let ret = master.getUserList();
-  ret.forEach( (userinfo) => {
-    if (userinfo.id === req.body.id){
+  ret.forEach((userinfo) => {
+    if (userinfo.id === req.body.id) {
 
       let starttime = req.body.starttime;
       let endtime = req.body.endtime;
@@ -58,20 +59,20 @@ router.post('/time/start', function(req,res){
       };
 
       //ファイルへ書き込む
-      if (req.body.shorikubun === 'start'){
+      if (req.body.shorikubun === 'start') {
         if (starttime === '') {
           starttime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
-          timeinfo = time.startJob(req.body.id, req.body.ymd, starttime);
-          // time.startJob(req.body.id, req.body.ymd.replace(/\,/g,''), starttime);
+          timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, starttime);
         }
-      }else{
-        if (endtime === ''){
+      } else {
+        if (endtime === '') {
           endtime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
+          timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, endtime);
         }
       }
 
       res.render('time', {
-        title: 'Express',
+        title: common.getYmdyoubi(),
         user: userinfo,
         ymd: req.body.ymd,
         time: timeinfo,

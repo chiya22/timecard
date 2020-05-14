@@ -1,7 +1,7 @@
 const datadir = './data';
 const fs = require('fs');
 
-const gettimedata = function (id, yyyy_mm_dd) {
+const getTimedata = function (id, yyyy_mm_dd) {
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
     const yyyymm = yyyymmdd.slice(0,6);
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
@@ -43,7 +43,7 @@ const gettimedata = function (id, yyyy_mm_dd) {
     };
 }
 
-const startJob = function (id, yyyy_mm_dd, hhmmss) {
+const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
 
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
     const yyyymm = yyyymmdd.slice(0,6);
@@ -76,15 +76,27 @@ const startJob = function (id, yyyy_mm_dd, hhmmss) {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
-            if (timedataarray[1] === '') {
-                fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`);
-                starttime = hhmmss;
+            starttime = timedataarray[1];
+            endtime = timedataarray[2];
+            starttimeupd = timedataarray[3];
+            endtimeupd = timedataarray[4];
+            if (shorikubun === 'start'){
+                if (timedataarray[1] === '') {
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`);
+                    starttime = hhmmss;
+                } else {
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},`);
+                    starttimeupd = hhmmss;
+                }
             } else {
-                fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},`);
-                starttime = timedataarray[1];
-                endtime = timedataarray[2];
-                starttimeupd = hhmmss;
-            }
+                if (timedataarray[2] === '') {
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},`);
+                    endtime = hhmmss;
+                } else {
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss}`);
+                    endtimeupd = hhmmss;
+                }
+            };
         }else{
             fs.appendFileSync(iddatedir, time);
         }
@@ -102,6 +114,6 @@ const startJob = function (id, yyyy_mm_dd, hhmmss) {
 };
 
 module.exports = {
-    gettimedata,
-    startJob,
+    getTimedata,
+    setTime,
 };
