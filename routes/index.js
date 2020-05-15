@@ -40,7 +40,7 @@ router.get('/time/:id', function (req, res) {
 
 });
 
-router.post('/time/start', function (req, res) {
+router.post('/time/set', function (req, res) {
   let ret = master.getUserList();
   ret.forEach((userinfo) => {
     if (userinfo.id === req.body.id) {

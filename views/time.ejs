@@ -7,34 +7,46 @@
 </head>
 
 <body>
-    <div>
-        <form method="POST" name="timeform" action="/time/start">
-            <h2><%= title + user.name %></h2>
-            <div>
-                <p id="startbtn"><%= time.starttime %></p>
+    <div class="container-action">
+        <div class="header">
+            <h1><%= title + "：" + user.name %></h1>
+        </div>
+        <form method="POST" name="timeform" action="/time/set">
+            <div class="action-area">
+                <div class="start-area">
+                    <p id="startbtn" class="start"><%= time.starttime %></p>
+                </div>
+                <div class="end-area">
+                    <p id="endbtn" class="end"><%= time.endtime %></p>
+                </div>
+                <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
+                <input type="hidden" name="starttime" value="<%= time.starttime %>">
+                <input type="hidden" name="endtime" value="<%= time.endtime %>">
+                <input type="hidden" name="shorikubun" value="" id="shorikubun">
+                <input type="hidden" name="id" value="<%= user.id %>">
             </div>
-            <div>
-                <p id="endbtn"><%= time.endtime %></p>
-            </div>
-            <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
-            <input type="hidden" name="starttime" value="<%= time.starttime %>">
-            <input type="hidden" name="endtime" value="<%= time.endtime %>">
-            <input type="hidden" name="shorikubun" value="" id="shorikubun">
-            <input type="hidden" name="id" value="<%= user.id %>">
         </form>
-    </div>
-    <script>
-        let startbtn = document.getElementById("startbtn");
-        let endbtn = document.getElementById("endbtn");
-        startbtn.addEventListener('click', function(){
-            document.getElementById("shorikubun").value = "start";
-            document.timeform.submit();
-        });
-        endbtn.addEventListener('click', function(){
-            document.getElementById("shorikubun").value = "end";
-            document.timeform.submit();
-        });
-    </script>
+        <div class="back-area">
+            <a href="/">戻る</a>
+        </div>
+        <script>
+            let startbtn = document.getElementById("startbtn");
+            let endbtn = document.getElementById("endbtn");
+            startbtn.addEventListener('click', function () {
+                document.getElementById("shorikubun").value = "start";
+                document.timeform.submit();
+            });
+            endbtn.addEventListener('click', function () {
+                document.getElementById("shorikubun").value = "end";
+                document.timeform.submit();
+            });
+            if (startbtn.innerHTML !== '出勤') {
+                startbtn.classList.add("nonactive");
+            };
+            if ((startbtn.innerHTML === '出勤') || (endbtn.innerHTML !== '退勤')) {
+                endbtn.classList.add("nonactive");
+            };
+        </script>
 </body>
 
 </html>

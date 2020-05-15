@@ -7,20 +7,28 @@
 </head>
 
 <body>
-  <h1><%= title %></h1>
-  <h2>社員</h2>
-  <% userlist.forEach(function(user){ %>
-  <div>
-    <a href="time/<%= user.id %>"><%= user.name %></a>
-  </div>
-  <% }) %>
-  <h2>アルバイト</h2>
-  <% parttimeuserlist.forEach(function(user){ %>
-    <div>
-      <a href="time/<%= user.id %>"><%= user.name %></a>
+  <div class="container-top">
+    <div class="header">
+      <h1><%= title %></h1>
     </div>
-  <% }) %>
-    
+    <div class="area">
+      <h2>社員</h2>
+      <div class="items">
+        <% userlist.forEach(function(user){ %>
+        <a href="time/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
+    <div class="area">
+      <h2>アルバイト</h2>
+      <div class="items">
+        <% parttimeuserlist.forEach(function(user){ %>
+          <a href="time/<%= user.id %>"><%= user.name %></a>
+          <% }) %>
+        </div>
+    </div>
+  </div>
+
 </body>
 
 </html>

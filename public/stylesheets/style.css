@@ -1,8 +1,113 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+}
+.header {
+  width: 100%;
+  background-color:#CD5E42;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  border-radius: 15px;
+  margin: 20px 0;
+}
+.back-area {
+  width: 100%;
+  text-align: center;
+}
+.back-area > a {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 15px;
+  color : #fff;
+  text-decoration: none;
+  margin: 5px;
+  margin-top: 20px;
+  background-color: #CD5E42;
 }
 
-a {
-  color: #00B7FF;
+.container-top {
+  width: 90%;
+  margin: 0 auto;
 }
+.container-top h1 {
+  font-size: 24pt;
+}
+.container-top h2 {
+  font-size: 18pt;
+  color: #CD5E42;
+  padding: 0 10px;
+}
+.items {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.items > a {
+  display: inline-block;
+  width: 150px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  border: 1px solid #CD5E42;
+  border-radius: 15px;
+  color : #CD5E42;
+  text-decoration: none;
+  margin: 5px;
+  font-size: 18px;
+}
+.items > a:hover {
+  border: 1px solid #CD5E42;
+  background-color:#CD5E42;
+  color: white;
+}
+
+/* action */
+
+.container-action {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.action-area {
+  width: 100%;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+.action-area p {
+  display: inline-block;
+  width: 200px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  border: 1px solid #CD5E42;
+  border-radius: 15px;
+  color : #CD5E42;
+  text-decoration: none;
+  margin: 5px;
+  font-size: 40px;
+  cursor: pointer;
+}
+.action-area p:hover{
+    border: 1px solid #CD5E42;
+  background-color:#CD5E42;
+  color: white;
+}
+.nonactive {
+  border: 1px solid #d3d3d3!important;
+  background-color:#fff!important;
+  color: #d3d3d3!important;
+  cursor: default;
+  pointer-events: none;
+}
+
