@@ -18,24 +18,27 @@ const getTimedata = function (id, yyyy_mm_dd) {
 
     let filecontent = fs.readFileSync(iddatedir, 'utf-8');
     const timelist = filecontent.split('\n');
-    let starttime = null;
-    let endtime = null;
-    timelist.forEach((time) => {
+    let starttime = '出勤';
+    let endtime = '退勤';
+    timelist.   forEach((time) => {
         const timedataarray = time.split(',');
-        // todo ここは共通化する
-        if (timedataarray[1] === ''){
-            starttime = '出勤';
-        }else if (timedataarray[3] === ''){
-            starttime = timedataarray[1];
-        }else{
-            starttime = timedataarray[3];
-        }
-        if (timedataarray[2] === ''){
-            endtime = '退勤';
-        }else if (timedataarray[4] === '') {
-            endtime = timedataarray[2];
-        }else{
-            endtime = timedataarray[4]
+        if (timedataarray[0] === yyyymmdd) {
+            isexit = true;
+            // todo ここは共通化する
+            if (timedataarray[1] === ''){
+                // starttime = '出勤';
+            }else if (timedataarray[3] === ''){
+                starttime = timedataarray[1];
+            }else{
+                starttime = timedataarray[3];
+            }
+            if (timedataarray[2] === ''){
+                // endtime = '退勤';
+            }else if (timedataarray[4] === '') {
+                endtime = timedataarray[2];
+            }else{
+                endtime = timedataarray[4]
+            }
         }
     });
     
@@ -55,7 +58,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
         fs.statSync(iddatedir);
     } catch (err) {
         if (err.code === "ENOENT") {
-            fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`);
+            fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
             return {
                 starttime: hhmmss,
                 endtime:'退勤',
@@ -67,9 +70,9 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
     let isexit = false;
     let filecontent = fs.readFileSync(iddatedir, 'utf-8');
     const timelist = filecontent.split('\n');
-    let starttime = null;
-    let endtime = null;
-    fs.writeFileSync(iddatedir, '');
+    let starttime = '出勤';
+    let endtime = '退勤';
+    fs.writeFileSync(iddatedir, '', 'utf-8');
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
@@ -91,25 +94,27 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
             }
             if (shorikubun === 'start'){
                 if (timedataarray[1] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`);
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},`);
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},\n`, 'utf-8');
                 }
                 starttime = hhmmss;
             } else {
                 if (timedataarray[2] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},`);
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss}`);
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss}\n`, 'utf-8');
                 }
                 endtime = hhmmss;
             };
         }else{
-            fs.appendFileSync(iddatedir, time);
+            if (time !== ''){
+                fs.appendFileSync(iddatedir, `${time}\n`);
+            }
         }
     });
     if (!isexit) {
-        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,`, "UTF-8");
+        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
         starttime = hhmmss;
     };
     return {
