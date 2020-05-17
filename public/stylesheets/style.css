@@ -8,12 +8,32 @@ body {
 }
 .header {
   width: 100%;
+  margin: 20px 0;
+}
+.header-logo {
+  width: 400px;
+  height: auto;
+}
+.header-menu {
+  display: block;
+  float: right;
+  border-radius: 15px;
+  background-color: #CD5E42;
+  padding: 10px;
+  text-decoration: none;
+  color:#fff;
+}
+.header-title {
+  width: 100%;
   background-color:#CD5E42;
   color: white;
-  padding: 5px;
+  padding: 5px 0;
   text-align: center;
   border-radius: 15px;
   margin: 20px 0;
+}
+.stacktrace {
+  font-size: 1.2rem;
 }
 .back-area {
   width: 100%;

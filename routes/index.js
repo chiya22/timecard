@@ -19,6 +19,18 @@ router.get('/', function (req, res) {
 
 });
 
+router.get('/admin', function (req, res) {
+
+  let ret = master.getUserList(1);
+  let parttimeret = master.getUserList(2);
+  res.render('admin', {
+    title: common.getYmdyoubi(),
+    userlist: ret,
+    parttimeuserlist: parttimeret,
+  });
+
+});
+
 router.get('/time/:id', function (req, res) {
 
   let date = new Date();
@@ -75,6 +87,27 @@ router.post('/time/set', function (req, res) {
       });
     }
   })
+});
+
+router.get('/admin/:id', function (req, res) {
+
+  let date = new Date();
+  let ym = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2);
+
+  let ret = master.getUserList();
+  ret.forEach((userinfo) => {
+    if (userinfo.id === req.params.id) {
+      let timeinfo = {};
+      timeinfo = time.getMonthdata(req.params.id, ym);
+      res.render('time', {
+        title: common.getYmdyoubi(),
+        ymd: ymd,
+        user: userinfo,
+        time: timeinfo,
+      });
+    }
+  })
+
 });
 
 module.exports = router;
