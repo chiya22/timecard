@@ -3,6 +3,7 @@ const masterfile = datadir + '/master/userlist.dat';
 
 const fs = require('fs');
 const readline = require('readline');
+const cm = require('./common');
 
 /*
 データディレクトリに
@@ -10,27 +11,41 @@ const readline = require('readline');
 ディレクトリを作成する
 */
 const initialize = function () {
-    fs.stat(masterfile, (err) => {
-        if (err) {
-            if (err.code === "ENOENT") {
-                console.log('マスタファイルが存在しません');
-            } else {
-                console.log(err);
-            }
-        } else {
-            const rs = fs.createReadStream(masterfile);
-            const ri = readline.createInterface({
-                input: rs
-            });
-            ri.on('line', (linestring) => {
-                const userdataarray = linestring.split(',');
+    try {
+        fs.statSync(masterfile);
+
+        let filecontent = fs.readFileSync(masterfile, 'utf-8');
+        const userlist = filecontent.split('\n');
+
+        userlist.forEach( (user) => {
+            if (user !== '') {
+                const userdataarray = user.split(',');
                 if (!fs.existsSync(datadir + '/' + userdataarray[0])) {
                     fs.mkdirSync(datadir + '/' + userdataarray[0]);
-                }
-            })
+                };
+                // const date = new Date();
+                // const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+                // const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd);
+                // try {
+                //     fs.statSync(datadir + '/' + userdataarray[0] + '/' + yyyymm);
+                // } catch(err) {
+                //     if (err.code === "ENOENT") {
+                //         cm.createInitailFile(datadir, userdataarray[0], yyyy_mm_dd);
+                //     }else{
+                //         console.log(err);
+                //     }
+                // }
+            };
+        });
+    } catch(err) {
+        if (err.code === "ENOENT") {
+            console.log('マスタファイルが存在しません');
+        } else {
+            console.log(err);
         }
-    });
+    };
 }
+
 /*
 マスタに登録されているユーザ情報を配列で返却する
 kubun：指定なし→全員、1→社員のみ、2→アルバイトのみ
@@ -63,7 +78,19 @@ const getUserList = (kubun) => {
     return ret;
 };
 
+const getUser = (id) => {
+    let ret = {};
+    let userlist = getUserList();
+    userlist.forEach((userinfo) => {
+        if (userinfo.id === id) {
+            ret = userinfo;
+        }
+    });
+    return ret;
+}
+
 module.exports = {
     initialize,
     getUserList,
+    getUser,
 };

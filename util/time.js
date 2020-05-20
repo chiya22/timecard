@@ -1,9 +1,11 @@
 const datadir = './data';
 const fs = require('fs');
+const cm = require('./common');
 
 const getTimedata = function (id, yyyy_mm_dd) {
+
+    const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd);
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
-    const yyyymm = yyyymmdd.slice(0,6);
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
     try {
         fs.statSync(iddatedir);
@@ -15,33 +17,32 @@ const getTimedata = function (id, yyyy_mm_dd) {
             }
         }
     }
-
     let filecontent = fs.readFileSync(iddatedir, 'utf-8');
     const timelist = filecontent.split('\n');
     let starttime = '出勤';
     let endtime = '退勤';
-    timelist.   forEach((time) => {
+    timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
             // todo ここは共通化する
-            if (timedataarray[1] === ''){
+            if (timedataarray[1] === '') {
                 // starttime = '出勤';
-            }else if (timedataarray[3] === ''){
+            } else if (timedataarray[3] === '') {
                 starttime = timedataarray[1];
-            }else{
+            } else {
                 starttime = timedataarray[3];
             }
-            if (timedataarray[2] === ''){
+            if (timedataarray[2] === '') {
                 // endtime = '退勤';
-            }else if (timedataarray[4] === '') {
+            } else if (timedataarray[4] === '') {
                 endtime = timedataarray[2];
-            }else{
+            } else {
                 endtime = timedataarray[4]
             }
         }
     });
-    
+
     return {
         starttime: starttime,
         endtime: endtime,
@@ -50,8 +51,8 @@ const getTimedata = function (id, yyyy_mm_dd) {
 
 const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
 
+    const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd);
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
-    const yyyymm = yyyymmdd.slice(0,6);
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
 
     try {
@@ -61,7 +62,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
             fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
             return {
                 starttime: hhmmss,
-                endtime:'退勤',
+                endtime: '退勤',
             };
         } else {
             throw new Error("get timecard error");
@@ -78,21 +79,21 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
             //todo ここは共通化する
-            if (timedataarray[1] === ''){
+            if (timedataarray[1] === '') {
                 starttime = '出勤';
-            }else if (timedataarray[3] === ''){
+            } else if (timedataarray[3] === '') {
                 starttime = timedataarray[1];
-            }else{
+            } else {
                 starttime = timedataarray[3];
             }
-            if (timedataarray[2] === ''){
+            if (timedataarray[2] === '') {
                 endtime = '退勤';
-            }else if (timedataarray[4] === '') {
+            } else if (timedataarray[4] === '') {
                 endtime = timedataarray[2];
-            }else{
+            } else {
                 endtime = timedataarray[4]
             }
-            if (shorikubun === 'start'){
+            if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
                 } else {
@@ -107,8 +108,8 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
                 }
                 endtime = hhmmss;
             };
-        }else{
-            if (time !== ''){
+        } else {
+            if (time !== '') {
                 fs.appendFileSync(iddatedir, `${time}\n`);
             }
         }
@@ -119,11 +120,46 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
     };
     return {
         starttime: starttime,
-        endtime:endtime,
+        endtime: endtime,
     };
+};
+
+const getMonthdata = function (id, yyyy_mm) {
+
+    const yyyymm = yyyy_mm.replace(/\//g, '');
+    const iddatedir = `${datadir}/${id}/${yyyymm}`;
+    try {
+        fs.statSync(iddatedir);
+    } catch (err) {
+        if (err.code === "ENOENT") {
+            return null;
+        } else {
+            throw new Error("get timecard error");
+        }
+    }
+    let filecontent = fs.readFileSync(iddatedir, 'utf-8');
+    const timelist = filecontent.split('\n');
+    let timeinfo = {};
+    let timeinfolist = [];
+    timelist.forEach((time) => {
+        if (time !== '') {
+            const timedataarray = time.split(',');
+            timeinfo = {
+                yyyymmdd: timedataarray[0],
+                start: timedataarray[1],
+                end: timedataarray[2],
+                startupd: timedataarray[3],
+                endupd: timedataarray[4],
+                yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0,4) + "/" + timedataarray[0].slice(4,6) + "/" + timedataarray[0].slice(-2)))
+            };
+            timeinfolist.push(timeinfo);
+        }
+    });
+    return timeinfolist;
 };
 
 module.exports = {
     getTimedata,
     setTime,
+    getMonthdata,
 };

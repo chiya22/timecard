@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <%- include("./common/stylesheets.ejs", {isAdmin: true}) %>
+</head>
+
+<body>
+  <div class="container-top">
+    <%- include("./common/header.ejs", {addAdminMenu: false}) %>
+    <div class="area">
+      <% if (yyyymmlist) { %>
+          <div class="items">
+            <% yyyymmlist.forEach(function(yyyymm){ %>
+              <a href="<%= user.id %>/<%= yyyymm.slice(0,4) + yyyymm.slice(-2) %>"><%= yyyymm %></a>
+            <% }) %>
+          </div>
+      <% } %>
+    </div>
+  </div>
+  <%- include("./common/back.ejs", {toAdmin: true, toMonth: false}) %>
+</body>
+
+</html>

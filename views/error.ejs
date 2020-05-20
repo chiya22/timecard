@@ -3,7 +3,7 @@
 
 <head>
     <title><%= message %>(<%= error.status %>)</title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <%- include("./common/stylesheets.ejs", {isAdmin: false}) %>
 </head>
 
 <body>
@@ -17,11 +17,12 @@
             <% }else{ %>
             <p>何らかのエラーが発生しました。管理者へお知らせください。</p>
             <% }; %>
+            <pre>
+                <%= error.stacktrace %>
+            </pre>
         </div>
     </div>
-    <div class="back-area">
-        <a href="/">戻る</a>
-    </div>
+    <%- include("./common/back.ejs", {toAdmin: false}) %>
 </body>
 
 </html>

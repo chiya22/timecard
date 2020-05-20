@@ -17,14 +17,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/static', express.static(__dirname + '/public'));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', indexRouter);
 
-const init = require('./util/master');
-init.initialize();
+const master = require('./util/master');
+master.initialize();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -3,16 +3,12 @@
 
 <head>
     <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <%- include("./common/stylesheets.ejs", {isAdmin: false}) %>
 </head>
 
 <body>
     <div class="container-action">
-        <div class="header">
-        <img class="header-logo" src="../images/building_logo.svg">
-        <div class="header-title">
-            <h1><%= title + "：" + user.name %></h1>
-        </div>
+        <%- include("./common/header.ejs", {addAdminMenu: false}) %>
         <form method="POST" name="timeform" action="/time/set">
             <div class="action-area">
                 <div class="start-area">
@@ -28,9 +24,7 @@
                 <input type="hidden" name="id" value="<%= user.id %>">
             </div>
         </form>
-        <div class="back-area">
-            <a href="/">戻る</a>
-        </div>
+        <%- include("./common/back.ejs", {toAdmin: false}) %>
         <script>
             let startbtn = document.getElementById("startbtn");
             let endbtn = document.getElementById("endbtn");

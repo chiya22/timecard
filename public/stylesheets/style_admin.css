@@ -1,0 +1,198 @@
+body {
+  font-family: "Helvetica Neue",
+    Arial,
+    "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans",
+    Meiryo,
+    sans-serif;
+}
+.header {
+  width: 100%;
+  margin: 20px 0;
+}
+.header-logo {
+  width: 400px;
+  height: auto;
+}
+.header-menu {
+  display: block;
+  float: right;
+  border-radius: 15px;
+  background-color: #808080;
+  padding: 10px;
+  text-decoration: none;
+  color:#fff;
+}
+.header-title {
+  width: 100%;
+  background-color:#808080;
+  color: white;
+  padding: 5px 0;
+  text-align: center;
+  border-radius: 15px;
+  margin: 20px 0;
+}
+.stacktrace {
+  font-size: 1.2rem;
+}
+.back-area {
+  width: 100%;
+  text-align: center;
+}
+.back-area > a {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  text-align: center;
+  line-height: 30px;
+  border-radius: 15px;
+  color : #fff;
+  text-decoration: none;
+  margin: 5px;
+  margin-top: 20px;
+  background-color: #808080;
+}
+
+.container-top {
+  width: 90%;
+  margin: 0 auto;
+}
+.container-top h1 {
+  font-size: 24pt;
+}
+.container-top h2 {
+  font-size: 18pt;
+  color: #808080;
+  padding: 0 10px;
+}
+.items {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+.items > a {
+  display: inline-block;
+  width: 150px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  border: 1px solid #808080;
+  border-radius: 15px;
+  color : #808080;
+  text-decoration: none;
+  margin: 5px;
+  font-size: 18px;
+}
+.items > a:hover {
+  border: 1px solid #808080;
+  background-color:#808080;
+  color: white;
+}
+
+/* action */
+
+.container-action {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.action-area {
+  width: 100%;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+.action-area p {
+  display: inline-block;
+  width: 200px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  border: 1px solid #808080;
+  border-radius: 15px;
+  color : #808080;
+  text-decoration: none;
+  margin: 5px;
+  font-size: 40px;
+  cursor: pointer;
+}
+.action-area p:hover{
+    border: 1px solid #808080;
+  background-color:#808080;
+  color: white;
+}
+.nonactive {
+  border: 1px solid #d3d3d3!important;
+  background-color:#fff!important;
+  color: #d3d3d3!important;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* monthtime */
+
+table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+  margin: 0 auto;
+}
+table td {
+  border-collapse: collapse;
+  background-color: #d3d3d3;
+  border: 1px solid #fff;
+  padding: 5px;
+  text-align: center;
+}
+table th {
+  border-collapse: collapse;
+  background-color: #808080;
+  border: 1px solid #fff;
+  padding: 5px;
+  text-align: center;
+  font-weight: normal;
+  color: #fff;
+}
+table th:nth-child(1),
+table th:nth-child(2),
+table th:nth-child(3),
+table th:nth-child(4),
+table th:nth-child(5) {
+  width: 100px;
+}
+table th:nth-child(6),
+table th:nth-child(7) {
+    width: 30px;
+}
+table th:nth-child(1) {
+  border-radius: 15px 0 0 0;
+}
+table th:nth-child(7) {
+  border-radius: 0 15px 0 0;
+}
+
+table td:nth-child(1),
+table td:nth-child(2),
+table td:nth-child(3),
+table td:nth-child(4),
+table td:nth-child(5) {
+  width: 100px;
+}
+table td:nth-child(6),
+table td:nth-child(7) {
+  width: 30px;
+}
+table tr:last-child td:nth-child(1) {
+  border-radius: 0 0 0 15px;
+}
+table tr:last-child td:nth-child(7) {
+  border-radius: 0 0 15px 0;
+}
+table .startupd, table .endupd {
+  width: 120px;
+  padding: 5px;
+  box-sizing: border-box;
+  text-align: center;
+}

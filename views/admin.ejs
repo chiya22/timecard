@@ -3,17 +3,12 @@
 
 <head>
   <title><%= title %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <%- include("./common/stylesheets.ejs", {isAdmin: true}) %>
 </head>
 
 <body>
   <div class="container-top">
-    <div class="header">
-      <img class="header-logo" src="../images/building_logo.svg">
-      <div class="header-title">
-        <h1>管理者メニュー：<%= title %></h1>
-      </div>
-    </div>
+    <%- include("./common/header.ejs", {addAdminMenu: false}) %>
     <div class="area">
       <h2>社員</h2>
       <div class="items">
@@ -30,6 +25,7 @@
           <% }) %>
         </div>
     </div>
+    <%- include("./common/back.ejs", {toAdmin: false}) %>
   </div>
 
 </body>
