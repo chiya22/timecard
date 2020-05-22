@@ -9,37 +9,60 @@
 <body>
   <div class="container-top">
     <%- include("./common/header.ejs", {addAdminMenu: false}) %>
-    <div class="area">
-      <% if (timelist) { %>
-      <table>
-        <tr>
-          <th>日付</th>
-          <th>出勤時間</th>
-          <th>退勤時間</th>
-          <th>出勤時間<br>(修正)</th>
-          <th>退勤時間<br>(修正)</th>
-          <th>賄</th>
-          <th>朝<br>遅</th>
-        </tr>
-        <% timelist.forEach(function(timeinfo){ %>
-        <tr>
-          <td>
-            <%= timeinfo.yyyymmddyoubi %>
-            <input type="hidden" value="<%= timeinfo.yyyymmdd %>">
-          </td>
-          <td><%= timeinfo.start %></td>
-          <td><%= timeinfo.end %></td>
-          <td><input class="startupd" type="text" value="<%= timeinfo.startupd %>"></td>
-          <td><input class="endupd" type="text" value="<%= timeinfo.endupd %>"></td>
-          <td><input class="makanai" type="checkbox"></td>
-          <td><input class="asaoso" type="checkbox"></td>
-        </tr>
-        <% }) %>
-      </table>
-      <% } %>
-    </div>
+    <form method="POST" name="timelistform" action="/admin/<%= userinfo.id %>/<%= yyyymm %>">
+      <p id="updatebtn">更新</p>
+      <div class="area">
+        <% if (timelist) { %>
+        <table>
+          <tr>
+            <th>日付</th>
+            <th>出勤時間</th>
+            <th>退勤時間</th>
+            <th>出勤時間<br>(修正)</th>
+            <th>退勤時間<br>(修正)</th>
+            <th>賄</th>
+            <th>朝<br>遅</th>
+          </tr>
+          <% timelist.forEach(function(timeinfo){ %>
+          <tr>
+            <td>
+              <%= timeinfo.yyyymmddyoubi %>
+              <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
+            </td>
+            <td><%= timeinfo.start %></td>
+            <td><%= timeinfo.end %></td>
+            <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
+            <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
+            <%
+              let makanaichecked;
+              if (timeinfo.makanai === 'on') {
+                makanaichecked = "checked";
+              }
+            %>
+            <input type="hidden" name="_makanai" value="off" >
+            <td><input class="makanai" type="checkbox" name="makanai" value="on" <%= makanaichecked %> ></td>
+            <%
+              let asaosochecked;
+              if (timeinfo.asaoso === 'on') {
+                asaosochecked = "checked";
+              }
+            %>
+            <input type="hidden" name="asaoso" value="off" >
+            <td><input class="asaoso" type="checkbox" name="asaoso" value="on" <%= asaosochecked %> ></td>
+          </tr>
+          <% }) %>
+        </table>
+        <% } %>
+      </div>
+    </form>
   </div>
   <%- include("./common/back.ejs", {toAdmin: true, toMonth: true, id: userinfo.id }) %>
+  <script>
+    let btn = document.getElementById("updatebtn");
+    btn.addEventListener('click', function () {
+      document.timelistform.submit();
+    });
+  </script>
 </body>
 
 </html>

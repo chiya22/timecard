@@ -95,16 +95,16 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
             }
             if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 }
                 starttime = hhmmss;
             } else {
                 if (timedataarray[2] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss},${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 }
                 endtime = hhmmss;
             };
@@ -115,7 +115,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
         }
     });
     if (!isexit) {
-        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
+        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,,,\n`, 'utf-8');
         starttime = hhmmss;
     };
     return {
@@ -150,6 +150,8 @@ const getMonthdata = function (id, yyyy_mm) {
                 end: timedataarray[2],
                 startupd: timedataarray[3],
                 endupd: timedataarray[4],
+                makanai: timedataarray[5],
+                asaoso: timedataarray[6],
                 yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0,4) + "/" + timedataarray[0].slice(4,6) + "/" + timedataarray[0].slice(-2)))
             };
             timeinfolist.push(timeinfo);

@@ -60,10 +60,10 @@ const createInitailFile = function (datadir, id, yyyy_mm_dd) {
 
             let linedata = '';
             for (let i = beforestartday; i <= beforeendday; i++) {
-                linedata += beforeyear + beforemonth + ("0" + i).slice(-2) + ",,,,\n";
+                linedata += beforeyear + beforemonth + ("0" + i).slice(-2) + ",,,,,false,false\n";
             }
             for (let i = afterstartday; i <= afterendday; i++) {
-                linedata += afteryear + aftermonth + ("0" + i).slice(-2) + ",,,,\n";
+                linedata += afteryear + aftermonth + ("0" + i).slice(-2) + ",,,,,false,false\n";
             }
 
             try {

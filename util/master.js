@@ -23,18 +23,6 @@ const initialize = function () {
                 if (!fs.existsSync(datadir + '/' + userdataarray[0])) {
                     fs.mkdirSync(datadir + '/' + userdataarray[0]);
                 };
-                // const date = new Date();
-                // const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
-                // const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd);
-                // try {
-                //     fs.statSync(datadir + '/' + userdataarray[0] + '/' + yyyymm);
-                // } catch(err) {
-                //     if (err.code === "ENOENT") {
-                //         cm.createInitailFile(datadir, userdataarray[0], yyyy_mm_dd);
-                //     }else{
-                //         console.log(err);
-                //     }
-                // }
             };
         });
     } catch(err) {
@@ -78,6 +66,9 @@ const getUserList = (kubun) => {
     return ret;
 };
 
+/*
+引数で渡されたidをもとにマスタに登録されているユーザ情報を取得し返却する
+*/
 const getUser = (id) => {
     let ret = {};
     let userlist = getUserList();

@@ -21,7 +21,7 @@ router.get('/', function (req, res) {
   parttimeret.forEach((user) => {
     common.createInitailFile(datadir, user.id, yyyy_mm_dd)
   })
-  
+
   res.render('index', {
     title: common.getYmdyoubi(new Date()),
     userlist: ret,
@@ -143,11 +143,33 @@ router.get('/admin/:id/:yyyymm', function (req, res) {
   const userinfo = master.getUser(id);
   const timelist = time.getMonthdata(id, yyyymm);
   res.render('monthtime', {
-    title: "管理者：" + yyyymm.slice(0,4) + "年" + yyyymm.slice(-2) + "月：" + userinfo.name,
+    title: "管理者：" + yyyymm.slice(0, 4) + "年" + yyyymm.slice(-2) + "月：" + userinfo.name,
     yyyymm: yyyymm,
     userinfo: userinfo,
     timelist: timelist,
   });
-})
+});
+
+router.post('/admin/:id/:yyyymm', function (req, res) {
+
+  const yyyymmddlist = req.body.yyyymmdd;
+  const startupdlist = req.body.startupd;
+  const endupdlist = req.body.endupd;
+  const makanailist = req.body.makanai;
+  const asaosolist = req.body.asaoso;
+
+  let line;
+  for (let i = 0; i < yyyymmddlist.length; i++) {
+    line = yyyymmddlist[i] + "," + startupdlist[i] + "," + endupdlist[i] + "," + makanailist[i] + "," + asaosolist[i];
+  }
+
+  res.render('monthtime', {
+    title: null,
+    yyyymm: null,
+    userinfo: null,
+    timelist: null,
+  });
+
+});
 
 module.exports = router;
