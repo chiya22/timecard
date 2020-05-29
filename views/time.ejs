@@ -7,8 +7,8 @@
 </head>
 
 <body>
+    <%- include("./common/header.ejs", {adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
     <div class="container-action">
-        <%- include("./common/header.ejs", {addAdminMenu: false}) %>
         <form method="POST" name="timeform" action="/time/set">
             <div class="action-area">
                 <div class="start-area">

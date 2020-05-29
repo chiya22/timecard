@@ -7,8 +7,8 @@
 </head>
 
 <body>
+  <%- include("./common/header.ejs", {adminMenu: false, backMenu: false, backAdmin: true, backToMonth: false, id: null}) %>
   <div class="container-top">
-    <%- include("./common/header.ejs", {addAdminMenu: false}) %>
     <div class="area">
       <% if (yyyymmlist) { %>
           <div class="items">
@@ -19,7 +19,6 @@
       <% } %>
     </div>
   </div>
-  <%- include("./common/back.ejs", {toAdmin: true, toMonth: false}) %>
 </body>
 
 </html>

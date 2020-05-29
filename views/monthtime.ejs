@@ -7,10 +7,13 @@
 </head>
 
 <body>
+  <%- include("./common/header.ejs", {adminMenu: false, backMenu: false, backAdmin: false, backToMonth: true, id: userinfo.id}) %>
   <div class="container-top">
-    <%- include("./common/header.ejs", {addAdminMenu: false}) %>
     <form method="POST" name="timelistform" action="/admin/<%= userinfo.id %>/<%= yyyymm %>">
-      <p id="updatebtn">更新</p>
+      <div class="area-btn">
+        <p id="updatebtn" class="monthtimebtn">更新</p>
+        <p id="initbtn" class="monthtimebtn">元に戻す</p>
+      </div>
       <div class="area">
         <% if (timelist) { %>
         <table>
@@ -29,8 +32,14 @@
               <%= timeinfo.yyyymmddyoubi %>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
             </td>
-            <td><%= timeinfo.start %></td>
-            <td><%= timeinfo.end %></td>
+            <td>
+              <%= timeinfo.start %>
+              <input type="hidden" name="start" value="<%= timeinfo.start %>">
+            </td>
+            <td>
+              <%= timeinfo.end %>
+              <input type="hidden" name="end" value="<%= timeinfo.end %>">
+            </td>
             <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
             <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
             <%
@@ -39,16 +48,16 @@
                 makanaichecked = "checked";
               }
             %>
-            <input type="hidden" name="_makanai" value="off" >
-            <td><input class="makanai" type="checkbox" name="makanai" value="on" <%= makanaichecked %> ></td>
+            <input type="hidden" name="makanai" value="off">
+            <td><input class="makanai" type="checkbox" name="_makanai" value="on" <%= makanaichecked %>></td>
             <%
               let asaosochecked;
               if (timeinfo.asaoso === 'on') {
                 asaosochecked = "checked";
               }
             %>
-            <input type="hidden" name="asaoso" value="off" >
-            <td><input class="asaoso" type="checkbox" name="asaoso" value="on" <%= asaosochecked %> ></td>
+            <input type="hidden" name="asaoso" value="off">
+            <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
           </tr>
           <% }) %>
         </table>
@@ -56,11 +65,24 @@
       </div>
     </form>
   </div>
-  <%- include("./common/back.ejs", {toAdmin: true, toMonth: true, id: userinfo.id }) %>
   <script>
-    let btn = document.getElementById("updatebtn");
-    btn.addEventListener('click', function () {
+    let updbtn = document.getElementById("updatebtn");
+    updbtn.addEventListener('click', function () {
+      for (let i = 0; i < document.timelistform.makanai.length; i++) {
+        if (document.timelistform._makanai[i].checked) {
+          document.timelistform.makanai[i].value = "on";
+        }
+      }
+      for (let i = 0; i < document.timelistform.asaoso.length; i++) {
+        if (document.timelistform._asaoso[i].checked) {
+          document.timelistform.asaoso[i].value = "on";
+        }
+      }
       document.timelistform.submit();
+    });
+    let initbtn = document.getElementById("initbtn");
+    initbtn.addEventListener('click', function () {
+      document.location.reload();
     });
   </script>
 </body>

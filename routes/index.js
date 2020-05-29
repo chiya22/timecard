@@ -92,12 +92,12 @@ router.post('/time/set', function (req, res) {
       //ファイルへ書き込む
       if (req.body.shorikubun === 'start') {
         if (starttime === '出勤') {
-          starttime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
+          starttime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2);
           timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, starttime);
         }
       } else {
         if (endtime === '退勤') {
-          endtime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2) + ":" + ('0' + date.getSeconds()).slice(-2);
+          endtime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2);
           timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, endtime);
         }
       }
@@ -152,22 +152,26 @@ router.get('/admin/:id/:yyyymm', function (req, res) {
 
 router.post('/admin/:id/:yyyymm', function (req, res) {
 
+  const id = req.params.id;
+  const yyyymm = req.params.yyyymm;
   const yyyymmddlist = req.body.yyyymmdd;
+  const startlist = req.body.start;
   const startupdlist = req.body.startupd;
+  const endlist = req.body.end;
   const endupdlist = req.body.endupd;
   const makanailist = req.body.makanai;
   const asaosolist = req.body.asaoso;
 
-  let line;
-  for (let i = 0; i < yyyymmddlist.length; i++) {
-    line = yyyymmddlist[i] + "," + startupdlist[i] + "," + endupdlist[i] + "," + makanailist[i] + "," + asaosolist[i];
-  }
+  time.updTime(id, yyyymm, yyyymmddlist,startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist);
+
+  const userinfo = master.getUser(id);
+  const timelist = time.getMonthdata(id, yyyymm);
 
   res.render('monthtime', {
-    title: null,
-    yyyymm: null,
-    userinfo: null,
-    timelist: null,
+    title: "管理者：" + yyyymm.slice(0, 4) + "年" + yyyymm.slice(-2) + "月：" + userinfo.name,
+    yyyymm: yyyymm,
+    userinfo: userinfo,
+    timelist: timelist,
   });
 
 });

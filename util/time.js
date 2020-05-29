@@ -49,7 +49,7 @@ const getTimedata = function (id, yyyy_mm_dd) {
     };
 }
 
-const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
+const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
 
     const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd);
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
@@ -59,9 +59,9 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
         fs.statSync(iddatedir);
     } catch (err) {
         if (err.code === "ENOENT") {
-            fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,\n`, 'utf-8');
+            fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmm},,,\n`, 'utf-8');
             return {
-                starttime: hhmmss,
+                starttime: hhmm,
                 endtime: '退勤',
             };
         } else {
@@ -95,18 +95,18 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
             }
             if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmmss},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmm},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 }
-                starttime = hhmmss;
+                starttime = hhmm;
             } else {
                 if (timedataarray[2] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmmss},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmmss},${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
                 }
-                endtime = hhmmss;
+                endtime = hhmm;
             };
         } else {
             if (time !== '') {
@@ -115,8 +115,8 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmmss) {
         }
     });
     if (!isexit) {
-        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmmss},,,,,\n`, 'utf-8');
-        starttime = hhmmss;
+        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,,\n`, 'utf-8');
+        starttime = hhmm;
     };
     return {
         starttime: starttime,
@@ -152,7 +152,7 @@ const getMonthdata = function (id, yyyy_mm) {
                 endupd: timedataarray[4],
                 makanai: timedataarray[5],
                 asaoso: timedataarray[6],
-                yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0,4) + "/" + timedataarray[0].slice(4,6) + "/" + timedataarray[0].slice(-2)))
+                yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0, 4) + "/" + timedataarray[0].slice(4, 6) + "/" + timedataarray[0].slice(-2)))
             };
             timeinfolist.push(timeinfo);
         }
@@ -160,8 +160,30 @@ const getMonthdata = function (id, yyyy_mm) {
     return timeinfolist;
 };
 
+/*
+
+*/
+const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist) {
+
+    const iddatedir = `${datadir}/${id}/${yyyymm}`;
+
+    try {
+        fs.statSync(iddatedir);
+    } catch (err) {
+        if (err.code !== "ENOENT") {
+            throw new Error("update timecard error");
+        }
+    }
+    fs.writeFileSync(iddatedir, '', 'utf-8');
+
+    for (let i = 0; i < yyyymmddlist.length; i++) {
+        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${makanailist[i]},${asaosolist[i]}\n`, 'utf-8');
+    }
+};
+
 module.exports = {
     getTimedata,
     setTime,
+    updTime,
     getMonthdata,
 };

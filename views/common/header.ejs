@@ -1,7 +1,16 @@
 <div class="header">
     <img class="header-logo" src="/static/images/building_logo.svg">
-    <% if (addAdminMenu) { %>
-    <a class="header-menu" href="admin">管理者メニュー</a>
+    <% if (backMenu) { %>
+        <a class="header-back" href="/">戻る</a>
+    <% } %>
+    <% if (backAdmin) { %>
+        <a class="header-back" href="/admin">戻る</a>
+        <% } %>
+    <% if (backToMonth) { %>
+        <a class="header-back" href="/admin/<%= id %>">戻る</a>
+    <% } %>
+    <% if (adminMenu) { %>
+    <a class="header-admin" href="/admin">管理者メニュー</a>
     <% } %>
     <div class="header-title">
         <h1><%= title %></h1>

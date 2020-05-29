@@ -7,8 +7,8 @@
 </head>
 
 <body>
+  <%- include("./common/header.ejs", {adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
   <div class="container-top">
-    <%- include("./common/header.ejs", {addAdminMenu: false}) %>
     <div class="area">
       <h2>社員</h2>
       <div class="items">
@@ -25,7 +25,6 @@
           <% }) %>
         </div>
     </div>
-    <%- include("./common/back.ejs", {toAdmin: false}) %>
   </div>
 
 </body>

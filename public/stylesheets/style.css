@@ -1,3 +1,6 @@
+html {
+  overflow-y: scroll;
+}
 body {
   font-family: "Helvetica Neue",
     Arial,
@@ -8,19 +11,26 @@ body {
 }
 .header {
   width: 100%;
-  margin: 20px 0;
+  min-width :550px;
+  margin: 10px 0;
 }
 .header-logo {
-  width: 400px;
+  width: 300px;
   height: auto;
+  margin-top: 10px;
 }
-.header-menu {
+.header-admin, .header-back {
   display: block;
   float: right;
   border-radius: 15px;
-  background-color: #CD5E42;
+  background-color: #fff;
   padding: 10px;
   text-decoration: none;
+  color:#CD5E42;
+  border: 1px solid #CD5E42;
+}
+.header-admin:hover, .header-back:hover {
+  background-color: #CD5E42;
   color:#fff;
 }
 .header-title {
@@ -55,6 +65,7 @@ body {
 
 .container-top {
   width: 90%;
+  min-width :550px;
   margin: 0 auto;
 }
 .container-top h1 {
