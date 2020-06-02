@@ -3,9 +3,32 @@ const fs = require('fs');
 const getYmdyoubi = function (date) {
 
     const ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
-    var weekdays = ["日", "月", "火", "水", "木", "金", "土"];
 
-    return `${ymd}(${weekdays[date.getDay()]})`;
+    
+    const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+    const youbi = getYoubi(date);
+
+    return `${ymd}(${youbi})`;
+};
+const getYoubi = function (date) {
+
+    const ymd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+    const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+    let youbi = weekdays[date.getDay()];
+    try {
+        //祝日カレンダー
+        let filecontent = fs.readFileSync('./data/master/holiday.dat', 'utf-8');
+        const holidaylist = filecontent.split('\n');
+        holidaylist.forEach( (holiday) => {
+            if (holiday === ymd) {
+                youbi = '祝';
+                return;
+            }
+        });
+    } catch {
+        throw new Error(err);
+    }
+    return youbi;
 };
 
 const getTargetYYYYMM = function (yyyy_mm_dd) {
@@ -78,9 +101,90 @@ const createInitailFile = function (datadir, id, yyyy_mm_dd) {
     };
 };
 
+const getPaytime = function (starttime, endtime, weekday) {
+
+    const starthh = parseInt(starttime.split(':')[0]);
+    const startmm = parseInt(starttime.split(':')[1]);
+    const endhh = parseInt(endtime.split(':')[0]);
+    const endmm = parseInt(endtime.split(':')[1]);
+
+    //starttimeとendtimeの大小比較
+    let calcstarttime = (starthh * 60) + startmm;
+    let calcendtime = (endhh * 60) + endmm;
+    if (calcendtime < calcstarttime) {
+        return false;
+    }
+
+    //シフトによって勤務時間間隔、休憩時間を決める
+    let basestarttime = 0;
+    let baseendtime = 0;
+    let baseresttime = 0;
+
+    if (weekday) {
+        //平日出勤
+        if (starthh > 12) {
+            //午前出勤
+            basestarttime = (7 * 60) + 30;
+            baseendtime = (15 * 60);
+            baseresttime = 60;
+        } else {
+            //午後出勤
+            basestarttime = (15 * 60);
+            baseendtime = (22 * 60);
+            baseresttime = 30;
+        }
+    } else {
+        //土日祝日出勤
+        if (starthh > 12) {
+            //午前出勤
+            basestarttime = (7 * 60) + 30;
+            baseendtime = (14 * 60);
+            baseresttime = 0;
+        } else {
+            //午後出勤
+            basestarttime = (12 * 60) + 30;
+            baseendtime = (19 * 60) + 30;
+            baseresttime = 0;
+        }
+    }
+
+    //勤務時間の計算
+    //
+    //◆出勤時間
+    //basestarttime > calcstarttime
+    // ⇒ basestarttime を使用
+    //basestarttime < calcstarttime
+    // ⇒ calcstarttime を使用
+    //basestarttime = calcstarttime
+    // ⇒ basestarttime を使用
+    //
+    //◆退勤時間
+    //baseendtime < calcendtime
+    // ⇒　calcendtimeを使用
+    //baseendtime > calcendtime
+    // ⇒　calcendtimeを使用
+    //baseendtime = calcendtime
+    // ⇒　calcendtimeを使用
+    //
+    //
+    let paytime = 0;
+    if (basestarttime >= starttime) {
+        calsstarttime = basestarttime;
+    }
+    paytime = (calcendtime - calsstarttime - baseresttime);
+    //15分単位で区切る
+    paytime = paytime - (paytime % 15);
+    const payhh = slice('0' + (paytime / 6), -2);
+    const paymm = slice('0' + (paytime % 60), -2);
+    return payhh + ":" + paymm;
+}
+
+
 module.exports = {
     getYmdyoubi,
+    getYoubi,
     getTargetYYYYMM,
     readDirSync,
     createInitailFile,
+    getPaytime,
 };

@@ -194,15 +194,14 @@ body {
 .table-content th:nth-child(7) {
   width: calc(100%/14);
 }
-.table-content th:nth-child(1) {
+/* .table-content th:nth-child(1) {
   border-radius: 15px 0 0 0;
 }
 .table-content th:nth-child(8) {
   border-radius: 0 15px 0 0;
-}
+} */
 .table-content td {
   border-collapse: collapse;
-  background-color: #d3d3d3;
   border: 1px solid #fff;
   padding: 5px;
   text-align: center;
@@ -216,21 +215,20 @@ body {
 }
 .table-content td:nth-child(6),
 .table-content td:nth-child(7) {
-    width: calc(100%/14);
+  width: calc(100%/14);
 }
 .table-content td:nth-child(1),
 .table-content td:nth-child(2),
-.table-content td:nth-child(3),
-.table-content td:nth-child(8) {
+.table-content td:nth-child(3) {
   padding-top: 10px;
 }
-.table-content tr:last-child td:nth-child(1) {
+/* .table-content tr:last-child td:nth-child(1) {
   border-radius: 0 0 0 15px;
 }
 .table-content tr:last-child td:nth-child(8) {
   border-radius: 0 0 15px 0;
-}
-.table-content .startupd, .table-content .endupd {
+} */
+.table-content .startupd, .table-content .endupd, .table-content .paytime {
   width: 100%;
   padding: 5px;
   box-sizing: border-box;
@@ -238,9 +236,7 @@ body {
   background-color: #fff;
 }
 .table-content tr:hover {
-  /* 背景色が効かない */
   background-color: #FFCC99;
-  color:#ff0000;
 }
 .area-btn {
   text-align: center;
@@ -261,5 +257,13 @@ body {
   background-color: #808080;
   color: #fff;
 }
-
+.bgc-normal {
+  background-color: #d3d3d3;
+}
+.bgc-red {
+  background-color: #ff9999;
+}
+.bgc-blue {
+  background-color: #99ccff;
+}
 

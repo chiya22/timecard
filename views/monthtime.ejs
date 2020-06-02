@@ -29,7 +29,13 @@
               <th>支給時間</th>
             </tr>
             <% timelist.forEach(function(timeinfo){ %>
-            <tr>
+            <% if ((timeinfo.youbi === '日') || (timeinfo.youbi === '祝')) { %>
+            <tr class="bgc-red">
+              <% } else if (timeinfo.youbi === '土') { %>
+            <tr class="bgc-blue">
+              <% } else { %>
+            <tr class="bgc-normal">
+              <% } %>
               <td>
                 <%= timeinfo.yyyymmddyoubi %>
               </td>
@@ -55,13 +61,12 @@
                 }
               %>
               <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
-              <td><%= timeinfo.paytime %></td>
+              <td><input class="paytime" type="text" name="paytime" value="<%= timeinfo.paytime %>"></td>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
               <input type="hidden" name="start" value="<%= timeinfo.start %>">
               <input type="hidden" name="end" value="<%= timeinfo.end %>">
               <input type="hidden" name="makanai" value="off">
               <input type="hidden" name="asaoso" value="off">
-              <input type="hidden" name="paytime" value="<%= timeinfo.paytime %>">
             </tr>
             <% }) %>
         </div>

@@ -153,6 +153,7 @@ const getMonthdata = function (id, yyyy_mm) {
                 makanai: timedataarray[5],
                 asaoso: timedataarray[6],
                 paytime: timedataarray[7],
+                youbi: cm.getYoubi(new Date(timedataarray[0].slice(0, 4) + "/" + timedataarray[0].slice(4, 6) + "/" + timedataarray[0].slice(-2))),
                 yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0, 4) + "/" + timedataarray[0].slice(4, 6) + "/" + timedataarray[0].slice(-2)))
             };
             timeinfolist.push(timeinfo);
