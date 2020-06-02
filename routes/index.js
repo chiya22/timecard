@@ -161,8 +161,9 @@ router.post('/admin/:id/:yyyymm', function (req, res) {
   const endupdlist = req.body.endupd;
   const makanailist = req.body.makanai;
   const asaosolist = req.body.asaoso;
+  const paytimelist = req.body.paytime;
 
-  time.updTime(id, yyyymm, yyyymmddlist,startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist);
+  time.updTime(id, yyyymm, yyyymmddlist,startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist, paytimelist);
 
   const userinfo = master.getUser(id);
   const timelist = time.getMonthdata(id, yyyymm);

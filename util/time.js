@@ -95,16 +95,16 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
             }
             if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmm},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmm},,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]}\n`, 'utf-8');
                 }
                 starttime = hhmm;
             } else {
                 if (timedataarray[2] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${timedataarray[5]},${timedataarray[6]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${timedataarray[5]},${timedataarray[6]},${timedataarray[7]}\n`, 'utf-8');
                 }
                 endtime = hhmm;
             };
@@ -115,7 +115,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
         }
     });
     if (!isexit) {
-        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,,\n`, 'utf-8');
+        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,,,\n`, 'utf-8');
         starttime = hhmm;
     };
     return {
@@ -152,6 +152,7 @@ const getMonthdata = function (id, yyyy_mm) {
                 endupd: timedataarray[4],
                 makanai: timedataarray[5],
                 asaoso: timedataarray[6],
+                paytime: timedataarray[7],
                 yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0, 4) + "/" + timedataarray[0].slice(4, 6) + "/" + timedataarray[0].slice(-2)))
             };
             timeinfolist.push(timeinfo);
@@ -163,7 +164,7 @@ const getMonthdata = function (id, yyyy_mm) {
 /*
 
 */
-const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist) {
+const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist, paytimelist) {
 
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
 
@@ -177,7 +178,7 @@ const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupd
     fs.writeFileSync(iddatedir, '', 'utf-8');
 
     for (let i = 0; i < yyyymmddlist.length; i++) {
-        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${makanailist[i]},${asaosolist[i]}\n`, 'utf-8');
+        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${makanailist[i]},${asaosolist[i]},${paytimelist[i]}\n`, 'utf-8');
     }
 };
 

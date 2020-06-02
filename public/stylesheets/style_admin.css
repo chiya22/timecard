@@ -11,13 +11,21 @@ body {
 }
 .header {
   width: 100%;
-  min-width :550px;
-  margin: 10px 0;
+  min-width: 550px;
+  padding: 20px;
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  background-color: #fff;
+}
+.header__main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .header-logo {
   width: 300px;
   height: auto;
-  margin-top: 10px;
 }
 .header-admin, .header-back {
   display: block;
@@ -33,14 +41,16 @@ body {
   background-color: #808080;
   color:#fff;
 }
-.header-title {
+.header__title {
   width: 100%;
   background-color:#808080;
+  font-size: 1.5rem;
+  font-weight: bold;
   color: white;
-  padding: 5px 0;
+  padding: 15px 0;
   text-align: center;
   border-radius: 15px;
-  margin: 20px 0;
+  margin-top: 20px;
 }
 .stacktrace {
   font-size: 1.2rem;
@@ -62,11 +72,11 @@ body {
   margin-top: 20px;
   background-color: #808080;
 }
-
 .container-top {
   width: 90%;
   min-width :550px;
   margin: 0 auto;
+  padding-top: 170px;
 }
 .container-top h1 {
   font-size: 24pt;
@@ -100,14 +110,20 @@ body {
   background-color:#808080;
   color: white;
 }
+.area_divide {
+  width: 100%;
+  height: 1px;
+  margin: 20px auto;
+  background-color: #808080;
+}
 
 /* action */
 
 .container-action {
   width: 90%;
   margin: 0 auto;
+  padding-top: 170px;
 }
-
 .action-area {
   width: 100%;
   display:flex;
@@ -143,21 +159,20 @@ body {
 }
 
 /* monthtime */
-
-table {
+.table-wrapper {
+  overflow-y: scroll;
+  width: 100% + 17px;
+  height: 50vh;
+}
+.table-content {
+  width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 14px;
   margin: 0 auto;
+  word-wrap: break-word;
 }
-table td {
-  border-collapse: collapse;
-  background-color: #d3d3d3;
-  border: 1px solid #fff;
-  padding: 5px;
-  text-align: center;
-}
-table th {
+.table-content th {
   border-collapse: collapse;
   background-color: #808080;
   border: 1px solid #fff;
@@ -165,47 +180,67 @@ table th {
   text-align: center;
   font-weight: normal;
   color: #fff;
+  position: sticky;
+  top: 0;
 }
-table th:nth-child(1),
-table th:nth-child(2),
-table th:nth-child(3),
-table th:nth-child(4),
-table th:nth-child(5) {
-  width: 100px;
+.table-content th:nth-child(1),
+.table-content th:nth-child(2),
+.table-content th:nth-child(3),
+.table-content th:nth-child(4),
+.table-content th:nth-child(5) {
+  width: calc(100%/7);
 }
-table th:nth-child(6),
-table th:nth-child(7) {
-    width: 30px;
+.table-content th:nth-child(6),
+.table-content th:nth-child(7) {
+  width: calc(100%/14);
 }
-table th:nth-child(1) {
+.table-content th:nth-child(1) {
   border-radius: 15px 0 0 0;
 }
-table th:nth-child(7) {
+.table-content th:nth-child(8) {
   border-radius: 0 15px 0 0;
 }
-
-table td:nth-child(1),
-table td:nth-child(2),
-table td:nth-child(3),
-table td:nth-child(4),
-table td:nth-child(5) {
-  width: 100px;
+.table-content td {
+  border-collapse: collapse;
+  background-color: #d3d3d3;
+  border: 1px solid #fff;
+  padding: 5px;
+  text-align: center;
 }
-table td:nth-child(6),
-table td:nth-child(7) {
-  width: 30px;
+.table-content td:nth-child(1),
+.table-content td:nth-child(2),
+.table-content td:nth-child(3),
+.table-content td:nth-child(4),
+.table-content td:nth-child(5) {
+  width: calc(100%/7);
 }
-table tr:last-child td:nth-child(1) {
+.table-content td:nth-child(6),
+.table-content td:nth-child(7) {
+    width: calc(100%/14);
+}
+.table-content td:nth-child(1),
+.table-content td:nth-child(2),
+.table-content td:nth-child(3),
+.table-content td:nth-child(8) {
+  padding-top: 10px;
+}
+.table-content tr:last-child td:nth-child(1) {
   border-radius: 0 0 0 15px;
 }
-table tr:last-child td:nth-child(7) {
+.table-content tr:last-child td:nth-child(8) {
   border-radius: 0 0 15px 0;
 }
-table .startupd, table .endupd {
-  width: 120px;
+.table-content .startupd, .table-content .endupd {
+  width: 100%;
   padding: 5px;
   box-sizing: border-box;
   text-align: center;
+  background-color: #fff;
+}
+.table-content tr:hover {
+  /* 背景色が効かない */
+  background-color: #FFCC99;
+  color:#ff0000;
 }
 .area-btn {
   text-align: center;
@@ -213,14 +248,18 @@ table .startupd, table .endupd {
 .monthtimebtn {
   display: inline-block;
   border-radius: 15px;
-  background-color: #808080;
+  background-color: #fff;
+  border: 1px solid #808080;
   padding: 10px;
   margin: 0 10px 20px 10px;
-  color:#fff;
+  color:#808080;
   width: 100px;
   text-align: center;
   cursor: pointer;
 }
 .monthtimebtn:hover {
-  opacity: 0.7;
+  background-color: #808080;
+  color: #fff;
 }
+
+

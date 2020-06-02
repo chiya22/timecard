@@ -11,55 +11,60 @@
   <div class="container-top">
     <form method="POST" name="timelistform" action="/admin/<%= userinfo.id %>/<%= yyyymm %>">
       <div class="area-btn">
-        <p id="updatebtn" class="monthtimebtn">更新</p>
-        <p id="initbtn" class="monthtimebtn">元に戻す</p>
+        <p id="updatebtn" class="monthtimebtn mt-30">更新</p>
+        <p id="initbtn" class="monthtimebtn mt-30">元に戻す</p>
       </div>
-      <div class="area">
+      <div class="area-form">
         <% if (timelist) { %>
-        <table>
-          <tr>
-            <th>日付</th>
-            <th>出勤時間</th>
-            <th>退勤時間</th>
-            <th>出勤時間<br>(修正)</th>
-            <th>退勤時間<br>(修正)</th>
-            <th>賄</th>
-            <th>朝<br>遅</th>
-          </tr>
-          <% timelist.forEach(function(timeinfo){ %>
-          <tr>
-            <td>
-              <%= timeinfo.yyyymmddyoubi %>
+        <div class="table-wrapper">
+          <table class="table-content">
+            <tr>
+              <th>日付</th>
+              <th>出勤時間</th>
+              <th>退勤時間</th>
+              <th>出勤時間<br>(修正)</th>
+              <th>退勤時間<br>(修正)</th>
+              <th>賄</th>
+              <th>朝<br>遅</th>
+              <th>支給時間</th>
+            </tr>
+            <% timelist.forEach(function(timeinfo){ %>
+            <tr>
+              <td>
+                <%= timeinfo.yyyymmddyoubi %>
+              </td>
+              <td>
+                <%= timeinfo.start %>
+              </td>
+              <td>
+                <%= timeinfo.end %>
+              </td>
+              <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
+              <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
+              <%
+                let makanaichecked;
+                if (timeinfo.makanai === 'on') {
+                  makanaichecked = "checked";
+                }
+              %>
+              <td><input class="makanai" type="checkbox" name="_makanai" value="on" <%= makanaichecked %>></td>
+              <%
+                let asaosochecked;
+                if (timeinfo.asaoso === 'on') {
+                  asaosochecked = "checked";
+                }
+              %>
+              <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
+              <td><%= timeinfo.paytime %></td>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
-            </td>
-            <td>
-              <%= timeinfo.start %>
               <input type="hidden" name="start" value="<%= timeinfo.start %>">
-            </td>
-            <td>
-              <%= timeinfo.end %>
               <input type="hidden" name="end" value="<%= timeinfo.end %>">
-            </td>
-            <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
-            <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
-            <%
-              let makanaichecked;
-              if (timeinfo.makanai === 'on') {
-                makanaichecked = "checked";
-              }
-            %>
-            <input type="hidden" name="makanai" value="off">
-            <td><input class="makanai" type="checkbox" name="_makanai" value="on" <%= makanaichecked %>></td>
-            <%
-              let asaosochecked;
-              if (timeinfo.asaoso === 'on') {
-                asaosochecked = "checked";
-              }
-            %>
-            <input type="hidden" name="asaoso" value="off">
-            <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
-          </tr>
-          <% }) %>
+              <input type="hidden" name="makanai" value="off">
+              <input type="hidden" name="asaoso" value="off">
+              <input type="hidden" name="paytime" value="<%= timeinfo.paytime %>">
+            </tr>
+            <% }) %>
+        </div>
         </table>
         <% } %>
       </div>

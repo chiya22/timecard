@@ -10,15 +10,14 @@
   <%- include("./common/header.ejs", {adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
   <div class="container-top">
     <div class="area">
-      <h2>社員</h2>
       <div class="items">
         <% userlist.forEach(function(user){ %>
         <a href="admin/<%= user.id %>"><%= user.name %></a>
         <% }) %>
       </div>
     </div>
+    <div class="area_divide"></div>
     <div class="area">
-      <h2>アルバイト</h2>
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
           <a href="admin/<%= user.id %>"><%= user.name %></a>
