@@ -9,7 +9,9 @@
 <body>
     <div class="container-top">
         <div class="header">
-        <h1><%= message %>（<%= error.status %>）</h1>
+            <div class="header__title">
+                <h1><%= message %>（<%= error.status %>）</h1>
+            </div>
         </div>
         <div class="stacktrace">
             <% if (error.status === 404) { %>

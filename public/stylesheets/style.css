@@ -91,6 +91,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
+  position: relative;
 }
 .items > a {
   display: inline-block;
