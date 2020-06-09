@@ -2,8 +2,6 @@ const datadir = './data';
 const masterfile = datadir + '/master/userlist.dat';
 
 const fs = require('fs');
-const readline = require('readline');
-const cm = require('./common');
 
 /*
 データディレクトリに
@@ -29,7 +27,7 @@ const initialize = function () {
         if (err.code === "ENOENT") {
             console.log('マスタファイルが存在しません');
         } else {
-            console.log(err);
+            throw err;
         }
     };
 }

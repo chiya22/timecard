@@ -3,9 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
+
+var basicAuth = require('basic-auth-connect');
 
 var app = express();
 
@@ -18,8 +20,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/static', express.static(__dirname + '/public'));
-
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.all('/admin/*', basicAuth(function(user, password) {
+  return user === 'tomoya' && password === 'yoshida';
+}));
+app.all('/admin', basicAuth(function(user, password) {
+  return user === 'tomoya' && password === 'yoshida';
+}));
 
 app.use('/', indexRouter);
 

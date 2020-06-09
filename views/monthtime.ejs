@@ -7,8 +7,16 @@
 </head>
 
 <body>
+  <!-- <div class="msgarea" style="visibility: visible;"> -->
+  <div class="msg">
+    <div class="msgarea">
+      <p class="msgarea__text">更新します。<br>よろしいですか？</p>
+      <button class="msgarea__okbtn">はい</button>
+      <button class="msgarea__ngbtn">いいえ</button>
+    </div>
+  </div>
   <%- include("./common/header.ejs", {adminMenu: false, backMenu: false, backAdmin: false, backToMonth: true, id: userinfo.id}) %>
-  <div class="container-top">
+  <div class="wow fadeIn container-top">
     <form method="POST" name="timelistform" action="/admin/<%= userinfo.id %>/<%= yyyymm %>">
       <div class="area-btn">
         <p id="updatebtn" class="monthtimebtn mt-30">更新</p>
@@ -24,6 +32,7 @@
               <th>退勤時間</th>
               <th>出勤時間<br>(修正)</th>
               <th>退勤時間<br>(修正)</th>
+              <th>休憩時間</th>
               <th>賄</th>
               <th>朝<br>遅</th>
               <th>支給時間</th>
@@ -47,6 +56,7 @@
               </td>
               <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
               <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
+              <td><input class="resttime" type="text" name="resttime" value="<%= timeinfo.resttime %>"></td>
               <%
                 let makanaichecked;
                 if (timeinfo.makanai === 'on') {
@@ -78,6 +88,12 @@
   <script>
     let updbtn = document.getElementById("updatebtn");
     updbtn.addEventListener('click', function () {
+      let msg = document.getElementsByClassName("msg")[0];
+      msg.style.visibility = "visible";
+    });
+    let okbtn = document.getElementsByClassName("msgarea__okbtn")[0];
+    let ngbtn = document.getElementsByClassName("msgarea__ngbtn")[0];
+    okbtn.addEventListener('click', function () {
       for (let i = 0; i < document.timelistform.makanai.length; i++) {
         if (document.timelistform._makanai[i].checked) {
           document.timelistform.makanai[i].value = "on";
@@ -90,11 +106,16 @@
       }
       document.timelistform.submit();
     });
+    ngbtn.addEventListener('click', function () {
+      let msg = document.getElementsByClassName("msg")[0];
+      msg.style.visibility = "hidden";
+    });
     let initbtn = document.getElementById("initbtn");
     initbtn.addEventListener('click', function () {
       document.location.reload();
     });
   </script>
 </body>
+<%- include("./common/javascripts.ejs") %>
 
 </html>

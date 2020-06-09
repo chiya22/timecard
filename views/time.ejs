@@ -11,10 +11,10 @@
     <div class="container-action">
         <form method="POST" name="timeform" action="/time/set">
             <div class="action-area">
-                <div class="start-area">
+                <div class="wow fadeIn" class="start-area">
                     <p id="startbtn" class="start"><%= time.starttime %></p>
                 </div>
-                <div class="end-area">
+                <div class="wow fadeIn" class="end-area">
                     <p id="endbtn" class="end"><%= time.endtime %></p>
                 </div>
                 <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
@@ -43,5 +43,6 @@
             };
         </script>
 </body>
+<%- include("./common/javascripts.ejs") %>
 
 </html>

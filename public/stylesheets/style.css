@@ -109,6 +109,8 @@ body {
   border: 1px solid #CD5E42;
   background-color:#CD5E42;
   color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(0,0,0,.2);
 }
 .area_divide {
   width: 100%;

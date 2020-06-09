@@ -12,7 +12,7 @@
     <div class="area">
       <div class="items">
         <% userlist.forEach(function(user){ %>
-        <a href="admin/<%= user.id %>"><%= user.name %></a>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
         <% }) %>
       </div>
     </div>
@@ -20,12 +20,12 @@
     <div class="area">
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
-          <a href="admin/<%= user.id %>"><%= user.name %></a>
+          <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
           <% }) %>
         </div>
     </div>
   </div>
-
 </body>
+<%- include("./common/javascripts.ejs") %>
 
 </html>

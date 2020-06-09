@@ -13,12 +13,13 @@
       <% if (yyyymmlist) { %>
           <div class="items mt-30">
             <% yyyymmlist.forEach(function(yyyymm){ %>
-              <a href="<%= user.id %>/<%= yyyymm.slice(0,4) + yyyymm.slice(-2) %>"><%= yyyymm %></a>
+              <a class="wow fadeInUp" href="<%= user.id %>/<%= yyyymm.slice(0,4) + yyyymm.slice(-2) %>"><%= yyyymm %></a>
             <% }) %>
           </div>
       <% } %>
     </div>
   </div>
 </body>
+<%- include("./common/javascripts.ejs") %>
 
 </html>

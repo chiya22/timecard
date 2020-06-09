@@ -72,6 +72,7 @@ router.get('/time/:id', function (req, res) {
 });
 
 /*
+指定されたユーザIDの出退勤情報を登録する
 YYYYMMDDファイルに現在の時間を書き込む
 req.body.shorikubun　⇒　start：出勤、end：退勤
 */
@@ -113,7 +114,8 @@ router.post('/time/set', function (req, res) {
 });
 
 /*
-指定したユーザIDの実績が存在するYYYYMMファイルのファイル名リストを取得し表示する
+指定したユーザIDの実績が存在するYYYYMMファイルの
+ファイル名リストを取得し表示する
 */
 router.get('/admin/:id', function (req, res) {
 
@@ -134,7 +136,7 @@ router.get('/admin/:id', function (req, res) {
 });
 
 /*
-指定されたユーザーIDの指定された年月の実績を返却する
+指定されたユーザIDの指定された年月の実績を表示する
 */
 router.get('/admin/:id/:yyyymm', function (req, res) {
 
@@ -150,6 +152,9 @@ router.get('/admin/:id/:yyyymm', function (req, res) {
   });
 });
 
+/*
+指定されたユーザIDの指定された年月の実績を更新する
+*/
 router.post('/admin/:id/:yyyymm', function (req, res) {
 
   const id = req.params.id;
@@ -159,11 +164,12 @@ router.post('/admin/:id/:yyyymm', function (req, res) {
   const startupdlist = req.body.startupd;
   const endlist = req.body.end;
   const endupdlist = req.body.endupd;
+  const resttimelist = req.body.resttime;
   const makanailist = req.body.makanai;
   const asaosolist = req.body.asaoso;
   const paytimelist = req.body.paytime;
 
-  time.updTime(id, yyyymm, yyyymmddlist,startlist, endlist, startupdlist, endupdlist, makanailist, asaosolist, paytimelist);
+  time.updTime(id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, resttimelist, makanailist, asaosolist, paytimelist);
 
   const userinfo = master.getUser(id);
   const timelist = time.getMonthdata(id, yyyymm);
