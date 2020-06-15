@@ -15,11 +15,11 @@ router.get('/', function (req, res) {
   yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
   let ret = master.getUserList(1);
   ret.forEach((user) => {
-    common.createInitailFile(datadir, user.id, yyyy_mm_dd)
+    time.createInitailFile(datadir, user.id, yyyy_mm_dd)
   })
   let parttimeret = master.getUserList(2);
   parttimeret.forEach((user) => {
-    common.createInitailFile(datadir, user.id, yyyy_mm_dd)
+    time.createInitailFile(datadir, user.id, yyyy_mm_dd)
   })
 
   res.render('index', {

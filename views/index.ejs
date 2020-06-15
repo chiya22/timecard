@@ -16,7 +16,7 @@
     <div class="area">
       <div class="items">
         <% userlist.forEach(function(user){ %>
-        <a class="item wow fadeInUp" data-start="出勤" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item wow fadeIn" data-start="出勤" href="time/<%= user.id %>"><%= user.name %></a>
         <% }) %>
       </div>
     </div>
@@ -24,7 +24,7 @@
     <div class="area">
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
-          <a class="item wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+          <a class="item wow fadeIn" href="time/<%= user.id %>"><%= user.name %></a>
         <% }) %>
       </div>
     </div>

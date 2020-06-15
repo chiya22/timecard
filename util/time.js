@@ -3,6 +3,53 @@ const fs = require('fs');
 const cm = require('./common');
 
 /*
+引数で指定されたディレクトリ、指定されたユーザID、指定された日付をもとに、
+初期ファイルを作成する
+*/
+const createInitailFile = function (datadir, id, yyyy_mm_dd) {
+
+    const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd)
+
+    try {
+        fs.statSync(datadir + "/" + id + "/" + yyyymm);
+    } catch (err) {
+        if (err.code === "ENOENT") {
+
+            const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd)
+            let date = new Date(yyyymm.slice(0, 4) + "/" + yyyymm.slice(-2) + "/01");
+
+            const afterstartday = 1;
+            const afterendday = 15;
+            const aftermonth = ("0" + (date.getMonth() + 1)).slice(-2);
+            const afteryear = date.getFullYear();
+
+            const beforestartday = 16;
+            date.setDate(date.getDate() - 1);
+            const beforeendday = date.getDate();
+            const beforemonth = ("0" + (date.getMonth() + 1)).slice(-2);
+            const beforeyear = date.getFullYear();
+
+            let linedata = '';
+            for (let i = beforestartday; i <= beforeendday; i++) {
+                linedata += beforeyear + beforemonth + ("0" + i).slice(-2) + ",,,,\n";
+            }
+            for (let i = afterstartday; i <= afterendday; i++) {
+                linedata += afteryear + aftermonth + ("0" + i).slice(-2) + ",,,,\n";
+            }
+
+            try {
+                fs.writeFileSync(datadir + "/" + id + "/" + yyyymm, linedata);
+            } catch {
+                throw new Error("初期ファイル作成時にエラーが発生しました。");
+            }
+
+        } else {
+            throw err;
+        };
+    };
+};
+
+/*
 指定されたユーザID、指定された年月日(yyyy/mm/dd形式)の
 出勤時間、退勤時間を取得し返却する
 */
@@ -31,20 +78,12 @@ const getTimedata = function (id, yyyy_mm_dd) {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
-            // todo ここは共通化する
-            if (timedataarray[1] === '') {
-                // starttime = '出勤';
-            } else if (timedataarray[3] === '') {
-                starttime = timedataarray[1];
-            } else {
-                starttime = timedataarray[3];
+            const currentTime = cm.getStartEndTime(timedataarray[1],timedataarray[2],timedataarray[3],timedataarray[4]);
+            if (currentTime.starttime){
+                starttime = currentTime.starttime;
             }
-            if (timedataarray[2] === '') {
-                // endtime = '退勤';
-            } else if (timedataarray[4] === '') {
-                endtime = timedataarray[2];
-            } else {
-                endtime = timedataarray[4]
+            if (currentTime.endtime){
+                endtime = currentTime.endtime;
             }
         }
     });
@@ -88,40 +127,27 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
-            isexit = true;
-            //todo ここは共通化する
-            if (timedataarray[1] === '') {
-                starttime = '出勤';
-            } else if (timedataarray[3] === '') {
-                starttime = timedataarray[1];
-            } else {
-                starttime = timedataarray[3];
+            const currentTime = cm.getStartEndTime(timedataarray[1],timedataarray[2],timedataarray[3],timedataarray[4]);
+            if (currentTime.starttime){
+                starttime = currentTime.starttime;
             }
-            if (timedataarray[2] === '') {
-                endtime = '退勤';
-            } else if (timedataarray[4] === '') {
-                endtime = timedataarray[2];
-            } else {
-                endtime = timedataarray[4]
+            if (currentTime.endtime){
+                endtime = currentTime.endtime;
             }
             if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]},${timedataarray[8]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmm},,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]},${timedataarray[8]}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmm},\n`, 'utf-8');
                 }
                 starttime = hhmm;
             } else {
                 let timeinfo;
-                let paytime;
-                let resttime;
                 timeinfo = cm.getStartEndTime(timedataarray[1], hhmm, timedataarray[3], null);
-                paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, cm.isWeekDay(yyyymmdd));
-                resttime = cm.getResttime(timeinfo.starttime, cm.isWeekDay(yyyymmdd));
                 if (timedataarray[2] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${resttime},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${resttime},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm}\n`, 'utf-8');
                 }
                 endtime = hhmm;
             };
@@ -132,7 +158,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
         }
     });
     if (!isexit) {
-        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,,off,off,\n`, 'utf-8');
+        fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,\n`, 'utf-8');
         starttime = hhmm;
     };
     return {
@@ -171,10 +197,6 @@ const getMonthdata = function (id, yyyy_mm) {
                 end: timedataarray[2],
                 startupd: timedataarray[3],
                 endupd: timedataarray[4],
-                resttime: timedataarray[5],
-                makanai: timedataarray[6],
-                asaoso: timedataarray[7],
-                paytime: timedataarray[8],
                 youbi: cm.getYoubi(new Date(timedataarray[0].slice(0, 4) + "/" + timedataarray[0].slice(4, 6) + "/" + timedataarray[0].slice(-2))),
                 yyyymmddyoubi: cm.getYmdyoubi(new Date(timedataarray[0].slice(0, 4) + "/" + timedataarray[0].slice(4, 6) + "/" + timedataarray[0].slice(-2)))
             };
@@ -186,9 +208,9 @@ const getMonthdata = function (id, yyyy_mm) {
 
 /*
 指定したユーザID、指定した年月（yyyymm形式）、
-指定した年月の出退勤情報一覧（出勤、退勤、出勤（更新）、退勤（更新）、賄手当、朝遅手当、支給時間）を設定する
+指定した年月の出退勤情報一覧（出勤、退勤、出勤（更新）、退勤（更新））を設定する
 */
-const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, resttimelist, makanailist, asaosolist, paytimelist) {
+const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist) {
 
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
 
@@ -202,37 +224,14 @@ const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupd
     fs.writeFileSync(iddatedir, '', 'utf-8');
 
     let timeinfo;
-    let paytime;
-    let resttime;
     for (let i = 0; i < yyyymmddlist.length; i++) {
         timeinfo = cm.getStartEndTime(startlist[i], endlist[i], startupdlist[i], endupdlist[i]);
-        if (paytimelist[i]) {
-            paytime = paytimelist[i];
-        } else {
-            if (timeinfo.endtime) {
-                if (resttimelist[i]) {
-                    paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, cm.isWeekDay(yyyymmddlist[i]), resttimelist[i]);
-                }else{
-                    paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, cm.isWeekDay(yyyymmddlist[i]), null);
-                }
-            } else {
-                paytime = '';
-            }
-        }
-        if (resttimelist[i]) {
-            resttime = resttimelist[i];
-        } else {
-            if (timeinfo.endtime) {
-                resttime = cm.getResttime(timeinfo.starttime, cm.isWeekDay(yyyymmddlist[i]));
-            } else {
-                resttime = '';
-            }
-        }
-        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${resttime},${makanailist[i]},${asaosolist[i]},${paytime}\n`, 'utf-8');
+        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]}\n`, 'utf-8');
     }
 };
 
 module.exports = {
+    createInitailFile,
     getTimedata,
     setTime,
     updTime,
