@@ -37,6 +37,15 @@ body {
   color:#CD5E42;
   border: 1px solid #CD5E42;
 }
+.error-back {
+  display: block;
+  border-radius: 15px;
+  background-color: #fff;
+  padding: 10px;
+  text-decoration: none;
+  color:#CD5E42;
+  border: 1px solid #CD5E42;
+}
 .header-admin:hover, .header-back:hover {
   background-color: #CD5E42;
   color:#fff;

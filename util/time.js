@@ -127,6 +127,7 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
+            isexit = true;
             const currentTime = cm.getStartEndTime(timedataarray[1],timedataarray[2],timedataarray[3],timedataarray[4]);
             if (currentTime.starttime){
                 starttime = currentTime.starttime;
