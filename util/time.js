@@ -27,24 +27,17 @@ const getTimedata = function (id, yyyy_mm_dd) {
     const timelist = filecontent.split('\n');
     let starttime = '出勤';
     let endtime = '退勤';
+    let timeinfo;
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
-            // todo ここは共通化する
-            if (timedataarray[1] === '') {
-                // starttime = '出勤';
-            } else if (timedataarray[3] === '') {
-                starttime = timedataarray[1];
-            } else {
-                starttime = timedataarray[3];
+            timeinfo = cm.getStartEndTime(timedataarray[1], timedataarray[2], timedataarray[3], timedataarray[4]);
+            if (timeinfo.starttime) {
+                starttime = timeinfo.starttime;
             }
-            if (timedataarray[2] === '') {
-                // endtime = '退勤';
-            } else if (timedataarray[4] === '') {
-                endtime = timedataarray[2];
-            } else {
-                endtime = timedataarray[4]
+            if (timeinfo.endtime) {
+                endtime = timeinfo.endtime;
             }
         }
     });
@@ -84,25 +77,18 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
     const timelist = filecontent.split('\n');
     let starttime = '出勤';
     let endtime = '退勤';
+    let timeinfo;
     fs.writeFileSync(iddatedir, '', 'utf-8');
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
         if (timedataarray[0] === yyyymmdd) {
             isexit = true;
-            //todo ここは共通化する
-            if (timedataarray[1] === '') {
-                starttime = '出勤';
-            } else if (timedataarray[3] === '') {
-                starttime = timedataarray[1];
-            } else {
-                starttime = timedataarray[3];
+            timeinfo = cm.getStartEndTime(timedataarray[1], timedataarray[2], timedataarray[3], timedataarray[4]);
+            if (timeinfo.starttime) {
+                starttime = timeinfo.starttime;
             }
-            if (timedataarray[2] === '') {
-                endtime = '退勤';
-            } else if (timedataarray[4] === '') {
-                endtime = timedataarray[2];
-            } else {
-                endtime = timedataarray[4]
+            if (timeinfo.endtime) {
+                endtime = timeinfo.endtime;
             }
             if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
@@ -116,12 +102,11 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
                 let paytime;
                 let resttime;
                 timeinfo = cm.getStartEndTime(timedataarray[1], hhmm, timedataarray[3], null);
-                paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, cm.isWeekDay(yyyymmdd));
-                resttime = cm.getResttime(timeinfo.starttime, cm.isWeekDay(yyyymmdd));
+                paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, timedataarray[5]);
                 if (timedataarray[2] === '') {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${resttime},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
                 } else {
-                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${resttime},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
+                    fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${timedataarray[5]},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
                 }
                 endtime = hhmm;
             };
@@ -162,9 +147,19 @@ const getMonthdata = function (id, yyyy_mm) {
     const timelist = filecontent.split('\n');
     let timeinfo = {};
     let timeinfolist = [];
+    let totalpayday = 0;
+    let totalpaytime = 0;
     timelist.forEach((time) => {
         if (time !== '') {
             const timedataarray = time.split(',');
+            if ((timedataarray[1] !== '') || (timedataarray[2] !== '') || (timedataarray[3] !== '') || (timedataarray[4] !== '')) {
+                totalpayday += 1;
+            }
+            if (timedataarray[8] !== '') {
+                const hh = parseInt(timedataarray[8].split(':')[0]);
+                const mm = parseInt(timedataarray[8].split(':')[1]);
+                totalpaytime += (hh * 60) + mm;
+            }
             timeinfo = {
                 yyyymmdd: timedataarray[0],
                 start: timedataarray[1],
@@ -181,6 +176,10 @@ const getMonthdata = function (id, yyyy_mm) {
             timeinfolist.push(timeinfo);
         }
     });
+    timeinfolist.totalpayday = totalpayday;
+    const payhh = ('0' + parseInt(totalpaytime / 60, 10)).slice(-2);
+    const paymm = ('0' + (totalpaytime % 60)).slice(-2);
+    timeinfolist.totalpaytime = payhh + ":" + paymm;
     return timeinfolist;
 };
 
@@ -191,7 +190,6 @@ const getMonthdata = function (id, yyyy_mm) {
 const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, resttimelist, makanailist, asaosolist, paytimelist) {
 
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
-
     try {
         fs.statSync(iddatedir);
     } catch (err) {
@@ -203,32 +201,18 @@ const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupd
 
     let timeinfo;
     let paytime;
-    let resttime;
     for (let i = 0; i < yyyymmddlist.length; i++) {
         timeinfo = cm.getStartEndTime(startlist[i], endlist[i], startupdlist[i], endupdlist[i]);
-        if (paytimelist[i]) {
-            paytime = paytimelist[i];
-        } else {
-            if (timeinfo.endtime) {
-                if (resttimelist[i]) {
-                    paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, cm.isWeekDay(yyyymmddlist[i]), resttimelist[i]);
-                }else{
-                    paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, cm.isWeekDay(yyyymmddlist[i]), null);
-                }
+        if (timeinfo.endtime) {
+            if (resttimelist[i]) {
+                paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, resttimelist[i]);
             } else {
-                paytime = '';
+                paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, null);
             }
-        }
-        if (resttimelist[i]) {
-            resttime = resttimelist[i];
         } else {
-            if (timeinfo.endtime) {
-                resttime = cm.getResttime(timeinfo.starttime, cm.isWeekDay(yyyymmddlist[i]));
-            } else {
-                resttime = '';
-            }
+            paytime = '';
         }
-        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${resttime},${makanailist[i]},${asaosolist[i]},${paytime}\n`, 'utf-8');
+        fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${resttimelist[i]},${makanailist[i]},${asaosolist[i]},${paytime}\n`, 'utf-8');
     }
 };
 

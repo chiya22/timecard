@@ -259,18 +259,20 @@ body {
 .total-item {
   display: flex;
   font-size: 14px;
-  color: #fff;
   margin: 3px 0;
 }
 .label {
   width: 110px;
   background-color: #808080;
   padding: 5px;
+  color: #fff;
+  text-align: center;
 }
 .text {
-  width: 120px;
+  width: 110px;
   background-color: #d3d3d3;
   padding: 5px;
+  text-align: right;
 }
 
 

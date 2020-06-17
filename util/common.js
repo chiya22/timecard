@@ -142,13 +142,12 @@ const createInitailFile = function (datadir, id, yyyy_mm_dd) {
 　引数で設定されていない場合は、ルールに従って設定される
 
 */
-const getPaytime = function (starttime, endtime, weekday, resttime) {
+const getPaytime = function (starttime, endtime, resttime) {
 
     const starthh = parseInt(starttime.split(':')[0]);
     const startmm = parseInt(starttime.split(':')[1]);
     const endhh = parseInt(endtime.split(':')[0]);
     const endmm = parseInt(endtime.split(':')[1]);
-
 
     //starttimeとendtimeの大小比較
     let calcstarttime = (starthh * 60) + startmm;
@@ -157,102 +156,20 @@ const getPaytime = function (starttime, endtime, weekday, resttime) {
         return false;
     }
 
-    //シフトによって勤務時間間隔、休憩時間を決める
-    let basestarttime = 0;
-    let baseendtime = 0;
-    let baseresttime = 0;
-
-    if (weekday) {
-        //平日出勤
-        if (starthh < 12) {
-            //午前出勤
-            basestarttime = (7 * 60) + 30;
-            baseendtime = (15 * 60);
-            baseresttime = 60;
-        } else {
-            //午後出勤
-            basestarttime = (15 * 60);
-            baseendtime = (22 * 60);
-            baseresttime = 30;
-        }
-    } else {
-        //土日祝日出勤
-        if (starthh < 12) {
-            //午前出勤
-            basestarttime = (7 * 60) + 30;
-            baseendtime = (14 * 60);
-            baseresttime = 0;
-        } else {
-            //午後出勤
-            basestarttime = (12 * 60) + 30;
-            baseendtime = (19 * 60) + 30;
-            baseresttime = 0;
-        }
-    }
-    //
+    let calcresttime = 0;
     if (resttime) {
-        baseresttime = parseInt(resttime.split(':')[0]) * 60 + parseInt(resttime.split(':')[1]);
+        const resthh = parseInt(resttime.split(':')[0]);
+        const restmm = parseInt(resttime.split(':')[1]);
+        calcresttime = (resthh * 60) + restmm;
     }
 
-    //勤務時間の計算
-    //
-    //◆出勤時間
-    //basestarttime > calcstarttime
-    // ⇒ basestarttime を使用
-    //basestarttime < calcstarttime
-    // ⇒ calcstarttime を使用
-    //basestarttime = calcstarttime
-    // ⇒ basestarttime を使用
-    //
-    //◆退勤時間
-    //baseendtime < calcendtime
-    // ⇒　calcendtimeを使用
-    //baseendtime > calcendtime
-    // ⇒　calcendtimeを使用
-    //baseendtime = calcendtime
-    // ⇒　calcendtimeを使用
-    //
-    //
     let paytime = 0;
-    if (basestarttime >= calcstarttime) {
-        calcstarttime = basestarttime;
-    }
-    paytime = (calcendtime - calcstarttime - baseresttime);
+    paytime = (calcendtime - calcstarttime - calcresttime);
     //15分単位で区切る
     paytime = paytime - (paytime % 15);
     const payhh = ('0' + parseInt(paytime / 60, 10)).slice(-2);
     const paymm = ('0' + (paytime % 60)).slice(-2);
     return payhh + ":" + paymm;
-};
-
-/*
-引数で渡された出勤時間（hh:mm形式）平日休日区分（true：休日、false：平日）をもとに、
-休憩時間を算出し返却する
-*/
-const getResttime = function (starttime, weekday) {
-    const starthh = parseInt(starttime.split(':')[0]);
-    let baseresttime;
-    //シフトによって勤務時間間隔、休憩時間を決める
-    if (weekday) {
-        //平日出勤
-        if (starthh < 12) {
-            //午前出勤
-            baseresttime = "01:00";
-        } else {
-            //午後出勤
-            baseresttime = "00:30";
-        }
-    } else {
-        //土日祝日出勤
-        if (starthh < 12) {
-            //午前出勤
-            baseresttime = "00:00";
-        } else {
-            //午後出勤
-            baseresttime = "00:00";
-        }
-    }
-    return baseresttime;
 };
 
 /*
@@ -285,7 +202,6 @@ module.exports = {
     readDirSync,
     createInitailFile,
     getPaytime,
-    getResttime,
     getStartEndTime,
     isWeekDay,
 };
