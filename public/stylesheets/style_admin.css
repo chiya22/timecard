@@ -251,6 +251,29 @@ body {
 .table-content tr:hover {
   background-color: #FFCC99;
 }
+.area-total {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.total-item {
+  display: flex;
+  font-size: 14px;
+  color: #fff;
+  margin: 3px 0;
+}
+.label {
+  width: 110px;
+  background-color: #808080;
+  padding: 5px;
+}
+.text {
+  width: 120px;
+  background-color: #d3d3d3;
+  padding: 5px;
+}
+
+
 .area-btn {
   text-align: center;
 }
