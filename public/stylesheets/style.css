@@ -1,3 +1,4 @@
+
 html {
   overflow-y: scroll;
 }
@@ -112,6 +113,14 @@ body {
   color: white;
   transform: translateY(-5px);
   box-shadow: 0 0 30px rgba(0,0,0,.2);
+}
+.item_end {
+  color: #c0c0c0!important;
+  border: 1px solid #c0c0c0!important;
+  pointer-events: none;
+}
+.item_start {
+  background-color: rgba(205,94,66,0.3);
 }
 .area_divide {
   width: 100%;

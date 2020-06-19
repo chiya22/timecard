@@ -183,4 +183,28 @@ router.post('/admin/:id/:yyyymm', function (req, res) {
 
 });
 
+router.post('/admin/download', function (req, res) {
+
+  const yyyymm = req.body.target_yyyymm;
+  const userinfo = master.getUserList();
+
+  let csv = '';
+
+  userinfo.forEach((user) => {
+    let timeinfolist = time.getMonthdata(user.id, yyyymm);
+    if (timeinfolist) {
+      for (let i = 0; i < timeinfolist.length; i++) {
+        csv += user.id + ',' + timeinfolist[i].yyyymmdd + ',' + timeinfolist[i].start + ',' + timeinfolist[i].end + ',' + timeinfolist[i].startupd + ',' + timeinfolist[i].endupd + ',' + timeinfolist[i].resttime + ',' + timeinfolist[i].makanai + ',' + timeinfolist[i].asaoso + ',' + timeinfolist[i].paytime + '\r\n';
+      }
+    }
+  });
+
+  res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+  res.setHeader('Content-Type', 'text/csv; charset=UTF-8');
+
+  res.send(csv);
+  // res.redirect(req.baseUrl + '/admin');
+
+});
+
 module.exports = router;

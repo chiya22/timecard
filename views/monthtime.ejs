@@ -54,9 +54,9 @@
               <td>
                 <%= timeinfo.end %>
               </td>
-              <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
-              <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
-              <td><input class="resttime" type="text" name="resttime" value="<%= timeinfo.resttime %>"></td>
+              <td><input class="startupd flatpickr" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
+              <td><input class="endupd flatpickr" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
+              <td><input class="resttime flatpickr" type="text" name="resttime" value="<%= timeinfo.resttime %>"></td>
               <%
                 let makanaichecked;
                 if (timeinfo.makanai === 'on') {
@@ -71,7 +71,9 @@
                 }
               %>
               <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
-              <td><input class="paytime" type="text" name="paytime" value="<%= timeinfo.paytime %>"></td>
+              <td>
+                <%= timeinfo.paytime %>
+              </td>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
               <input type="hidden" name="start" value="<%= timeinfo.start %>">
               <input type="hidden" name="end" value="<%= timeinfo.end %>">

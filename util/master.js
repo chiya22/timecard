@@ -2,6 +2,7 @@ const datadir = './data';
 const masterfile = datadir + '/master/userlist.dat';
 
 const fs = require('fs');
+const time = require('./time');
 
 /*
 データディレクトリに
@@ -15,7 +16,7 @@ const initialize = function () {
         let filecontent = fs.readFileSync(masterfile, 'utf-8');
         const userlist = filecontent.split('\n');
 
-        userlist.forEach( (user) => {
+        userlist.forEach((user) => {
             if (user !== '') {
                 const userdataarray = user.split(',');
                 if (!fs.existsSync(datadir + '/' + userdataarray[0])) {
@@ -23,7 +24,7 @@ const initialize = function () {
                 };
             };
         });
-    } catch(err) {
+    } catch (err) {
         if (err.code === "ENOENT") {
             console.log('マスタファイルが存在しません');
         } else {
@@ -40,22 +41,28 @@ const getUserList = (kubun) => {
     let ret = [];
     let filecontent = fs.readFileSync(masterfile, 'utf-8');
     const userlist = filecontent.split('\n');
-
-    userlist.forEach( (user) => {
+    const date = new Date();
+    const ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+    userlist.forEach((user) => {
         if (user !== '') {
             let userinfo = user.split(',');
+            let timeinfo = time.getTimedata(userinfo[0], ymd);
             if (!kubun) {
                 ret.push({
                     'id': userinfo[0],
                     'name': userinfo[1],
                     'kubun': userinfo[2],
+                    'starttime': timeinfo.starttime,
+                    'endtime': timeinfo.endtime,
                 })
-            }else{
-                if (userinfo[2] == kubun){
+            } else {
+                if (userinfo[2] == kubun) {
                     ret.push({
                         'id': userinfo[0],
                         'name': userinfo[1],
                         'kubun': userinfo[2],
+                        'starttime': timeinfo.starttime,
+                        'endtime': timeinfo.endtime,
                     })
                 }
             }
