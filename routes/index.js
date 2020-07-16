@@ -4,6 +4,7 @@ const datadir = './data';
 const master = require('../util/master');
 const time = require('../util/time');
 const common = require('../util/common');
+const hosei = require('../util/hosei');
 
 /*
 初期画面を表示する
@@ -22,10 +23,16 @@ router.get('/', function (req, res) {
     common.createInitailFile(datadir, user.id, yyyy_mm_dd)
   })
 
+  let hoseilist = hosei.getHoseiList('wait');
+
+  let userlist = master.getUserList();
+
   res.render('index', {
     title: common.getYmdyoubi(new Date()),
     userlist: ret,
     parttimeuserlist: parttimeret,
+    hoseilist: hoseilist,
+    selectuserlist: userlist,
   });
 
 });
@@ -111,6 +118,20 @@ router.post('/time/set', function (req, res) {
       });
     }
   })
+});
+
+/*
+指定された補正情報を登録する
+*/
+router.post('/hosei/add', function (req, res) {
+  let user = master.getUser(req.body.id);
+  let inObj = {};
+  inObj.id = user.id;
+  const date = req.body.targetdate
+  inObj.targetdate = date.slice(0,4) + date.slice(5,7) + date.slice(-2);
+  inObj.content = req.body.content;
+  hosei.addHosei(inObj);
+  res.redirect('/');
 });
 
 /*

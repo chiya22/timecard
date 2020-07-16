@@ -8,6 +8,36 @@
 
 <body>
   <%- include("./common/header.ejs", {adminMenu: true, backMenu: false, backAdmin: false, backToMonth: false, id: null}) %>
+  <div class="area-hosei">
+    <div class="form-hosei">
+      <form name="hoseiform" method="POST" action="/hosei/add">
+        <div class="form-hosei-items">
+          <dl class="form-hosei-item">
+            <dt>名前</dt>
+            <dd>
+              <select name="id">
+                <option value="" selected>名前選択</option>
+                <% selectuserlist.forEach(function(user) { %>
+                <option value="<%= user.id %>"><%= user.name %></option>
+                <% }) %>
+              </select>
+            </dd>
+          </dl>
+          <dl class="form-hosei-item">
+            <dt>補正対象日</dt>
+            <dd><input type="text" class="flatpickr2" name="targetdate" value="日付選択"></dd>
+          </dl>
+          <dl class="form-hosei-item">
+            <dt>補正内容</dt>
+            <dd><input type="text" name="content"></dd>
+          </dl>
+          </dl>
+        </div>
+      </form>
+      <button class="hoseiarea__okbtn">登録</button>
+      <button class="hoseiarea__ngbtn">キャンセル</button>
+    </div>
+  </div>
   <%
     let start;
     let end;
@@ -40,7 +70,63 @@
         <% }) %>
       </div>
     </div>
-  </div>
+    <% if (hoseilist.length !== 0) { %>
+    <div class="table-wrapper wow fadeInUp">
+      <table class="table-content">
+        <tr>
+          <th>登録日</th>
+          <th>登録者</th>
+          <th>補正対象日</th>
+          <th>補正依頼内容</th>
+          <th>補正者</th>
+          <th>状況</th>
+        </tr>
+        <% hoseilist.forEach(function(list){ %>
+        <tr>
+          <td><%= list.dispdate %></td>
+          <td><%= list.name %></td>
+          <td><%= list.disptargetdate %></td>
+          <td><%= list.content %></td>
+          <td><%= list.updatename %></td>
+          <td><%= list.dispstatus %></td>
+        </tr>
+        <% }) %>
+      </table>
+    </div>
+    <% } %>
+    </div>
+  <script>
+    let hoseibtn = document.getElementsByClassName("header-hosei")[0];
+    hoseibtn.addEventListener('click', function () {
+      let hosei = document.getElementsByClassName("area-hosei")[0];
+      hosei.style.visibility = "visible";
+    });
+    let okdlbtn = document.getElementsByClassName("hoseiarea__okbtn")[0];
+    let ngdlbtn = document.getElementsByClassName("hoseiarea__ngbtn")[0];
+    okdlbtn.addEventListener('click', function () {
+      let id = document.getElementsByName("id")[0];
+      let targetdate = document.getElementsByName("targetdate")[0];
+      let content = document.getElementsByName("content")[0];
+      if ((id.value) && (targetdate.value) && (content.value)) {
+        document.hoseiform.submit();
+      } else {
+        if (id.value === '') {
+          id.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+        }
+        if (targetdate.value === '') {
+          targetdate.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+        }
+        if (content.value === '') {
+          content.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+        }
+        return false;
+      }
+    });
+    ngdlbtn.addEventListener('click', function () {
+      let hosei = document.getElementsByClassName("area-hosei")[0];
+      hosei.style.visibility = "hidden";
+    });
+  </script>
 </body>
 <%- include("./common/javascripts.ejs") %>
 
