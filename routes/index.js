@@ -128,7 +128,7 @@ router.post('/hosei/add', function (req, res) {
   let inObj = {};
   inObj.id = user.id;
   const date = req.body.targetdate
-  inObj.targetdate = date.slice(0,4) + date.slice(5,7) + date.slice(-2);
+  inObj.targetdate = date.slice(0, 4) + date.slice(5, 7) + date.slice(-2);
   inObj.content = req.body.content;
   hosei.addHosei(inObj);
   res.redirect('/');
@@ -190,7 +190,31 @@ router.post('/admin/:id/:yyyymm', function (req, res) {
   const asaosolist = req.body.asaoso;
   const paytimelist = req.body.paytime;
 
-  time.updTime(id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, resttimelist, makanailist, asaosolist, paytimelist);
+  let isError = false;
+
+  let tmp;
+  startupdlist.forEach(startupd => {
+    if (startupd !== '') {
+      tmp = startupd.split(":")
+      if (tmp.length === 2) {
+
+      } else {
+        isError = true;
+      }
+    }
+  });
+
+  //入力チェック
+  if (!checkTimeList(startupdlist)) {
+    if (!checkTimeList(endupdlist)) {
+      if (!checkTimeList(resttimelist)) {
+        time.updTime(id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, resttimelist, makanailist, asaosolist, paytimelist);
+      }
+    }
+  }
+
+  //TODO 入力チェックがエラーの場合はエラーメッセージを格納する
+  //TODO 入力チェックがエラーの場合は、エラー内容のリストをそのまま返却する
 
   const userinfo = master.getUser(id);
   const timelist = time.getMonthdata(id, yyyymm);
@@ -227,5 +251,24 @@ router.post('/admin/download', function (req, res) {
   // res.redirect(req.baseUrl + '/admin');
 
 });
+
+
+function checkTimeList(timelist) {
+  isError = false;
+  const pattern = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
+  timelist.forEach(time => {
+    if (time !== '') {
+      let arr = time.split(":");
+      if (arr.length === 2) {
+        if (!pattern.test(arr[0])) {
+          isError = true;
+        };
+      }else{
+        isError = true;
+      }
+    }
+  })
+  return isError;
+}
 
 module.exports = router;
