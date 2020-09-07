@@ -47,11 +47,11 @@
       <div class="items">
         <% userlist.forEach(function(user){ %>
         <% if ((user.starttime !== '出勤') && (user.endtime !== '退勤')){ %>
-        <a class="item_end wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else if (user.starttime !== '出勤') { %>
-        <a class="item_start wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else { %>
-        <a class="item wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } %>
         <% }) %>
       </div>
@@ -61,11 +61,11 @@
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
         <% if ((user.starttime !== '出勤') && (user.endtime !== '退勤')){ %>
-        <a class="item_end wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else if (user.starttime !== '出勤') { %>
-        <a class="item_start wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else { %>
-        <a class="item wow fadeInUp" href="time/<%= user.id %>"><%= user.name %></a>
+        <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } %>
         <% }) %>
       </div>

@@ -109,13 +109,15 @@ router.post('/time/set', function (req, res) {
           timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, endtime);
         }
       }
+      
+      res.redirect('/');
 
-      res.render('time', {
-        title: common.getYmdyoubi(new Date()) + "：" + userinfo.name,
-        user: userinfo,
-        ymd: req.body.ymd,
-        time: timeinfo,
-      });
+      // res.render('time', {
+      //   title: common.getYmdyoubi(new Date()) + "：" + userinfo.name,
+      //   user: userinfo,
+      //   ymd: req.body.ymd,
+      //   time: timeinfo,
+      // });
     }
   })
 });
