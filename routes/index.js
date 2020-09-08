@@ -207,13 +207,13 @@ router.post('/admin/:id/:yyyymm', function (req, res) {
   });
 
   //入力チェック
-  if (!checkTimeList(startupdlist)) {
-    if (!checkTimeList(endupdlist)) {
-      if (!checkTimeList(resttimelist)) {
+  // if (!checkTimeList(startupdlist)) {
+  //   if (!checkTimeList(endupdlist)) {
+  //     if (!checkTimeList(resttimelist)) {
         time.updTime(id, yyyymm, yyyymmddlist, startlist, endlist, startupdlist, endupdlist, resttimelist, makanailist, asaosolist, paytimelist);
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
 
   //TODO 入力チェックがエラーの場合はエラーメッセージを格納する
   //TODO 入力チェックがエラーの場合は、エラー内容のリストをそのまま返却する
@@ -257,7 +257,7 @@ router.post('/admin/download', function (req, res) {
 
 function checkTimeList(timelist) {
   isError = false;
-  const pattern = /^[-]?([1-9]\d*|0)(\.\d+)?$/;
+  const pattern = /^\d{2}$/;
   timelist.forEach(time => {
     if (time !== '') {
       let arr = time.split(":");
