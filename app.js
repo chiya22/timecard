@@ -23,10 +23,10 @@ app.use('/static', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.all('/admin/*', basicAuth(function(user, password) {
-  return user === 'pfs' && password === 'chiyoda';
+  return user === 'ps' && password === 'PF10001FP';
 }));
 app.all('/admin', basicAuth(function(user, password) {
-  return user === 'pfs' && password === 'chiyoda';
+  return user === 'ps' && password === 'PF10001FP';
 }));
 
 app.use('/', indexRouter);
