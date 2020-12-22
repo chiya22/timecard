@@ -70,8 +70,9 @@ const getTargetYYYYMM = function (yyyy_mm_dd) {
     if (dd >= 16) {
         if (mm === 12) {
             mm = 1
+            yyyy += 1
         } else {
-            mm = mm + 1
+            mm += 1
         }
     }
     return "" + yyyy + ("0" + mm).slice(-2);

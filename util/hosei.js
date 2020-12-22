@@ -1,6 +1,5 @@
 const datadir = './data';
 const fs = require('fs');
-const cm = require('./common');
 const master = require('./master');
 
 /*

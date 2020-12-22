@@ -2,7 +2,6 @@ const datadir = './data';
 const masterfile = datadir + '/master/userlist.dat';
 
 const fs = require('fs');
-const time = require('./time');
 
 /*
 データディレクトリに
@@ -41,19 +40,14 @@ const getUserList = (kubun) => {
     let ret = [];
     let filecontent = fs.readFileSync(masterfile, 'utf-8');
     const userlist = filecontent.split('\n');
-    const date = new Date();
-    const ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
     userlist.forEach((user) => {
         if (user !== '') {
             let userinfo = user.split(',');
-            let timeinfo = time.getTimedata(userinfo[0], ymd);
             if (!kubun) {
                 ret.push({
                     'id': userinfo[0],
                     'name': userinfo[1],
                     'kubun': userinfo[2],
-                    'starttime': timeinfo.starttime,
-                    'endtime': timeinfo.endtime,
                 })
             } else {
                 if (userinfo[2] == kubun) {
@@ -61,8 +55,6 @@ const getUserList = (kubun) => {
                         'id': userinfo[0],
                         'name': userinfo[1],
                         'kubun': userinfo[2],
-                        'starttime': timeinfo.starttime,
-                        'endtime': timeinfo.endtime,
                     })
                 }
             }

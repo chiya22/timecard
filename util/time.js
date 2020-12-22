@@ -1,6 +1,10 @@
 const datadir = './data';
 const fs = require('fs');
 const cm = require('./common');
+const mail = require('./sendmail');
+const master = require('./master');
+
+
 
 /*
 指定されたユーザID、指定された年月日(yyyy/mm/dd形式)の
@@ -59,11 +63,16 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
     const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
     const iddatedir = `${datadir}/${id}/${yyyymm}`;
 
+    let outputlogcontent = '';
+
     try {
         fs.statSync(iddatedir);
     } catch (err) {
         if (err.code === "ENOENT") {
+            // ★出勤（ファイルが存在しない場合）
             fs.writeFileSync(iddatedir, `${yyyymmdd},${hhmm},,,\n`, 'utf-8');
+            outputlogcontent = `${yyyymmdd}${hhmm},${id},出勤`;
+            outputlog(yyyymmdd, outputlogcontent);
             return {
                 starttime: hhmm,
                 endtime: '退勤',
@@ -79,10 +88,16 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
     let endtime = '退勤';
     let timeinfo;
     fs.writeFileSync(iddatedir, '', 'utf-8');
+
     timelist.forEach((time) => {
         const timedataarray = time.split(',');
+
+        // 対象日付の場合
         if (timedataarray[0] === yyyymmdd) {
+
+            // 対象日付が存在したフラグを「ON」
             isexit = true;
+
             timeinfo = cm.getStartEndTime(timedataarray[1], timedataarray[2], timedataarray[3], timedataarray[4]);
             if (timeinfo.starttime) {
                 starttime = timeinfo.starttime;
@@ -92,8 +107,11 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
             }
             if (shorikubun === 'start') {
                 if (timedataarray[1] === '') {
+                    // ★出勤
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]},${timedataarray[8]}\n`, 'utf-8');
+                    sendlog(yyyymmdd, hhmm, id, '出勤');
                 } else {
+                    // ★出勤（補正）
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${hhmm},,${timedataarray[5]},${timedataarray[6]},${timedataarray[7]},${timedataarray[8]}\n`, 'utf-8');
                 }
                 starttime = hhmm;
@@ -104,22 +122,30 @@ const setTime = function (id, shorikubun, yyyy_mm_dd, hhmm) {
                 timeinfo = cm.getStartEndTime(timedataarray[1], hhmm, timedataarray[3], null);
                 paytime = cm.getPaytime(timeinfo.starttime, timeinfo.endtime, timedataarray[5]);
                 if (timedataarray[2] === '') {
+                    // ★退勤
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${hhmm},${timedataarray[3]},,${timedataarray[5]},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
+                    sendlog(yyyymmdd, hhmm, id, '退勤');
                 } else {
+                    // ★退勤（補正）
                     fs.appendFileSync(iddatedir, `${yyyymmdd},${timedataarray[1]},${timedataarray[2]},${timedataarray[3]},${hhmm},${timedataarray[5]},${timedataarray[6]},on,${paytime}\n`, 'utf-8');
                 }
                 endtime = hhmm;
             };
+        //　対象日付ではない場合
         } else {
+            // そのままの情報を出力
             if (time !== '') {
                 fs.appendFileSync(iddatedir, `${time}\n`);
             }
         }
     });
+
     if (!isexit) {
         fs.appendFileSync(iddatedir, `${yyyymmdd},${hhmm},,,,,off,off,\n`, 'utf-8');
+        sendlog(yyyymmdd, hhmm, id, '出勤');
         starttime = hhmm;
     };
+
     return {
         starttime: starttime,
         endtime: endtime,
@@ -215,6 +241,12 @@ const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupd
         fs.appendFileSync(iddatedir, `${yyyymmddlist[i]},${startlist[i]},${endlist[i]},${startupdlist[i]},${endupdlist[i]},${resttimelist[i]},${makanailist[i]},${asaosolist[i]},${paytime}\n`, 'utf-8');
     }
 };
+
+const sendlog = function ( yyyymmdd,　hhmm, id, action ) {
+    let user = master.getUser(id);
+    const title = `【出退勤管理：${user.name}】${action}`;
+    mail.send(title, `${yyyymmdd.slice(0,4)}年${yyyymmdd.slice(4,6)}月${yyyymmdd.slice(6,8)}日 ${hhmm.slice(0,2)}時${hhmm.slice(3,5)}分　『${user.name}』が${action}しました。`)
+}
 
 module.exports = {
     getTimedata,

@@ -14,18 +14,18 @@ router.get('/', function (req, res) {
 
   const date = new Date();
   yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
-  let ret = master.getUserList(1);
+  let ret = getUserListWithTime(1);
   ret.forEach((user) => {
     common.createInitailFile(datadir, user.id, yyyy_mm_dd)
   })
-  let parttimeret = master.getUserList(2);
+  let parttimeret = getUserListWithTime(2);
   parttimeret.forEach((user) => {
     common.createInitailFile(datadir, user.id, yyyy_mm_dd)
   })
 
   let hoseilist = hosei.getHoseiList('wait');
 
-  let userlist = master.getUserList();
+  let userlist = getUserListWithTime();
 
   res.render('index', {
     title: common.getYmdyoubi(new Date()),
@@ -43,8 +43,8 @@ router.get('/', function (req, res) {
 */
 router.get('/admin', function (req, res) {
 
-  let ret = master.getUserList(1);
-  let parttimeret = master.getUserList(2);
+  let ret = getUserListWithTime(1);
+  let parttimeret = getUserListWithTime(2);
   res.render('admin', {
     title: "管理者：" + common.getYmdyoubi(new Date()),
     userlist: ret,
@@ -62,7 +62,7 @@ router.get('/time/:id', function (req, res) {
   let date = new Date();
   let ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
 
-  let ret = master.getUserList();
+  let ret = getUserListWithTime();
   ret.forEach((userinfo) => {
     if (userinfo.id === req.params.id) {
       let timeinfo = {};
@@ -84,7 +84,7 @@ YYYYMMDDファイルに現在の時間を書き込む
 req.body.shorikubun　⇒　start：出勤、end：退勤
 */
 router.post('/time/set', function (req, res) {
-  let ret = master.getUserList();
+  let ret = getUserListWithTime();
   ret.forEach((userinfo) => {
     if (userinfo.id === req.body.id) {
 
@@ -145,7 +145,7 @@ router.get('/admin/:id', function (req, res) {
   let date = new Date();
   let yyyymm = common.getTargetYYYYMM(date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2));
 
-  let ret = master.getUserList();
+  let ret = getUserListWithTime();
   ret.forEach((userinfo) => {
     if (userinfo.id === req.params.id) {
       res.render('month', {
@@ -233,7 +233,7 @@ router.post('/admin/:id/:yyyymm', function (req, res) {
 router.post('/admin/download', function (req, res) {
 
   const yyyymm = req.body.target_yyyymm;
-  const userinfo = master.getUserList();
+  const userinfo = getUserListWithTime();
 
   let csv = '';
 
@@ -253,6 +253,31 @@ router.post('/admin/download', function (req, res) {
   // res.redirect(req.baseUrl + '/admin');
 
 });
+
+const getUserListWithTime = (kubun) => {
+
+  // ユーザ情報の取得
+  let userlist = master.getUserList(kubun);
+
+  const date = new Date();
+  const ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+
+  let ret = [];
+
+  // 時間情報の付与
+  userlist.forEach((user) => {
+    let timeinfo = time.getTimedata(user.id, ymd);
+    ret.push({
+      'id': user.id,
+      'name': user.name,
+      'kubun': user.kubun,
+      'starttime': timeinfo.starttime,
+      'endtime': timeinfo.endtime,
+    })
+  });
+  return ret;
+}
+
 
 
 function checkTimeList(timelist) {
