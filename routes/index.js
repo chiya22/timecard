@@ -91,22 +91,25 @@ router.post('/time/set', function (req, res) {
       let starttime = req.body.starttime;
       let endtime = req.body.endtime;
 
-      let date = new Date();
+      const date = new Date();
       let timeinfo = {
         starttime: starttime,
         endtime: endtime,
       };
 
+      // 日付を
+      const ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+
       //ファイルへ書き込む
       if (req.body.shorikubun === 'start') {
         if (starttime === '出勤') {
           starttime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2);
-          timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, starttime);
+          timeinfo = time.setTime(req.body.id, req.body.shorikubun, ymd, starttime);
         }
       } else {
         if (endtime === '退勤') {
           endtime = ('0' + date.getHours()).slice(-2) + ":" + ('0' + date.getMinutes()).slice(-2);
-          timeinfo = time.setTime(req.body.id, req.body.shorikubun, req.body.ymd, endtime);
+          timeinfo = time.setTime(req.body.id, req.body.shorikubun, ymd, endtime);
         }
       }
       
