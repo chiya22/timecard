@@ -244,8 +244,10 @@ const updTime = function (id, yyyymm, yyyymmddlist, startlist, endlist, startupd
 
 const sendlog = function ( yyyymmdd,　hhmm, id, action ) {
     let user = master.getUser(id);
-    const title = `【出退勤管理：${user.name}】${action}`;
-    mail.send(title, `${yyyymmdd.slice(0,4)}年${yyyymmdd.slice(4,6)}月${yyyymmdd.slice(6,8)}日 ${hhmm.slice(0,2)}時${hhmm.slice(3,5)}分　『${user.name}』が${action}しました。`)
+    if (user.kubun === '2') {
+        const title = `【出退勤管理：${user.name}】${action}`;
+        mail.send(title, `${yyyymmdd.slice(0,4)}年${yyyymmdd.slice(4,6)}月${yyyymmdd.slice(6,8)}日 ${hhmm.slice(0,2)}時${hhmm.slice(3,5)}分　『${user.name}』が${action}しました。`)
+    }
 }
 
 module.exports = {
