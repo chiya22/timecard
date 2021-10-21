@@ -15,7 +15,7 @@ const initialize = function () {
         let filecontent = fs.readFileSync(masterfile, 'utf-8');
         const userlist = filecontent.split('\n');
 
-        userlist.forEach( (user) => {
+        userlist.forEach((user) => {
             if (user !== '') {
                 const userdataarray = user.split(',');
                 if (!fs.existsSync(datadir + '/' + userdataarray[0])) {
@@ -23,7 +23,7 @@ const initialize = function () {
                 };
             };
         });
-    } catch(err) {
+    } catch (err) {
         if (err.code === "ENOENT") {
             console.log('マスタファイルが存在しません');
         } else {
@@ -40,8 +40,7 @@ const getUserList = (kubun) => {
     let ret = [];
     let filecontent = fs.readFileSync(masterfile, 'utf-8');
     const userlist = filecontent.split('\n');
-
-    userlist.forEach( (user) => {
+    userlist.forEach((user) => {
         if (user !== '') {
             let userinfo = user.split(',');
             if (!kubun) {
@@ -50,8 +49,8 @@ const getUserList = (kubun) => {
                     'name': userinfo[1],
                     'kubun': userinfo[2],
                 })
-            }else{
-                if (userinfo[2] == kubun){
+            } else {
+                if (userinfo[2] == kubun) {
                     ret.push({
                         'id': userinfo[0],
                         'name': userinfo[1],

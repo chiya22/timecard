@@ -50,8 +50,26 @@
               <td>
                 <%= timeinfo.end %>
               </td>
-              <td><input class="startupd" type="time" name="startupd" value="<%= timeinfo.startupd %>"></td>
-              <td><input class="endupd" type="time" name="endupd" value="<%= timeinfo.endupd %>"></td>
+              <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
+              <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
+              <td><input class="resttime" type="text" name="resttime" value="<%= timeinfo.resttime %>"></td>
+              <%
+                let makanaichecked;
+                if (timeinfo.makanai === 'on') {
+                  makanaichecked = "checked";
+                }
+              %>
+              <td><input class="makanai" type="checkbox" name="_makanai" value="on" <%= makanaichecked %>></td>
+              <%
+                let asaosochecked;
+                if (timeinfo.asaoso === 'on') {
+                  asaosochecked = "checked";
+                }
+              %>
+              <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
+              <td>
+                <%= timeinfo.paytime %>
+              </td>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
               <input type="hidden" name="start" value="<%= timeinfo.start %>">
               <input type="hidden" name="end" value="<%= timeinfo.end %>">
@@ -61,7 +79,17 @@
         </table>
         <% } %>
       </div>
-    </form>
+      <div class="area-total">
+        <div class="total-item">
+          <div class="label">出勤日数</div>
+          <div class="text"><%= timelist.totalpayday %></div>
+        </div>
+        <div class="total-item">
+          <div class="label">支払時間合計</div>
+          <div class="text"><%= timelist.totalpaytime %></div>
+        </div>
+      </div>
+  </form>
   </div>
   <script>
     let updbtn = document.getElementById("updatebtn");

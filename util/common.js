@@ -70,8 +70,9 @@ const getTargetYYYYMM = function (yyyy_mm_dd) {
     if (dd >= 16) {
         if (mm === 12) {
             mm = 1
+            yyyy += 1
         } else {
-            mm = mm + 1
+            mm += 1
         }
     }
     return "" + yyyy + ("0" + mm).slice(-2);
@@ -85,6 +86,91 @@ const readDirSync = (folderPath) => {
     return result.map((itemName) => {
         return itemName.slice(0, 4) + "/" + itemName.slice(-2);
     });
+};
+
+/*
+引数で指定されたディレクトリ、指定されたユーザID、指定された日付をもとに、
+初期ファイルを作成する
+*/
+const createInitailFile = function (datadir, id, yyyy_mm_dd) {
+
+    const yyyymm = getTargetYYYYMM(yyyy_mm_dd)
+
+    try {
+        fs.statSync(datadir + "/" + id + "/" + yyyymm);
+    } catch (err) {
+        if (err.code === "ENOENT") {
+
+            const yyyymm = getTargetYYYYMM(yyyy_mm_dd)
+            let date = new Date(yyyymm.slice(0, 4) + "/" + yyyymm.slice(-2) + "/01");
+
+            const afterstartday = 1;
+            const afterendday = 15;
+            const aftermonth = ("0" + (date.getMonth() + 1)).slice(-2);
+            const afteryear = date.getFullYear();
+
+            const beforestartday = 16;
+            date.setDate(date.getDate() - 1);
+            const beforeendday = date.getDate();
+            const beforemonth = ("0" + (date.getMonth() + 1)).slice(-2);
+            const beforeyear = date.getFullYear();
+
+            let linedata = '';
+            for (let i = beforestartday; i <= beforeendday; i++) {
+                linedata += beforeyear + beforemonth + ("0" + i).slice(-2) + ",,,,,,off,off,\n";
+            }
+            for (let i = afterstartday; i <= afterendday; i++) {
+                linedata += afteryear + aftermonth + ("0" + i).slice(-2) + ",,,,,,off,off,\n";
+            }
+
+            try {
+                fs.writeFileSync(datadir + "/" + id + "/" + yyyymm, linedata);
+            } catch {
+                throw new Error("初期ファイル作成時にエラーが発生しました。");
+            }
+
+        } else {
+            throw err;
+        };
+    };
+};
+
+/*
+引数で渡された出勤時間（hh:mm形式）、退勤時間（hh:mm形式）、平日休日区分（true：休日、false：平日）、休憩時間（hh:mm形式）をもとに、
+支給時間を算出し返却する
+
+※休憩時間は引数で設定されている場合は、その値を優先的に使用する
+　引数で設定されていない場合は、ルールに従って設定される
+
+*/
+const getPaytime = function (starttime, endtime, resttime) {
+
+    const starthh = parseInt(starttime.split(':')[0]);
+    const startmm = parseInt(starttime.split(':')[1]);
+    const endhh = parseInt(endtime.split(':')[0]);
+    const endmm = parseInt(endtime.split(':')[1]);
+
+    //starttimeとendtimeの大小比較
+    let calcstarttime = (starthh * 60) + startmm;
+    let calcendtime = (endhh * 60) + endmm;
+    if (calcendtime < calcstarttime) {
+        return false;
+    }
+
+    let calcresttime = 0;
+    if (resttime) {
+        const resthh = parseInt(resttime.split(':')[0]);
+        const restmm = parseInt(resttime.split(':')[1]);
+        calcresttime = (resthh * 60) + restmm;
+    }
+
+    let paytime = 0;
+    paytime = (calcendtime - calcstarttime - calcresttime);
+    //15分単位で区切る
+    paytime = paytime - (paytime % 15);
+    const payhh = ('0' + parseInt(paytime / 60, 10)).slice(-2);
+    const paymm = ('0' + (paytime % 60)).slice(-2);
+    return payhh + ":" + paymm;
 };
 
 /*
@@ -115,6 +201,8 @@ module.exports = {
     getYoubi,
     getTargetYYYYMM,
     readDirSync,
+    createInitailFile,
+    getPaytime,
     getStartEndTime,
     isWeekDay,
 };

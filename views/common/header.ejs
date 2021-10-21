@@ -1,11 +1,13 @@
 <div class="header">
     <div class="header__main">
         <div class="header_left">
-            <img class="header-logo" src="/static/images/building_logo.svg">
+            <a href="/">
+                <img class="header-logo" src="/static/images/building_logo.svg">
+            </a>
         </div>
         <div class="header__right">
             <% if (backMenu) { %>
-            <a class="header-back" href="/">戻る</a>
+                <a class="header-back" href="/">戻る</a>
             <% } %>
             <% if (backAdmin) { %>
             <a class="header-back" href="/admin">戻る</a>
@@ -15,6 +17,7 @@
             <% } %>
             <% if (adminMenu) { %>
             <a class="header-admin" href="/admin">管理者メニュー</a>
+            <p class="header-hosei">補正依頼</p>
             <% } %>
         </div>
     </div>

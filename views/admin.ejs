@@ -8,8 +8,18 @@
 
 <body>
   <%- include("./common/header.ejs", {adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
+  <div class="download">
+    <div class="downloadarea">
+      <form method="POST" name="downloadform" action="/admin/download">
+        <p class="downloadarea__text">ダウンロード対象年月を指定してください。</p>
+        <input type="text" placeholder="選択する" name="target_yyyymm" class="download_yyyymm flatpickr1" value="">
+      </form>
+      <button class="downloadarea__okbtn">ダウンロード</button>
+      <button class="downloadarea__ngbtn">キャンセル</button>
+    </div>
+  </div>
   <div class="container-top">
-    <div class="area">
+    <div class="area">  
       <div class="items">
         <% userlist.forEach(function(user){ %>
         <a class="wow fadeIn" href="admin/<%= user.id %>"><%= user.name %></a>
@@ -20,11 +30,39 @@
     <div class="area">
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
-          <a class="wow fadeIn" href="admin/<%= user.id %>"><%= user.name %></a>
-          <% }) %>
-        </div>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
     </div>
+    <div class="area_divide"></div>
   </div>
+  <div class="area_admin">
+    <p id="downloadbtn" class="downloadbtn monthtimebtn">ダウンロード</p>
+  </div>
+  <script>
+    let dlbtn = document.getElementById("downloadbtn");
+    let dl = document.getElementsByClassName("download")[0];
+    dl.style.visibility = "hidden";
+    dlbtn.addEventListener('click', function () {
+      let dl = document.getElementsByClassName("download")[0];
+      dl.style.visibility = "visible";
+    });
+    let okdlbtn = document.getElementsByClassName("downloadarea__okbtn")[0];
+    let ngdlbtn = document.getElementsByClassName("downloadarea__ngbtn")[0];
+    okdlbtn.addEventListener('click', function () {
+      let targetyyyymm = document.getElementsByName("target_yyyymm")[0];
+      if (targetyyyymm.value) {
+        document.downloadform.submit();
+      } else {
+        targetyyyymm.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+        return false;
+      }
+    });
+    ngdlbtn.addEventListener('click', function () {
+      let dl = document.getElementsByClassName("download")[0];
+      dl.style.visibility = "hidden";
+    });
+  </script>
 </body>
 <%- include("./common/javascripts.ejs") %>
 
