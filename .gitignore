@@ -1,3 +1,5 @@
 node_modules
-data/*
-!master
+.env
+logs/*
+.vscode/launch.json
+data
