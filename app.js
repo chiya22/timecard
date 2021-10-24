@@ -31,9 +31,6 @@ app.all('/admin', basicAuth(function(user, password) {
 
 app.use('/', indexRouter);
 
-const master = require('./util/master');
-master.initialize();
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
