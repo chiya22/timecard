@@ -25,11 +25,11 @@
           </dl>
           <dl class="form-hosei-item">
             <dt>補正対象日</dt>
-            <dd><input type="text" class="flatpickr2" name="targetdate" value="日付選択"></dd>
+            <dd><input type="text" class="flatpickr2" name="ymd_target" value="日付選択"></dd>
           </dl>
           <dl class="form-hosei-item">
             <dt>補正内容</dt>
-            <dd><input type="text" name="content"></dd>
+            <dd><input type="text" name="message"></dd>
           </dl>
           </dl>
         </div>
@@ -46,9 +46,9 @@
     <div class="area">
       <div class="items">
         <% userlist.forEach(function(user){ %>
-        <% if ((user.starttime !== '出勤') && (user.endtime !== '退勤')){ %>
+        <% if ((user.time_start) && (user.time_end)){ %>
         <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
-        <% } else if (user.starttime !== '出勤') { %>
+        <% } else if (user.time_start) { %>
         <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else { %>
         <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
@@ -60,9 +60,9 @@
     <div class="area">
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
-        <% if ((user.starttime !== '出勤') && (user.endtime !== '退勤')){ %>
+        <% if ((user.time_start) && (user.time_end)){ %>
         <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
-        <% } else if (user.starttime !== '出勤') { %>
+        <% } else if (user.time_start) { %>
         <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else { %>
         <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
@@ -74,21 +74,21 @@
     <div class="table-wrapper wow fadeInUp">
       <table class="table-content">
         <tr>
-          <th>登録日</th>
+          <th>登録年月日</th>
           <th>登録者</th>
-          <th>補正対象日</th>
+          <th>補正対象年月日</th>
           <th>補正依頼内容</th>
           <th>補正者</th>
-          <th>状況</th>
+          <th>補正年月日</th>
         </tr>
-        <% hoseilist.forEach(function(list){ %>
+        <% hoseilist.forEach(function(hosei){ %>
         <tr>
-          <td><%= list.dispdate %></td>
-          <td><%= list.name %></td>
-          <td><%= list.disptargetdate %></td>
-          <td><%= list.content %></td>
-          <td><%= list.updatename %></td>
-          <td><%= list.dispstatus %></td>
+          <td><%= hosei.ymd_irai.slice(0,4) + '/' + hosei.ymd_irai.slice(4,6) + '/' + hosei.ymd_irai.slice(-2) %></td>
+          <td><%= hosei.u_id_users_name %></td>
+          <td><%= hosei.ymd_target.slice(0,4) + '/' + hosei.ymd_target.slice(4,6) + '/' + hosei.ymd_target.slice(-2) %></td>
+          <td><%= hosei.message %></td>
+          <td><%= hosei.u_id_users_hosei_name? hosei.u_id_users_hosei_name: '' %></td>
+          <td><%= hosei.ymd_hosei? hosei.ymd_hosei.slice(0,4) + '/' + hosei.ymd_hosei.slice(4,6) + '/' + hosei.ymd_hosei.slice(-2): '' %></td>
         </tr>
         <% }) %>
       </table>
@@ -103,26 +103,32 @@
     });
     let okdlbtn = document.getElementsByClassName("hoseiarea__okbtn")[0];
     let ngdlbtn = document.getElementsByClassName("hoseiarea__ngbtn")[0];
+    let id = document.getElementsByName("id")[0];
+    let ymd_target = document.getElementsByName("ymd_target")[0];
+    let message = document.getElementsByName("message")[0];
     okdlbtn.addEventListener('click', function () {
-      let id = document.getElementsByName("id")[0];
-      let targetdate = document.getElementsByName("targetdate")[0];
-      let content = document.getElementsByName("content")[0];
-      if ((id.value) && (targetdate.value) && (content.value)) {
+      if ((id.value) && (ymd_target.value) && (message.value)) {
         document.hoseiform.submit();
       } else {
         if (id.value === '') {
           id.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
         }
-        if (targetdate.value === '') {
-          targetdate.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+        if (ymd_target.value === '日付選択') {
+          ymd_target.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
         }
-        if (content.value === '') {
-          content.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
+        if (message.value === '') {
+          message.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
         }
         return false;
       }
     });
     ngdlbtn.addEventListener('click', function () {
+      id.value='';
+      ymd_target.value = '日付選択';
+      message.value = '';
+      id.style.backgroundColor = "rgba(255, 255, 255, 1)";
+      ymd_target.style.backgroundColor = "rgba(255, 255, 255, 1)";
+      message.style.backgroundColor = "rgba(255, 255, 255, 1)";
       let hosei = document.getElementsByClassName("area-hosei")[0];
       hosei.style.visibility = "hidden";
     });

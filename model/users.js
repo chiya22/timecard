@@ -67,9 +67,26 @@ const findByKubunWithYyyymmddInfo = async (kubun, yyyymmdd) => {
     }
 };
 
+/*
+IDと日付をもとに、出勤情報を取得する
+*/
+const findByUserIDWithYyyymmddInfo = async (id_users, yyyymmdd) => {
+    try {
+        const query = "SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd FROM (SELECT * from users WHERE id = '" + id_users + "') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '" + yyyymmdd + "') yy ON u.id = yy.id_users ORDER BY u.id asc"
+        const retObj =await knex.raw(query)
+        return retObj[0]
+    } catch(err) {
+        throw err
+    }
+};
+
+
+
 module.exports = {
     find: find,
     findPKey: findPKey,
+    findByKubunWithYyyymmddInfo: findByKubunWithYyyymmddInfo,
+    findByUserIDWithYyyymmddInfo: findByUserIDWithYyyymmddInfo,
     insert: insert,
     update: update,
     remove: remove,

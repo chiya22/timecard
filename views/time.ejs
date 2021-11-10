@@ -12,14 +12,22 @@
         <form method="POST" name="timeform" action="/time/set">
             <div class="action-area">
                 <div class="wow fadeIn" class="start-area">
-                    <p id="startbtn" class="start"><%= time.starttime %></p>
+                    <% if (user.time_start) { %>
+                        <p id="startbtn" class="start nonactive"><%= user.time_start.slice(0,2) + ':' + user.time_start.slice(2,4) %></p>
+                    <% } else { %>
+                        <p id="startbtn" class="start">出勤</p>
+                    <% } %>
                 </div>
                 <div class="wow fadeIn" class="end-area">
-                    <p id="endbtn" class="end"><%= time.endtime %></p>
+                    <% if (user.time_end) { %>
+                        <p id="endbtn" class="end nonactive"><%= user.time_end.slice(0,2) + ':' + user.time_end.slice(2,4) %></p>
+                    <% } else { %>
+                        <p id="endbtn" class="end">退勤</p>
+                    <% } %>
                 </div>
-                <input type="hidden" name="ymd" value="<%= ymd %>" id="ymd">
-                <input type="hidden" name="starttime" value="<%= time.starttime %>">
-                <input type="hidden" name="endtime" value="<%= time.endtime %>">
+                <input type="hidden" name="yyyymmdd" value="<%= yyyymmdd %>" id="yyyymmdd">
+                <input type="hidden" name="time_start" value="<%= user.time_start %>">
+                <input type="hidden" name="time_end" value="<%= user.time_end %>">
                 <input type="hidden" name="shorikubun" value="" id="shorikubun">
                 <input type="hidden" name="id" value="<%= user.id %>">
             </div>
@@ -35,12 +43,12 @@
                 document.getElementById("shorikubun").value = "end";
                 document.timeform.submit();
             });
-            if (startbtn.innerHTML !== '出勤') {
-                startbtn.classList.add("nonactive");
-            };
-            if ((startbtn.innerHTML === '出勤') || (endbtn.innerHTML !== '退勤')) {
-                endbtn.classList.add("nonactive");
-            };
+            // if (startbtn.innerHTML !== '出勤') {
+            //     startbtn.classList.add("nonactive");
+            // };
+            // if ((startbtn.innerHTML === '出勤') || (endbtn.innerHTML !== '退勤')) {
+            //     endbtn.classList.add("nonactive");
+            // };
         </script>
 </body>
 <%- include("./common/javascripts.ejs") %>

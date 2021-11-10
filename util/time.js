@@ -7,99 +7,6 @@ const master = require('./master');
 
 
 /*
-引数で指定されたディレクトリ、指定されたユーザID、指定された日付をもとに、
-初期ファイルを作成する
-*/
-const createInitailFile = function (datadir, id, yyyy_mm_dd) {
-
-    const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd)
-
-    try {
-        fs.statSync(datadir + "/" + id + "/" + yyyymm);
-    } catch (err) {
-        if (err.code === "ENOENT") {
-
-            const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd)
-            let date = new Date(yyyymm.slice(0, 4) + "/" + yyyymm.slice(-2) + "/01");
-
-            const afterstartday = 1;
-            const afterendday = 15;
-            const aftermonth = ("0" + (date.getMonth() + 1)).slice(-2);
-            const afteryear = date.getFullYear();
-
-            const beforestartday = 16;
-            date.setDate(date.getDate() - 1);
-            const beforeendday = date.getDate();
-            const beforemonth = ("0" + (date.getMonth() + 1)).slice(-2);
-            const beforeyear = date.getFullYear();
-
-            let linedata = '';
-            for (let i = beforestartday; i <= beforeendday; i++) {
-                linedata += beforeyear + beforemonth + ("0" + i).slice(-2) + ",,,,\n";
-            }
-            for (let i = afterstartday; i <= afterendday; i++) {
-                linedata += afteryear + aftermonth + ("0" + i).slice(-2) + ",,,,\n";
-            }
-
-            try {
-                fs.writeFileSync(datadir + "/" + id + "/" + yyyymm, linedata);
-            } catch {
-                throw new Error("初期ファイル作成時にエラーが発生しました。");
-            }
-
-        } else {
-            throw err;
-        };
-    };
-};
-
-/*
-指定されたユーザID、指定された年月日(yyyy/mm/dd形式)の
-出勤時間、退勤時間を取得し返却する
-*/
-const getTimedata = function (id, yyyy_mm_dd) {
-
-    const yyyymm = cm.getTargetYYYYMM(yyyy_mm_dd);
-    const yyyymmdd = yyyy_mm_dd.replace(/\//g, '');
-    const iddatedir = `${datadir}/${id}/${yyyymm}`;
-    try {
-        fs.statSync(iddatedir);
-    } catch (err) {
-        if (err.code === "ENOENT") {
-            return {
-                starttime: '出勤',
-                endtime: '退勤',
-            }
-        } else {
-            throw err;
-        }
-    }
-    let filecontent = fs.readFileSync(iddatedir, 'utf-8');
-    const timelist = filecontent.split('\n');
-    let starttime = '出勤';
-    let endtime = '退勤';
-    let timeinfo;
-    timelist.forEach((time) => {
-        const timedataarray = time.split(',');
-        if (timedataarray[0] === yyyymmdd) {
-            isexit = true;
-            timeinfo = cm.getStartEndTime(timedataarray[1], timedataarray[2], timedataarray[3], timedataarray[4]);
-            if (timeinfo.starttime) {
-                starttime = timeinfo.starttime;
-            }
-            if (timeinfo.endtime) {
-                endtime = timeinfo.endtime;
-            }
-        }
-    });
-
-    return {
-        starttime: starttime,
-        endtime: endtime,
-    };
-}
-
-/*
 指定したユーザID、出退勤区分、指定した日付（yyyy/mm/dd形式）、時間（hh:mm形式）のデータを
 対象となるyyyymmファイルへ書き込む
 shorikubun：start⇒出勤、end⇒退勤
@@ -291,8 +198,6 @@ const sendlog = function ( yyyymmdd,　hhmm, id, action ) {
 }
 
 module.exports = {
-    createInitailFile,
-    getTimedata,
     setTime,
     updTime,
     getMonthdata,

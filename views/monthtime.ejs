@@ -32,8 +32,10 @@
               <th>退勤時間</th>
               <th>出勤時間<br>(修正)</th>
               <th>退勤時間<br>(修正)</th>
+              <th>休憩時間</th>
+              <th>支給時間</th>
             </tr>
-            <% timelist.forEach(function(timeinfo){ %>
+            <% timelist.forEach((timeinfo) => { %>
             <% if ((timeinfo.youbi === '日') || (timeinfo.youbi === '祝')) { %>
             <tr class="bgc-red">
               <% } else if (timeinfo.youbi === '土') { %>
@@ -41,38 +43,19 @@
               <% } else { %>
             <tr class="bgc-normal">
               <% } %>
+              <td><%= timeinfo.yyyymmdd.slice(0,4) + '/' + timeinfo.yyyymmdd.slice(4,6) + '/'  + timeinfo.yyyymmdd.slice(-2) + '(' + timeinfo.youbi + ')' %></td>
+              <td><%= timeinfo.time_start?timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4):'' %></td>
+              <td><%= timeinfo.time_end?timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4): '' %></td>
+              <td><input class="startupd" type="text" name="time_start_upd" value="<%= timeinfo.tine_start_upd %>"></td>
+              <td><input class="endupd" type="text" name="time_end_upd" value="<%= timeinfo.time_end_upd %>"></td>
+              <td><input class="resttime" type="text" name="time_rest" value="<%= timeinfo.time_rest %>"></td>
               <td>
-                <%= timeinfo.yyyymmddyoubi %>
-              </td>
-              <td>
-                <%= timeinfo.start %>
-              </td>
-              <td>
-                <%= timeinfo.end %>
-              </td>
-              <td><input class="startupd" type="text" name="startupd" value="<%= timeinfo.startupd %>"></td>
-              <td><input class="endupd" type="text" name="endupd" value="<%= timeinfo.endupd %>"></td>
-              <td><input class="resttime" type="text" name="resttime" value="<%= timeinfo.resttime %>"></td>
-              <%
-                let makanaichecked;
-                if (timeinfo.makanai === 'on') {
-                  makanaichecked = "checked";
-                }
-              %>
-              <td><input class="makanai" type="checkbox" name="_makanai" value="on" <%= makanaichecked %>></td>
-              <%
-                let asaosochecked;
-                if (timeinfo.asaoso === 'on') {
-                  asaosochecked = "checked";
-                }
-              %>
-              <td><input class="asaoso" type="checkbox" name="_asaoso" value="on" <%= asaosochecked %>></td>
-              <td>
-                <%= timeinfo.paytime %>
+                <%= timeinfo.time_pay %>
               </td>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
-              <input type="hidden" name="start" value="<%= timeinfo.start %>">
-              <input type="hidden" name="end" value="<%= timeinfo.end %>">
+              <input type="hidden" name="time_start" value="<%= timeinfo.time_start %>">
+              <input type="hidden" name="time_end" value="<%= timeinfo.time_end %>">
+              <input type="hidden" name="yyyymm_seisan" value="<%= timeinfo.yyyymm_seisan %>">
             </tr>
             <% }) %>
         </div>
