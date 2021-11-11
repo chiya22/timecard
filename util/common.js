@@ -52,7 +52,7 @@ const getYoubi = (yyyymmdd) => {
   let youbi = weekdays[date.getDay()];
   try {
     //祝日カレンダー
-    let filecontent = fs.readFileSync("./data/master/holiday.dat", "utf-8");
+    let filecontent = fs.readFileSync("./data/holiday.dat", "utf-8");
     const holidaylist = filecontent.split("\n");
     holidaylist.forEach((holiday) => {
       if (holiday === yyyymmdd) {
@@ -125,10 +125,10 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
 
 */
 const getPaytime = (time_start, time_end, time_rest) => {
-  const starthh = parseInt(time_start.slice(0, 2));
-  const startmm = parseInt(time_start.slice(2, 4));
-  const endhh = parseInt(time_end.slice(0, 2));
-  const endmm = parseInt(time_end.slice(2, 4));
+  const starthh = parseInt( ("000" + time_start.replace(":","")).slice(-4).slice(0,2) );
+  const startmm = parseInt(time_start.slice(-2));
+  const endhh = parseInt( ("000" + time_end.replace(":","")).slice(-4).slice(0, 2) );
+  const endmm = parseInt(time_end.slice(-2));
 
   //starttimeとendtimeの大小比較
   let time_calcstart = starthh * 60 + startmm;
@@ -139,8 +139,8 @@ const getPaytime = (time_start, time_end, time_rest) => {
 
   let time_calcrest = 0;
   if (time_rest) {
-    const resthh = parseInt(time_rest.slice(0, 2));
-    const restmm = parseInt(time_rest.slice(2, 4));
+    const resthh = parseInt( ("000" + time_rest.replace(":","")).slice(-4).slice(0, 2) );
+    const restmm = parseInt(time_rest.slice(-2));
     time_calcrest = resthh * 60 + restmm;
   }
 
@@ -162,11 +162,11 @@ const getPaytime = (time_start, time_end, time_rest) => {
 退勤時間＜退勤時間修正
 */
 const getStartEndTime = (time_start, time_end, time_startupd, time_endupd) => {
-  const stime = time_startupd? time_startupd: time_start;
-  const etime = time_endupd? time_endupd: time_end;
+  const stime = time_startupd ? time_startupd : time_start;
+  const etime = time_endupd ? time_endupd : time_end;
   return {
-    time_start: stime,
-    time_end: etime,
+    time_start: stime.replace(":",""),
+    time_end: etime.replace(":",""),
   };
 };
 

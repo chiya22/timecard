@@ -1,11 +1,6 @@
-var express = require("express");
-var router = express.Router();
-const datadir = "./data";
-const master = require("../util/master");
-const time = require("../util/time");
+const express = require("express");
+const router = express.Router();
 const common = require("../util/common");
-const hosei = require("../util/hosei");
-
 const users = require("../model/users");
 const hoseis = require("../model/hoseis");
 const yyyymmdds = require("../model/yyyymmdds");
@@ -145,7 +140,8 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
     const yyyymmdd_end = req.params.yyyymm + "15";
     let timelist = common.getInitialTimeListAll(req.params.id, yyyymmdd_start, yyyymmdd_end);
     const timelistJisseki = await yyyymmdds.findByIntervalAndUserid(yyyymmdd_start, yyyymmdd_end, req.params.id);
-
+    timelist.totalpayday = 0;
+    timelist.totalpaytime = 0;
     timelistJisseki.forEach((timeJisseki) => {
       timelist.forEach((time) => {
         if (time.yyyymmdd === timeJisseki.yyyymmdd) {
@@ -155,6 +151,12 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
           time.time_end_upd = timeJisseki.time_end_upd ? timeJisseki.time_end_upd : null;
           time.time_rest = timeJisseki.time_rest ? timeJisseki.time_rest : null;
           time.time_pay = timeJisseki.time_pay ? timeJisseki.time_pay : null;
+          if (time.time_start || time.time_start_upd) {
+            timelist.totalpayday += 1;
+          }
+          if (time.time_pay) {
+            timelist.totalpaytime += Number(time.time_pay);
+          }
         }
       });
     });
@@ -178,10 +180,9 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
   const yyyymm_seisan_list = req.body.yyyymm_seisan;
   const time_start_list = req.body.time_start;
   const time_startupd_list = req.body.time_start_upd;
-  const time_end_list = req.body.time_end_upd;
+  const time_end_list = req.body.time_end;
   const time_endupd_list = req.body.time_end_upd;
   const time_restlist = req.body.time_rest;
-  // const time_paytlist = req.body.time_pay;
 
   (async () => {
     let inObjYyyyymmdds = {};
@@ -200,107 +201,58 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
         inObjYyyyymmdds.id_users = id;
         inObjYyyyymmdds.yyyymmdd = yyyymmddlist[i];
         inObjYyyyymmdds.yyyymm_seisan = yyyymm_seisan_list[i];
-        inObjYyyyymmdds.time_start = time_start_list[i] ? ("0" + time_start_list[i].replace(":", "")).slice(-2) : time_start_list[i];
-        inObjYyyyymmdds.time_start_upd = time_startupd_list[i] ? ("0" + time_startupd_list[i].replace(":", "")).slice(-2) : time_startupd_list[i];
-        inObjYyyyymmdds.time_end = time_end_list[i] ? ("0" + time_end_list[i].replace(":", "")).slice(-2) : time_end_list[i];
-        inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("0" + time_endupd_list[i].replace(":", "")).slice(-2) : time_endupd_list[i];
-        inObjYyyyymmdds.time_rest = time_restlist[i] ? ("0" + time_restlist[i].replace(":", "")).slice(-2) : time_restlist[i];
+        inObjYyyyymmdds.time_start = time_start_list[i] ? ("000" + time_start_list[i].replace(":", "")).slice(-4) : null;
+        inObjYyyyymmdds.time_start_upd = time_startupd_list[i] ? ("000" + time_startupd_list[i].replace(":", "")).slice(-4) : null;
+        inObjYyyyymmdds.time_end = time_end_list[i] ? ("000" + time_end_list[i].replace(":", "")).slice(-4) : null;
+        inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("000" + time_endupd_list[i].replace(":", "")).slice(-4) : null;
+        inObjYyyyymmdds.time_rest = time_restlist[i] ? ("000" + time_restlist[i].replace(":", "")).slice(-4) : null;
         inObjYyyyymmdds.time_pay = time_pay;
 
-        retObjYyyymmdds = await yyyymmdds.findPKey(id, yyyymmdd[i]);
-        if (retObjYyyymmdds) {
-          retObj = await yyyymmdds.update(inObj);
+        retObjYyyymmdds = await yyyymmdds.findPKey(id, inObjYyyyymmdds.yyyymmdd);
+        if (retObjYyyymmdds.length !== 0) {
+          retObj = await yyyymmdds.update(inObjYyyyymmdds);
         } else {
-          retObj = await yyyymmdds.insert(inObj);
+          retObj = await yyyymmdds.insert(inObjYyyyymmdds);
         }
       }
     }
+    res.redirect("/admin/" + id + "/" + yyyymm);
+  })();
+});
+
+/*
+指定された年月の出退勤情報をダウンロードする
+*/
+router.post("/admin/download", (req, res) => {
+  (async () => {
+    const yyyymm = req.body.target_yyyymm.replace("/", "");
+    const retObjForDownload = await yyyymmdds.download(yyyymm);
+    let csv = "";
+    retObjForDownload.forEach((row) => {
+      csv +=
+        row.id_users +
+        "," +
+        row.yyyymmdd +
+        "," +
+        (row.time_start ? row.time_start : "") +
+        "," +
+        (row.time_end ? row.time_end : "") +
+        "," +
+        (row.time_start_upd ? row.time_start_upd : "") +
+        "," +
+        (row.time_end_upd ? row.time_end_upd : "") +
+        "," +
+        (row.time_rest ? row.time_rest : "") +
+        "," +
+        (row.time_pay ? row.time_pay : "") +
+        "\r\n";
+    });
+    res.setHeader("Content-disposition", "attachment; filename=data.csv");
+    res.setHeader("Content-Type", "text/csv; charset=UTF-8");
+    res.send(csv);
   })();
 
-  res.redirect("/admin/" + id + "/" + yyyymm);
-});
-
-router.post("/admin/download", function (req, res) {
-  const yyyymm = req.body.target_yyyymm;
-  const userinfo = getUserListWithTime();
-
-  let csv = "";
-
-  userinfo.forEach((user) => {
-    let timeinfolist = time.getMonthdata(user.id, yyyymm);
-    if (timeinfolist) {
-      for (let i = 0; i < timeinfolist.length; i++) {
-        csv +=
-          user.id +
-          "," +
-          timeinfolist[i].yyyymmdd +
-          "," +
-          timeinfolist[i].start +
-          "," +
-          timeinfolist[i].end +
-          "," +
-          timeinfolist[i].startupd +
-          "," +
-          timeinfolist[i].endupd +
-          "," +
-          timeinfolist[i].resttime +
-          "," +
-          timeinfolist[i].makanai +
-          "," +
-          timeinfolist[i].asaoso +
-          "," +
-          timeinfolist[i].paytime +
-          "\r\n";
-      }
-    }
-  });
-
-  res.setHeader("Content-disposition", "attachment; filename=data.csv");
-  res.setHeader("Content-Type", "text/csv; charset=UTF-8");
-
-  res.send(csv);
   // res.redirect(req.baseUrl + '/admin');
 });
-
-const getUserListWithTime = (kubun) => {
-  // ユーザ情報の取得
-  let userlist = master.getUserList(kubun);
-
-  const date = new Date();
-  const ymd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
-
-  let ret = [];
-
-  // 時間情報の付与
-  userlist.forEach((user) => {
-    let timeinfo = time.getTimedata(user.id, ymd);
-    ret.push({
-      id: user.id,
-      name: user.name,
-      kubun: user.kubun,
-      starttime: timeinfo.starttime,
-      endtime: timeinfo.endtime,
-    });
-  });
-  return ret;
-};
-
-function checkTimeList(timelist) {
-  isError = false;
-  const pattern = /^\d{2}$/;
-  timelist.forEach((time) => {
-    if (time !== "") {
-      let arr = time.split(":");
-      if (arr.length === 2) {
-        if (!pattern.test(arr[0])) {
-          isError = true;
-        }
-      } else {
-        isError = true;
-      }
-    }
-  });
-  return isError;
-}
 
 module.exports = router;

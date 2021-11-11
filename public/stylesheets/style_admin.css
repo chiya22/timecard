@@ -165,7 +165,9 @@ body {
 .table-wrapper {
   overflow-y: scroll;
   width: 100%;
+  /* max-width: 900px; */
   height: 50vh;
+  margin: 0 auto;
 }
 .table-content {
   width: 100%;
@@ -194,12 +196,9 @@ body {
 .table-content th:nth-child(3),
 .table-content th:nth-child(4),
 .table-content th:nth-child(5),
-.table-content th:nth-child(6) {
-  width: calc(100%/8);
-}
-.table-content th:nth-child(7),
-.table-content th:nth-child(8) {
-  width: calc(100%/16);
+.table-content th:nth-child(6),
+.table-content th:nth-child(7) {
+  width: calc(100%/7);
 }
 /* .table-content th:nth-child(1) {
   border-radius: 15px 0 0 0;
@@ -221,18 +220,14 @@ body {
 .table-content td:nth-child(3),
 .table-content td:nth-child(4),
 .table-content td:nth-child(5),
-.table-content td:nth-child(6) {
-    width: calc((100% - 110px)/8);
-}
-.table-content td:nth-child(7),
-.table-content td:nth-child(8) {
-  width: calc((100% - 110px)/16);
-  padding-top: 8px;
+.table-content td:nth-child(6),
+.table-content td:nth-child(7) {
+    width: calc((100% - 110px)/7);
 }
 .table-content td:nth-child(1),
 .table-content td:nth-child(2),
 .table-content td:nth-child(3),
-.table-content td:nth-child(9) {
+.table-content td:nth-child(7) {
   padding-top: 11px;
 }
 /* .table-content tr:last-child td:nth-child(1) {

@@ -1,15 +1,18 @@
 const nodemailer = require('nodemailer');
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+  }
 
 const send = (title, content) => {
 
     // SMTP情報
     const smtp_config = {
-        host: 'smtp.gmail.com',
-        port: 465,
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
         secure: true,
         auth: {
-            user: 'xxxxx',
-            pass: 'xxxxx',
+            user: process.env.MAIL_USER,
+            pass: process.env.MAIL_PASS,
         },
     }
 
@@ -17,8 +20,8 @@ const send = (title, content) => {
 
     // メール情報
     let message = {
-        from: 'info@yamori.jp',
-        to: 'info@yamori.jp',
+        from: process.env.MAIL_FROM,
+        to: process.env.MAIL_TO,
         subject: title,
         text: content,
     };

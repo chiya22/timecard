@@ -46,11 +46,11 @@
               <td><%= timeinfo.yyyymmdd.slice(0,4) + '/' + timeinfo.yyyymmdd.slice(4,6) + '/'  + timeinfo.yyyymmdd.slice(-2) + '(' + timeinfo.youbi + ')' %></td>
               <td><%= timeinfo.time_start?timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4):'' %></td>
               <td><%= timeinfo.time_end?timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4): '' %></td>
-              <td><input class="startupd" type="text" name="time_start_upd" value="<%= timeinfo.tine_start_upd %>"></td>
-              <td><input class="endupd" type="text" name="time_end_upd" value="<%= timeinfo.time_end_upd %>"></td>
-              <td><input class="resttime" type="text" name="time_rest" value="<%= timeinfo.time_rest %>"></td>
+              <td><input class="startupd" type="text" name="time_start_upd" value="<%= timeinfo.time_start_upd? timeinfo.time_start_upd.slice(0,2) + ':' + timeinfo.time_start_upd.slice(-2): null  %>"></td>
+              <td><input class="endupd" type="text" name="time_end_upd" value="<%= timeinfo.time_end_upd? timeinfo.time_end_upd.slice(0,2) + ':' + timeinfo.time_end_upd.slice(-2): null %>"></td>
+              <td><input class="resttime" type="text" name="time_rest" value="<%= timeinfo.time_rest? timeinfo.time_rest.slice(0,2) + ':' + timeinfo.time_rest.slice(-2): null %>"></td>
               <td>
-                <%= timeinfo.time_pay %>
+                <%= timeinfo.time_pay? timeinfo.time_pay.slice(0,2) + ':' + timeinfo.time_pay.slice(-2): null %>
               </td>
               <input type="hidden" name="yyyymmdd" value="<%= timeinfo.yyyymmdd %>">
               <input type="hidden" name="time_start" value="<%= timeinfo.time_start %>">
@@ -69,7 +69,7 @@
         </div>
         <div class="total-item">
           <div class="label">支払時間合計</div>
-          <div class="text"><%= timelist.totalpaytime %></div>
+          <div class="text"><%= ("000" + timelist.totalpaytime).slice(-4).slice(0,2) + ':' +  ('00' + timelist.totalpaytime).slice(-2) %></div>
         </div>
       </div>
   </form>

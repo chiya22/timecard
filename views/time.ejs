@@ -19,10 +19,14 @@
                     <% } %>
                 </div>
                 <div class="wow fadeIn" class="end-area">
-                    <% if (user.time_end) { %>
-                        <p id="endbtn" class="end nonactive"><%= user.time_end.slice(0,2) + ':' + user.time_end.slice(2,4) %></p>
+                    <% if (user.time_start) { %>
+                        <% if (user.time_end) { %>
+                            <p id="endbtn" class="end nonactive"><%= user.time_end.slice(0,2) + ':' + user.time_end.slice(2,4) %></p>
+                        <% } else { %>
+                            <p id="endbtn" class="end">退勤</p>
+                        <% } %>
                     <% } else { %>
-                        <p id="endbtn" class="end">退勤</p>
+                        <p id="endbtn" class="end nonactive">退勤</p>
                     <% } %>
                 </div>
                 <input type="hidden" name="yyyymmdd" value="<%= yyyymmdd %>" id="yyyymmdd">
