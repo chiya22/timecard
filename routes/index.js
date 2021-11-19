@@ -88,6 +88,7 @@ router.post("/time/set", function (req, res) {
       inObjYyyymmdd.time_start = req.body.time_start;
       inObjYyyymmdd.time_end = timevalue;
       inObjYyyymmdd.time_pay = common.getPaytime(inObjYyyymmdd.time_start, inObjYyyymmdd.time_end, "0000");
+      inObjYyyymmdd.makanai = req.body.makanai;
       const retObjUserUpdate = await yyyymmdds.update(inObjYyyymmdd);
     }
     res.redirect("/");

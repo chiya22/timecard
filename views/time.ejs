@@ -8,6 +8,13 @@
 
 <body>
     <%- include("./common/header.ejs", {adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
+    <div class="msg">
+        <div class="msgarea">
+            <p class="msgarea__text">『まかない』は食べましたか？</p>
+            <button class="msgarea__okbtn">はい</button>
+            <button class="msgarea__ngbtn">いいえ</button>
+        </div>
+    </div>
     <div class="container-action">
         <form method="POST" name="timeform" action="/time/set">
             <div class="action-area">
@@ -34,18 +41,42 @@
                 <input type="hidden" name="time_end" value="<%= user.time_end %>">
                 <input type="hidden" name="shorikubun" value="" id="shorikubun">
                 <input type="hidden" name="id" value="<%= user.id %>">
+                <input type="hidden" name="kubun" id="kubun" value="<%= user.kubun %>">
+                <input type="hidden" name="makanai" id="makanai" value="">
             </div>
         </form>
         <script>
+
+            let okbtn = document.getElementsByClassName("msgarea__okbtn")[0];
+            okbtn.addEventListener('click', () => {
+                document.getElementById("makanai").value = "1";
+                document.timeform.action = "/time/set";
+                document.timeform.submit();
+            });
+
+            let ngbtn = document.getElementsByClassName("msgarea__ngbtn")[0];
+            ngbtn.addEventListener('click', () => {
+                document.getElementById("makanai").value = "0";
+                document.timeform.action = "/time/set";
+                document.timeform.submit();
+            });
+
             let startbtn = document.getElementById("startbtn");
             let endbtn = document.getElementById("endbtn");
-            startbtn.addEventListener('click', function () {
+            startbtn.addEventListener('click', () => {
                 document.getElementById("shorikubun").value = "start";
                 document.timeform.submit();
             });
-            endbtn.addEventListener('click', function () {
+            endbtn.addEventListener('click', () => {
                 document.getElementById("shorikubun").value = "end";
-                document.timeform.submit();
+                if (document.getElementById("kubun").value === '2') {
+                    scrollTo(0, 0);
+                    let msg = document.getElementsByClassName("msg")[0];
+                    msg.style.visibility = "visible";
+                } else {
+                    document.timeform.action = "/time/set";
+                    document.timeform.submit();
+                }
             });
             // if (startbtn.innerHTML !== '出勤') {
             //     startbtn.classList.add("nonactive");
