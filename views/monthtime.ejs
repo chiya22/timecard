@@ -33,6 +33,7 @@
               <th>出勤時間<br>(修正)</th>
               <th>退勤時間<br>(修正)</th>
               <th>休憩時間</th>
+              <th>賄</th>
               <th>支給時間</th>
             </tr>
             <% timelist.forEach((timeinfo) => { %>
@@ -49,6 +50,13 @@
               <td><input class="startupd" type="text" name="time_start_upd" value="<%= timeinfo.time_start_upd? timeinfo.time_start_upd.slice(0,2) + ':' + timeinfo.time_start_upd.slice(-2): null  %>"></td>
               <td><input class="endupd" type="text" name="time_end_upd" value="<%= timeinfo.time_end_upd? timeinfo.time_end_upd.slice(0,2) + ':' + timeinfo.time_end_upd.slice(-2): null %>"></td>
               <td><input class="resttime" type="text" name="time_rest" value="<%= timeinfo.time_rest? timeinfo.time_rest.slice(0,2) + ':' + timeinfo.time_rest.slice(-2): null %>"></td>
+              <%
+                let makanaichecked = "";
+                if (timeinfo.makanai === 1) {
+                  makanaichecked = "checked";
+                }
+              %>
+              <td><input class="makanai" type="checkbox" name="_makanai" value="1" <%= makanaichecked %>></td>
               <td>
                 <%= timeinfo.time_pay? timeinfo.time_pay.slice(0,2) + ':' + timeinfo.time_pay.slice(-2): null %>
               </td>
@@ -56,6 +64,7 @@
               <input type="hidden" name="time_start" value="<%= timeinfo.time_start %>">
               <input type="hidden" name="time_end" value="<%= timeinfo.time_end %>">
               <input type="hidden" name="yyyymm_seisan" value="<%= timeinfo.yyyymm_seisan %>">
+              <input type="hidden" name="makanai" value="0">
             </tr>
             <% }) %>
         </div>
@@ -83,6 +92,11 @@
     let okbtn = document.getElementsByClassName("msgarea__okbtn")[0];
     let ngbtn = document.getElementsByClassName("msgarea__ngbtn")[0];
     okbtn.addEventListener('click', function () {
+      for (let i = 0; i < document.timelistform.makanai.length; i++) {
+        if (document.timelistform._makanai[i].checked) {
+          document.timelistform.makanai[i].value = 1;
+        }
+      }
       document.timelistform.submit();
     });
     ngbtn.addEventListener('click', function () {

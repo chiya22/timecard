@@ -15,8 +15,8 @@ router.get("/", function (req, res) {
     const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
     const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
     const retObjAllUsers = await users.find();
-    const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, yyyymmdd);
-    const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, yyyymmdd);
+    const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, yyyymmdd, yyyymmdd);
+    const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, yyyymmdd, yyyymmdd);
     const retObjHoseis = await hoseis.findUnCompleted();
     res.render("index", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")",
@@ -37,8 +37,8 @@ router.get("/admin", function (req, res) {
     const date = new Date();
     const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
     const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
-    const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, yyyymmdd);
-    const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, yyyymmdd);
+    const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, '19900101',yyyymmdd);
+    const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, '19900101',yyyymmdd);
     res.render("admin", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")",
       userlist: retObjUsers,
@@ -150,6 +150,7 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
           time.time_end = timeJisseki.time_end ? timeJisseki.time_end : null;
           time.time_end_upd = timeJisseki.time_end_upd ? timeJisseki.time_end_upd : null;
           time.time_rest = timeJisseki.time_rest ? timeJisseki.time_rest : null;
+          time.makanai = timeJisseki.makanai ? timeJisseki.makanai : null;
           time.time_pay = timeJisseki.time_pay ? timeJisseki.time_pay : null;
           if (time.time_start || time.time_start_upd) {
             timelist.totalpayday += 1;
@@ -182,13 +183,13 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
   const time_startupd_list = req.body.time_start_upd;
   const time_end_list = req.body.time_end;
   const time_endupd_list = req.body.time_end_upd;
+  const makanailist = req.body.makanai;
   const time_restlist = req.body.time_rest;
 
   (async () => {
     let inObjYyyyymmdds = {};
     let retObjYyyymmdds = {};
     let retObjtime = {};
-    let retObj = {};
 
     for (let i = 0; i < yyyymmddlist.length; i++) {
       // 支払時間を求める
@@ -205,6 +206,7 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
         inObjYyyyymmdds.time_start_upd = time_startupd_list[i] ? ("000" + time_startupd_list[i].replace(":", "")).slice(-4) : null;
         inObjYyyyymmdds.time_end = time_end_list[i] ? ("000" + time_end_list[i].replace(":", "")).slice(-4) : null;
         inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("000" + time_endupd_list[i].replace(":", "")).slice(-4) : null;
+        inObjYyyyymmdds.makanai = makanailist[i]? makanailist[i]: 0;
         inObjYyyyymmdds.time_rest = time_restlist[i] ? ("000" + time_restlist[i].replace(":", "")).slice(-4) : null;
         inObjYyyyymmdds.time_pay = time_pay;
 
@@ -224,35 +226,102 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
 指定された年月の出退勤情報をダウンロードする
 */
 router.post("/admin/download", (req, res) => {
+
   (async () => {
+
     const yyyymm = req.body.target_yyyymm.replace("/", "");
+
     const retObjForDownload = await yyyymmdds.download(yyyymm);
+
+    // 最初のユーザーの1カ月配列
+    const yyyymmdd_start = common.getBeforeMonthYyyymm(yyyymm) + "16";
+    const yyyymmdd_end = yyyymm + "15";
+    let timelist = common.getInitialTimeListAll(retObjForDownload[0].id_users, yyyymmdd_start, yyyymmdd_end);
+    
+    // keyの設定
+    let key = "";
+    let beforekey = retObjForDownload[0].id_users;
+
+    // 出力用スタック領域
     let csv = "";
+
     retObjForDownload.forEach((row) => {
+
+      // keyの設定
+      key = row.id_users;
+
+      if (beforekey !== key) {
+
+        // csvへ出力
+        timelist.forEach((timerow) => {
+          csv +=
+          timerow.id_users +
+          "," +
+          timerow.yyyymmdd +
+          "," +
+          (timerow.time_start ? timerow.time_start : "") +
+          "," +
+          (timerow.time_end ? timerow.time_end : "") +
+          "," +
+          (timerow.time_start_upd ? timerow.time_start_upd : "") +
+          "," +
+          (timerow.time_end_upd ? timerow.time_end_upd : "") +
+          "," +
+          (timerow.makanai ? timerow.makanai : 0) +
+          "," +
+          (timerow.time_rest ? timerow.time_rest : "") +
+          "," +
+          (timerow.time_pay ? timerow.time_pay : "") +
+          "\r\n";
+        })
+        // 次のユーザーの1カ月配列
+        timelist = common.getInitialTimeListAll(row.id_users, yyyymmdd_start, yyyymmdd_end);
+        beforekey = row.id_users;
+
+      } else {
+        timelist.forEach((time) => {
+          if (time.yyyymmdd === row.yyyymmdd) {
+            time.time_start = row.time_start;
+            time.time_start_upd = row.time_start_upd;
+            time.time_end = row.time_end;
+            time.time_end_upd = row.time_end_upd;
+            time.makanai = row.makanai;
+            time.time_rest = row.time_rest;
+            time.time_pay = row.time_pay;
+          }
+        })
+      }
+    })
+
+    // 残った情報をcsvへ出力
+    timelist.forEach((timerow) => {
       csv +=
-        row.id_users +
-        "," +
-        row.yyyymmdd +
-        "," +
-        (row.time_start ? row.time_start : "") +
-        "," +
-        (row.time_end ? row.time_end : "") +
-        "," +
-        (row.time_start_upd ? row.time_start_upd : "") +
-        "," +
-        (row.time_end_upd ? row.time_end_upd : "") +
-        "," +
-        (row.time_rest ? row.time_rest : "") +
-        "," +
-        (row.time_pay ? row.time_pay : "") +
-        "\r\n";
-    });
+      timerow.id_users +
+      "," +
+      timerow.yyyymmdd +
+      "," +
+      (timerow.time_start ? timerow.time_start : "") +
+      "," +
+      (timerow.time_end ? timerow.time_end : "") +
+      "," +
+      (timerow.time_start_upd ? timerow.time_start_upd : "") +
+      "," +
+      (timerow.time_end_upd ? timerow.time_end_upd : "") +
+      "," +
+      (timerow.makanai ? timerow.makanai : 0) +
+      "," +
+      (timerow.time_rest ? timerow.time_rest : "") +
+      "," +
+      (timerow.time_pay ? timerow.time_pay : "") +
+      "\r\n";
+    })
+
     res.setHeader("Content-disposition", "attachment; filename=data.csv");
     res.setHeader("Content-Type", "text/csv; charset=UTF-8");
     res.send(csv);
+
   })();
 
-  // res.redirect(req.baseUrl + '/admin');
 });
 
 module.exports = router;
