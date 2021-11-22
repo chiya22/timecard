@@ -151,8 +151,8 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
           time.time_end = timeJisseki.time_end ? timeJisseki.time_end : null;
           time.time_end_upd = timeJisseki.time_end_upd ? timeJisseki.time_end_upd : null;
           time.time_rest = timeJisseki.time_rest ? timeJisseki.time_rest : null;
-          time.makanai = timeJisseki.makanai ? timeJisseki.makanai : null;
           time.time_pay = timeJisseki.time_pay ? timeJisseki.time_pay : null;
+          time.makanai = timeJisseki.makanai ? timeJisseki.makanai : null;
           if (time.time_start || time.time_start_upd) {
             timelist.totalpayday += 1;
           }
@@ -184,8 +184,8 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
   const time_startupd_list = req.body.time_start_upd;
   const time_end_list = req.body.time_end;
   const time_endupd_list = req.body.time_end_upd;
-  const makanailist = req.body.makanai;
   const time_restlist = req.body.time_rest;
+  const makanailist = req.body.makanai;
 
   (async () => {
     let inObjYyyyymmdds = {};
@@ -207,8 +207,8 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
         inObjYyyyymmdds.time_start_upd = time_startupd_list[i] ? ("000" + time_startupd_list[i].replace(":", "")).slice(-4) : null;
         inObjYyyyymmdds.time_end = time_end_list[i] ? ("000" + time_end_list[i].replace(":", "")).slice(-4) : null;
         inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("000" + time_endupd_list[i].replace(":", "")).slice(-4) : null;
-        inObjYyyyymmdds.makanai = makanailist[i]? makanailist[i]: 0;
         inObjYyyyymmdds.time_rest = time_restlist[i] ? ("000" + time_restlist[i].replace(":", "")).slice(-4) : null;
+        inObjYyyyymmdds.makanai = makanailist[i]? makanailist[i]: 0;
         inObjYyyyymmdds.time_pay = time_pay;
 
         retObjYyyymmdds = await yyyymmdds.findPKey(id, inObjYyyyymmdds.yyyymmdd);
@@ -268,9 +268,9 @@ router.post("/admin/download", (req, res) => {
           "," +
           (timerow.time_end_upd ? timerow.time_end_upd : "") +
           "," +
-          (timerow.makanai ? timerow.makanai : 0) +
-          "," +
           (timerow.time_rest ? timerow.time_rest : "") +
+          "," +
+          (timerow.makanai ? timerow.makanai : "") +
           "," +
           (timerow.time_pay ? timerow.time_pay : "") +
           "\r\n";
@@ -286,8 +286,8 @@ router.post("/admin/download", (req, res) => {
             time.time_start_upd = row.time_start_upd;
             time.time_end = row.time_end;
             time.time_end_upd = row.time_end_upd;
-            time.makanai = row.makanai;
             time.time_rest = row.time_rest;
+            time.makanai = row.makanai.toString();
             time.time_pay = row.time_pay;
           }
         })
@@ -309,9 +309,9 @@ router.post("/admin/download", (req, res) => {
       "," +
       (timerow.time_end_upd ? timerow.time_end_upd : "") +
       "," +
-      (timerow.makanai ? timerow.makanai : 0) +
-      "," +
       (timerow.time_rest ? timerow.time_rest : "") +
+      "," +
+      (timerow.makanai ? timerow.makanai : "") +
       "," +
       (timerow.time_pay ? timerow.time_pay : "") +
       "\r\n";
