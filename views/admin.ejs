@@ -35,10 +35,43 @@
       </div>
     </div>
     <div class="area_divide"></div>
-  </div>
-  <div class="area_admin">
-    <p id="downloadbtn" class="downloadbtn monthtimebtn">ダウンロード</p>
-  </div>
+    <div class="area_admin">
+      <p id="downloadbtn" class="downloadbtn monthtimebtn">ダウンロード</p>
+    </div>
+    <div class="area_divide"></div>
+    <% if (hoseilist.length !== 0) { %>
+      <div class="hosei-table-wrapper wow fadeInUp">
+        <table class="hosei-table-content">
+          <tr>
+            <th>登録年月日</th>
+            <th>登録者</th>
+            <th>補正対象年月日</th>
+            <th>補正依頼内容</th>
+            <th>補正者</th>
+            <th>補正年月日</th>
+            <th></th>
+          </tr>
+          <% hoseilist.forEach(function(hosei){ %>
+          <tr>
+            <td><%= hosei.ymd_irai.slice(0,4) + '/' + hosei.ymd_irai.slice(4,6) + '/' + hosei.ymd_irai.slice(-2) %></td>
+            <td><%= hosei.u_id_users_name %></td>
+            <td><%= hosei.ymd_target.slice(0,4) + '/' + hosei.ymd_target.slice(4,6) + '/' + hosei.ymd_target.slice(-2) %></td>
+            <td><%= hosei.message %></td>
+            <td><%= hosei.u_id_users_hosei_name? hosei.u_id_users_hosei_name: '' %></td>
+            <td><%= hosei.ymd_hosei? hosei.ymd_hosei.slice(0,4) + '/' + hosei.ymd_hosei.slice(4,6) + '/' + hosei.ymd_hosei.slice(-2): '' %></td>
+            <% if (hosei.ymd_hosei) { %>
+              <td><p class="action-hosei-disabled">補正</p></td>
+            <% } else { %>
+              <% let key = `${hosei.ymd_irai}_${hosei.id_users}_${hosei.ymd_target}` %>
+              <td><a href="/admin/hosei/<%= key %>" class="action-hosei">補正</a></td>
+            <% } %>
+          </tr>
+          <% }) %>
+        </table>
+      </div>
+      <% } %>
+    </div>
+
   <script>
     let dlbtn = document.getElementById("downloadbtn");
     let dl = document.getElementsByClassName("download")[0];

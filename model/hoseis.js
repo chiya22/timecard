@@ -21,7 +21,7 @@ const find = async () => {
     }
 };
 
-const findUnCompleted = async () => {
+const findAll = async () => {
     try {
         const query = "SELECT h.*, u.id AS u_id_users, u.name AS u_id_users_name, u2.id AS u_id_users_hosei, u2.name AS u_id_users_hosei_name FROM hoseis h LEFT OUTER JOIN users u ON h.id_users = u.id LEFT OUTER JOIN users u2 ON h.id_users_hosei = u2.id ORDER BY h.ymd_irai desc"; 
         const retObj =await knex.raw(query)
@@ -65,10 +65,10 @@ const remove = async (ymd_irai, id_users, ymd_target) => {
 };
 
 module.exports = {
-    find: find,
-    findPKey: findPKey,
-    findUnCompleted:findUnCompleted,
-    insert: insert,
-    update: update,
-    remove: remove,
+    find,
+    findPKey,
+    findAll,
+    insert,
+    update,
+    remove,
 };

@@ -17,7 +17,7 @@ router.get("/", function (req, res) {
     const retObjAllUsers = await users.find();
     const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, yyyymmdd, yyyymmdd);
     const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, yyyymmdd, yyyymmdd);
-    const retObjHoseis = await hoseis.findUnCompleted();
+    const retObjHoseis = await hoseis.findAll();
     res.render("index", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")",
       userlist: retObjUsers,
@@ -39,9 +39,11 @@ router.get("/admin", function (req, res) {
     const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
     const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, '19900101',yyyymmdd);
     const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, '19900101',yyyymmdd);
+    const retObjHosei = await hoseis.findAll();
     res.render("admin", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")",
       userlist: retObjUsers,
+      hoseilist: retObjHosei,
       parttimeuserlist: retObjUsersParttime,
     });
   })();
@@ -113,6 +115,35 @@ router.post("/hosei/add", function (req, res) {
   })();
 });
 
+/*
+指定されたキー情報をもとに補正情報を完了にする
+*/
+router.get("/admin/hosei/:key", function (req,res) {
+
+  (async () => {
+
+    const date = new Date();
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+
+    const ymd_irai = req.params.key.split("_")[0];
+    const id_users = req.params.key.split("_")[1];
+    const ymd_target = req.params.key.split("_")[2];
+
+    const retObjHosei = await hoseis.findPKey(ymd_irai,id_users,ymd_target);
+
+    let inObjHosei = {};
+    inObjHosei.ymd_irai = ymd_irai;
+    inObjHosei.id_users = id_users;
+    inObjHosei.ymd_target = ymd_target;
+    inObjHosei.message = retObjHosei.message;
+    inObjHosei.ymd_hosei = yyyymmdd;
+    inObjHosei.id_users_hosei = 'yoshida';
+
+    const retObjHoseiUpdate = await hoseis.update(inObjHosei);
+    res.redirect("/admin");
+
+  })();
+})
 /*
 指定したユーザIDの実績が存在する年月（精算）を取得する
 */

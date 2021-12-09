@@ -97,10 +97,12 @@
     </div>
   <script>
     let hoseibtn = document.getElementsByClassName("header-hosei")[0];
-    hoseibtn.addEventListener('click', function () {
+    if (hoseibtn) {
+      hoseibtn.addEventListener('click', function () {
       let hosei = document.getElementsByClassName("area-hosei")[0];
       hosei.style.visibility = "visible";
     });
+    }
     let okdlbtn = document.getElementsByClassName("hoseiarea__okbtn")[0];
     let ngdlbtn = document.getElementsByClassName("hoseiarea__ngbtn")[0];
     let id = document.getElementsByName("id")[0];
