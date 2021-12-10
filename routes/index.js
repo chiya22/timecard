@@ -173,7 +173,8 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
     let timelist = common.getInitialTimeListAll(req.params.id, yyyymmdd_start, yyyymmdd_end);
     const timelistJisseki = await yyyymmdds.findByIntervalAndUserid(yyyymmdd_start, yyyymmdd_end, req.params.id);
     timelist.totalpayday = 0;
-    timelist.totalpaytime = 0;
+    timelist.totalpayhh = 0;
+    timelist.totalpaymm = 0;
     timelistJisseki.forEach((timeJisseki) => {
       timelist.forEach((time) => {
         if (time.yyyymmdd === timeJisseki.yyyymmdd) {
@@ -188,12 +189,16 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
             timelist.totalpayday += 1;
           }
           if (time.time_pay) {
-            timelist.totalpaytime += Number(time.time_pay);
+            timelist.totalpayhh += Number(time.time_pay.slice(0,2))
+            timelist.totalpaymm += Number(time.time_pay.slice(-2));
           }
         }
       });
     });
 
+    timelist.totalpayhh += (parseInt(timelist.totalpaymm / 60, 10));
+    timelist.totalpaymm = ("0" + (timelist.totalpaymm % 60)).slice(-2);
+  
     res.render("monthtime", {
       title: "管理者：" + req.params.yyyymm.slice(0, 4) + "年" + req.params.yyyymm.slice(-2) + "月：" + retObjUser[0].name,
       yyyymm: req.params.yyyymm,
