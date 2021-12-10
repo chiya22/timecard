@@ -53,7 +53,7 @@ const getYoubi = (yyyymmdd) => {
   try {
     //祝日カレンダー
     let filecontent = fs.readFileSync("./data/holiday.dat", "utf-8");
-    const holidaylist = filecontent.split("\n");
+    const holidaylist = filecontent.split("\r\n");
     holidaylist.forEach((holiday) => {
       if (holiday === yyyymmdd) {
         youbi = "祝";
