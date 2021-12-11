@@ -45,46 +45,93 @@
                 <input type="hidden" name="makanai" id="makanai" value="">
             </div>
         </form>
-        <script>
+        <div class="rireki-area wow fadeIn">
+            <% if (timelist.length !== 0) { %>
+                <p id="rireki-btn" class="rireki-btn">勤怠履歴表示</p>
+                <div id="rireki-area" class="rireki-table-wrapper">
+                <table class="rireki-table-content">
+                    <tr>
+                      <th>日付</th>
+                      <th>出勤時間</th>
+                      <th>退勤時間</th>
+                      <th>出勤時間<br>(修正)</th>
+                      <th>退勤時間<br>(修正)</th>
+                      <th>賄</th>
+                    </tr>
+                    <% timelist.forEach((timeinfo) => { %>
+                        <% if ((timeinfo.youbi === '日') || (timeinfo.youbi === '祝')) { %>
+                        <tr class="bgc-red">
+                        <% } else if (timeinfo.youbi === '土') { %>
+                        <tr class="bgc-blue">
+                        <% } else { %>
+                        <tr class="bgc-normal">
+                        <% } %>
+                            <td><%= timeinfo.yyyymmdd.slice(0,4) + '/' + timeinfo.yyyymmdd.slice(4,6) + '/'  + timeinfo.yyyymmdd.slice(-2) + '(' + timeinfo.youbi + ')' %></td>
+                            <td><%= timeinfo.time_start?timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4):'' %></td>
+                            <td><%= timeinfo.time_end?timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4): '' %></td>
+                            <td><%= timeinfo.time_start_upd? timeinfo.time_start_upd.slice(0,2) + ':' + timeinfo.time_start_upd.slice(-2): null  %></td>
+                            <td><%= timeinfo.time_end_upd? timeinfo.time_end_upd.slice(0,2) + ':' + timeinfo.time_end_upd.slice(-2): null %></td>
+                            <td><%= timeinfo.makanai===1?'食べた':'食べてない' %></td>
+                        </tr>
+                    <% }) %>
+                </table>
+                </div>
+            </div>        
+        <% } %>
+    </div>
 
-            let okbtn = document.getElementsByClassName("msgarea__okbtn")[0];
-            okbtn.addEventListener('click', () => {
-                document.getElementById("makanai").value = "1";
+    <script>
+
+        let rirekibtn = document.getElementById("rireki-btn");
+        let rirekiarea = document.getElementById("rireki-area");
+        if (rirekiarea) {
+            rirekiarea.style.visibility = "hidden";
+        }
+        if (rirekibtn) {
+            rirekibtn.addEventListener('click', () => {
+            rirekiarea.style.visibility = "visible";
+            rirekibtn.style.display = "none";
+            })
+        }
+
+        let okbtn = document.getElementsByClassName("msgarea__okbtn")[0];
+        okbtn.addEventListener('click', () => {
+            document.getElementById("makanai").value = "1";
+            document.timeform.action = "/time/set";
+            document.timeform.submit();
+        });
+
+        let ngbtn = document.getElementsByClassName("msgarea__ngbtn")[0];
+        ngbtn.addEventListener('click', () => {
+            document.getElementById("makanai").value = "0";
+            document.timeform.action = "/time/set";
+            document.timeform.submit();
+        });
+
+        let startbtn = document.getElementById("startbtn");
+        let endbtn = document.getElementById("endbtn");
+        startbtn.addEventListener('click', () => {
+            document.getElementById("shorikubun").value = "start";
+            document.timeform.submit();
+        });
+        endbtn.addEventListener('click', () => {
+            document.getElementById("shorikubun").value = "end";
+            if (document.getElementById("kubun").value === '2') {
+                scrollTo(0, 0);
+                let msg = document.getElementsByClassName("msg")[0];
+                msg.style.visibility = "visible";
+            } else {
                 document.timeform.action = "/time/set";
                 document.timeform.submit();
-            });
-
-            let ngbtn = document.getElementsByClassName("msgarea__ngbtn")[0];
-            ngbtn.addEventListener('click', () => {
-                document.getElementById("makanai").value = "0";
-                document.timeform.action = "/time/set";
-                document.timeform.submit();
-            });
-
-            let startbtn = document.getElementById("startbtn");
-            let endbtn = document.getElementById("endbtn");
-            startbtn.addEventListener('click', () => {
-                document.getElementById("shorikubun").value = "start";
-                document.timeform.submit();
-            });
-            endbtn.addEventListener('click', () => {
-                document.getElementById("shorikubun").value = "end";
-                if (document.getElementById("kubun").value === '2') {
-                    scrollTo(0, 0);
-                    let msg = document.getElementsByClassName("msg")[0];
-                    msg.style.visibility = "visible";
-                } else {
-                    document.timeform.action = "/time/set";
-                    document.timeform.submit();
-                }
-            });
-            // if (startbtn.innerHTML !== '出勤') {
-            //     startbtn.classList.add("nonactive");
-            // };
-            // if ((startbtn.innerHTML === '出勤') || (endbtn.innerHTML !== '退勤')) {
-            //     endbtn.classList.add("nonactive");
-            // };
-        </script>
+            }
+        });
+        // if (startbtn.innerHTML !== '出勤') {
+        //     startbtn.classList.add("nonactive");
+        // };
+        // if ((startbtn.innerHTML === '出勤') || (endbtn.innerHTML !== '退勤')) {
+        //     endbtn.classList.add("nonactive");
+        // };
+    </script>
 </body>
 <%- include("./common/javascripts.ejs") %>
 
