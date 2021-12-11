@@ -373,63 +373,57 @@ body {
   color: #fff;
 }
 .rireki-table-wrapper {
-  max-width: 700px;
-  overflow-y: scroll;
+  max-width: 900px;
+  /* overflow-y: scroll; */
   width: 100%;
-  height: 20vh;
+  height: 100%;
   margin: 30px auto;
 }
-.rireki-table-content {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 14px;
-  margin: 0 auto;
-  word-wrap: break-word;
+.box-color-normal {
+  border: solid 1px #CD5E42;
+  color: #CD5E42;
 }
-.rireki-table-content th {
-  border-collapse: collapse;
-  background-color: #CD5E42;
-  border: 1px solid #fff;
-  padding: 5px;
-  text-align: center;
-  font-weight: normal;
-  color: #fff;
-  position: sticky;
-  top: 0;
+.box-color-red {
+  border: solid 1px #FF0000;
+  color:#FF0000;
 }
-.rireki-table-content th:nth-child(1),
-.rireki-table-content th:nth-child(2),
-.rireki-table-content th:nth-child(3),
-.rireki-table-content th:nth-child(4),
-.rireki-table-content th:nth-child(5) {
-  width: 110px;
+.box-color-blue {
+  border: solid 1px #0000FF;
+  color: #0000FF;
 }
-.rireki-table-content th:nth-child(6){
-  width: 120px;
+.rireki-box {
+  display: inline-block;
+  width: 200px;
+  position: relative;
+  margin: 1em 0.5em;
+  padding: 1em 1em;
+  border-radius: 8px;
 }
-.rireki-table-content td {
-  border-collapse: collapse;
-  border: 1px solid #fff;
-  padding: 5px;
-  text-align: center;
+.rireki-box-title {
+  position: absolute;
+  display: inline-block;
+  top: -10px;
+  left: 10px;
+  padding: 0 9px;
+  line-height: 1;
+  font-size: 16px;
+  background: #FFF;
 }
-.rireki-table-content td:nth-child(1),
-.rireki-table-content td:nth-child(2),
-.rireki-table-content td:nth-child(3),
-.rireki-table-content td:nth-child(4),
-.rireki-table-content td:nth-child(5) {
-  width: 110px;
+.rireki-box-time {
+  font-size: 1.5em;
 }
-.rireki-table-content td:nth-child(6) {
-  width: 120px;  
+.icon-makanai-normal {
+  display: inline-block;
+  fill: #CD5E42;
+  margin-top: 5px;
 }
-.bgc-normal {
-  background-color: rgb(205,94,66,.2);
+.icon-makanai-blue {
+  display: inline-block;
+  fill: #0000FF;
+  margin-top: 5px;
 }
-.bgc-red {
-  background-color: #ff9999;
-}
-.bgc-blue {
-  background-color: #99ccff;
+.icon-makanai-red {
+  display: inline-block;
+  fill: #FF0000;
+  margin-top: 5px;
 }
