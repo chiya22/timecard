@@ -57,12 +57,20 @@ router.get("/time/:id", function (req, res) {
     let date = new Date();
     const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
     const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
-
     const retObjUser = await users.findByUserIDWithYyyymmddInfo(req.params.id, yyyymmdd);
+    const yyyymm_seisan = common.getYyyymmSeisan(yyyymmdd);
+
+    // let timelist = common.getInitialTimeListAll(req.params.id, yyyymmdd_start, yyyymmdd_end);
+    const timelistJisseki = await yyyymmdds.findByYyyymmSeisanAndUserid(yyyymm_seisan, req.params.id);
+    timelistJisseki.forEach((timeJisseki) => {
+      timeJisseki.youbi = common.getYoubi(timeJisseki.yyyymmdd);
+    })
+
     res.render("time", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")：" + retObjUser[0].name,
       yyyymmdd: yyyymmdd,
       user: retObjUser[0],
+      timelist: timelistJisseki,
     });
   })();
 });
