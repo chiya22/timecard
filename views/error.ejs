@@ -7,12 +7,8 @@
 </head>
 
 <body>
+    <%- include("./common/header.ejs", {title: 'エラー', adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
     <div class="container-top">
-        <div class="header">
-            <div class="header__title">
-                <h1><%= message %>（<%= error.status %>）</h1>
-            </div>
-        </div>
         <div class="stacktrace">
             <% if (error.status === 404) { %>
             <p>指定されたページは存在しません。</p>
@@ -21,12 +17,11 @@
             <% }else{ %>
             <p>何らかのエラーが発生しました。管理者へお知らせください。</p>
             <% }; %>
-            <pre>
-                <%= error.stacktrace %>
-            </pre>
+            <div class="stacktrace-text">
+                <p><%= message %></p>
+            </div>
         </div>
     </div>
-    <a class="error_back" href="/">戻る</a>
 </body>
 
 </html>
