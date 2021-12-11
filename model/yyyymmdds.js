@@ -34,6 +34,17 @@ const findByIntervalAndUserid = async (ymd_start, ymd_end, id_users ) => {
     }
 };
 
+const findByYyyymmSeisanAndUserid = async (yyyymm_seisan, id_users ) => {
+    try {
+        const query = "SELECT * FROM yyyymmdds WHERE yyyymm_seisan = '" + yyyymm_seisan + "' and id_users = '" + id_users + "' ORDER BY yyyymmdd ASC;"
+        logger.info(query);
+        const retObj = await knex.raw(query);
+        return retObj[0];
+    } catch(err) {
+        throw err;
+    }
+};
+
 const findYyyymmInfoByUserId = async (id_users) => {
     try {
         const query = "SELECT yyyymm_seisan FROM yyyymmdds y WHERE id_users = '" + id_users + "' GROUP BY yyyymm_seisan ORDER BY yyyymm_seisan ASC;"
@@ -94,6 +105,7 @@ module.exports = {
     findYyyymmInfoByUserId,
     findByYyyymmAndUserid,
     findByIntervalAndUserid,
+    findByYyyymmSeisanAndUserid,
     insert,
     update,
     remove,
