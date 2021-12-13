@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const common = require("../util/common");
+const sendmail = require("../util/sendmail");
 const users = require("../model/users");
 const hoseis = require("../model/hoseis");
 const yyyymmdds = require("../model/yyyymmdds");
+const log4js = require("log4js");
+const logger = log4js.configure("./config/log4js-config.json").getLogger();
 
 /*
 初期画面を表示する
@@ -89,18 +92,30 @@ router.post("/time/set", function (req, res) {
     const date = new Date();
     const timevalue = ("0" + date.getHours()).slice(-2) + ("0" + date.getMinutes()).slice(-2);
 
+    let action;
     // 出勤ボタンを押した場合
     if (req.body.shorikubun === "start") {
       inObjYyyymmdd.time_start = timevalue;
-      const retObjUserInsert = await yyyymmdds.insert(inObjYyyymmdd);
-      // 退勤ボタンを押した場合
+      const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
+      action = "出勤";
+
+    // 退勤ボタンを押した場合
     } else {
       inObjYyyymmdd.time_start = req.body.time_start;
       inObjYyyymmdd.time_end = timevalue;
       inObjYyyymmdd.time_pay = common.getPaytime(inObjYyyymmdd.time_start, inObjYyyymmdd.time_end, "0000");
       inObjYyyymmdd.makanai = req.body.makanai;
-      const retObjUserUpdate = await yyyymmdds.update(inObjYyyymmdd);
+      const retObjYyyymmddUpdate = await yyyymmdds.update(inObjYyyymmdd);
+      action = "退勤";
     }
+
+    const retObjUser = await users.findPKey(req.body.id);
+    if (retObjUser[0].kubun === '2') {
+      const title = `【出退勤管理：${retObjUser[0].name}】出勤`;
+      sendmail.send(title, `${req.body.yyyymmdd.slice(0,4)}年${req.body.yyyymmdd.slice(4,6)}月${req.body.yyyymmdd.slice(6,8)}日 ${timevalue.slice(0,2)}時${timevalue.slice(3,5)}分　『${retObjUser[0].name}』が${action}しました。`);
+      logger.info("メール送信しました：【" + action + "】" + req.body.id);
+    }
+
     res.redirect("/");
   })();
 });
@@ -243,7 +258,7 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
         retObjtime = common.getStartEndTime(time_start_list[i], time_end_list[i], time_startupd_list[i], time_endupd_list[i]);
         let time_pay = common.getPaytime(retObjtime.time_start, retObjtime.time_end, time_restlist[i]);
 
-        // 明細情報の設定
+        // 明細情報の設定dz
         inObjYyyyymmdds.id_users = id;
         inObjYyyyymmdds.yyyymmdd = yyyymmddlist[i];
         inObjYyyyymmdds.yyyymm_seisan = yyyymm_seisan_list[i];
