@@ -62,13 +62,21 @@
                                 youbiclassname="box-color-normal"
                                 iconmakanai = "icon-makanai-normal"
                             }
+                            let time_start;
+                            let time_end;
+                            time_start = timeinfo.time_start_upd? timeinfo.time_start_upd.slice(0,2) + ':' + timeinfo.time_start_upd.slice(2,4): timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4);
+                            if (timeinfo.time_end_upd) {
+                                time_end = timeinfo.time_end_upd.slice(0,2) + ':' + timeinfo.time_end_upd.slice(2,4);
+                            } else if (timeinfo.time_end) {
+                                time_end = timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4);
+                            }
                         %>
                         <div class="rireki-box <%= youbiclassname %>">
                             <p class="rireki-box-title"><%= timeinfo.yyyymmdd.slice(0,4) + '.' + timeinfo.yyyymmdd.slice(4,6) + '.'  + timeinfo.yyyymmdd.slice(-2) + ' (' + timeinfo.youbi + ')' %></p>
-                            <p class="rireki-box-time"><%= timeinfo.time_start?timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4):'' %> - <%= timeinfo.time_end?timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4): '' %>
+                            <p class="rireki-box-time"><%=  time_start %> - <%= time_end %></p>
                             <% if (timeinfo.makanai === 1) { %>
                                 <div class="<%= iconmakanai %>">
-                                    <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="width: 25px; height: 25px; opacity: 1;" xml:space="preserve">
+                                    <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="width: 20px; height: 20px; opacity: 1; margin: 0 10px;" xml:space="preserve">
                                         <g>
                                             <path class="st0" d="M203.364,2.333c-11.788,0-19.73,9.352-19.73,20.873v99.422c0,11.306-5.814,16.714-14.728,16.714
                                                 c-8.142,0-12.945-6.717-12.945-14.692L155.517,21.37C155.517,8.338,144.144,0,133.59,0c-10.558,0-21.926,8.338-21.926,21.37V124.65
@@ -82,9 +90,8 @@
                                                 c15.014-13.287,49.408-50.228,49.408-95.732C476.097,54.505,425.82,3.935,378.422,3.935z"></path>
                                         </g>
                                     </svg>
-                                </div>
+                                </>
                             <% } %>
-                            </p>
                         </div>
                     <% }) %>
                 </div>
