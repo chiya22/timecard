@@ -393,10 +393,10 @@ body {
 }
 .rireki-box {
   display: inline-block;
-  width: 200px;
+  width: 250px;
   position: relative;
   margin: 1em 0.5em;
-  padding: 1em 1em;
+  padding: 1em 5px;
   border-radius: 8px;
 }
 .rireki-box-title {
@@ -410,6 +410,8 @@ body {
   background: #FFF;
 }
 .rireki-box-time {
+  display: inline-block;
+  /* width: 180px; */
   font-size: 1.5em;
 }
 .icon-makanai-normal {
