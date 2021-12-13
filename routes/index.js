@@ -112,7 +112,7 @@ router.post("/time/set", function (req, res) {
     const retObjUser = await users.findPKey(req.body.id);
     if (retObjUser[0].kubun === '2') {
       const title = `【出退勤管理：${retObjUser[0].name}】出勤`;
-      sendmail.send(title, `${req.body.yyyymmdd.slice(0,4)}年${req.body.yyyymmdd.slice(4,6)}月${req.body.yyyymmdd.slice(6,8)}日 ${timevalue.slice(0,2)}時${timevalue.slice(3,5)}分　『${retObjUser[0].name}』が${action}しました。`);
+      sendmail.send(title, `${req.body.yyyymmdd.slice(0,4)}年${req.body.yyyymmdd.slice(4,6)}月${req.body.yyyymmdd.slice(6,8)}日 ${timevalue.slice(0,2)}時${timevalue.slice(2,4)}分　『${retObjUser[0].name}』が${action}しました。`);
       logger.info("メール送信しました：【" + action + "】" + req.body.id);
     }
 
