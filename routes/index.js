@@ -256,7 +256,10 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
       // 開始時刻、開始時刻（更新）、終了時刻、終了時刻（更新）のいずれかに値が設定されている場合
       if (time_start_list[i] !== "" || time_startupd_list[i] !== "" || time_end_list[i] !== "" || time_endupd_list[i] !== "") {
         retObjtime = common.getStartEndTime(time_start_list[i], time_end_list[i], time_startupd_list[i], time_endupd_list[i]);
-        let time_pay = common.getPaytime(retObjtime.time_start, retObjtime.time_end, time_restlist[i]);
+        let time_pay;
+        if (retObjtime.time_start && retObjtime.time_end) {
+          time_pay = common.getPaytime(retObjtime.time_start, retObjtime.time_end, time_restlist[i]);
+        }
 
         // 明細情報の設定dz
         inObjYyyyymmdds.id_users = id;
