@@ -17,18 +17,30 @@
     </div>
     <div class="container-action">
         <form method="POST" name="timeform" action="/time/set">
+            <% 
+                let user_time_start;
+                let user_time_end;
+                if (user.time_start || user.time_start_upd) {
+                    user_time_start = user.time_start_upd? user.time_start_upd.slice(0,2) + ':' + user.time_start_upd.slice(2,4): user.time_start.slice(0,2) + ':' + user.time_start.slice(2,4);
+                }
+                if (user.time_end_upd) {
+                    user_time_end = user.time_end_upd.slice(0,2) + ':' + user.time_end_upd.slice(2,4);
+                } else if (user.time_end) {
+                    user_time_end = user.time_end.slice(0,2) + ':' + user.time_end.slice(2,4);
+                }
+            %> 
             <div class="action-area">
                 <div class="wow fadeIn" class="start-area">
-                    <% if (user.time_start) { %>
-                        <p id="startbtn" class="start nonactive"><%= user.time_start.slice(0,2) + ':' + user.time_start.slice(2,4) %></p>
+                    <% if (user_time_start) { %>
+                        <p id="startbtn" class="start nonactive"><%= user_time_start %></p>
                     <% } else { %>
                         <p id="startbtn" class="start">出勤</p>
                     <% } %>
                 </div>
                 <div class="wow fadeIn" class="end-area">
-                    <% if (user.time_start) { %>
-                        <% if (user.time_end) { %>
-                            <p id="endbtn" class="end nonactive"><%= user.time_end.slice(0,2) + ':' + user.time_end.slice(2,4) %></p>
+                    <% if (user_time_start) { %>
+                        <% if (user_time_end) { %>
+                            <p id="endbtn" class="end nonactive"><%= user_time_end %></p>
                         <% } else { %>
                             <p id="endbtn" class="end">退勤</p>
                         <% } %>

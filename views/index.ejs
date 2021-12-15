@@ -46,9 +46,9 @@
     <div class="area">
       <div class="items">
         <% userlist.forEach(function(user){ %>
-        <% if ((user.time_start) && (user.time_end)){ %>
+        <% if ((user.time_start || user.time_start_upd) && (user.time_end || user.time_end_upd)){ %>
         <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
-        <% } else if (user.time_start) { %>
+        <% } else if (user.time_start || user.time_start_upd) { %>
         <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else { %>
         <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
@@ -60,9 +60,9 @@
     <div class="area">
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
-        <% if ((user.time_start) && (user.time_end)){ %>
+        <% if ((user.time_start || user.time_start_upd) && (user.time_end || user.time_end_upd)){ %>
         <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
-        <% } else if (user.time_start) { %>
+        <% } else if (user.time_start || user.time_start_upd) { %>
         <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } else { %>
         <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
