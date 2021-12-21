@@ -339,6 +339,17 @@ router.post("/admin/download", (req, res) => {
         })
         // 次のユーザーの1カ月配列
         timelist = common.getInitialTimeListAll(row.id_users, yyyymmdd_start, yyyymmdd_end);
+        timelist.forEach((time) => {
+          if (time.yyyymmdd === row.yyyymmdd) {
+            time.time_start = row.time_start;
+            time.time_start_upd = row.time_start_upd;
+            time.time_end = row.time_end;
+            time.time_end_upd = row.time_end_upd;
+            time.time_rest = row.time_rest;
+            time.makanai = row.makanai;
+            time.time_pay = row.time_pay;
+          }
+        })
         beforekey = row.id_users;
 
       } else {
@@ -381,7 +392,7 @@ router.post("/admin/download", (req, res) => {
 
     res.setHeader("Content-disposition", "attachment; filename=data.csv");
     res.setHeader("Content-Type", "text/csv; charset=UTF-8");
-    res.send(csv);
+    res.status(200).send(csv);
 
   })();
 
