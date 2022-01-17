@@ -360,7 +360,7 @@ router.post("/admin/download", (req, res) => {
             time.time_end = row.time_end;
             time.time_end_upd = row.time_end_upd;
             time.time_rest = row.time_rest;
-            time.makanai = row.makanai.toString();
+            time.makanai = row.makanai;
             time.time_pay = row.time_pay;
           }
         })
