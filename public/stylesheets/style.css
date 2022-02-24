@@ -28,6 +28,17 @@ body {
   width: 300px;
   height: auto;
 }
+.header-clock {
+  display: block;
+  float: right;
+  border-radius: 15px;
+  background-color: #CD5E42;
+  padding: 10px 20px;
+  text-decoration: none;
+  color:#fff;
+  margin-right: 10px;
+  cursor: default;
+}
 .header-admin, .header-back, .header-hosei {
   display: block;
   float: right;
@@ -102,7 +113,7 @@ body {
 }
 .items > a {
   display: inline-block;
-  width: 150px;
+  width: 170px;
   height: 50px;
   text-align: center;
   line-height: 50px;

@@ -10,14 +10,15 @@
                 <a class="header-back" href="/">戻る</a>
             <% } %>
             <% if (backAdmin) { %>
-            <a class="header-back" href="/admin">戻る</a>
+                <a class="header-back" href="/admin">戻る</a>
             <% } %>
             <% if (backToMonth) { %>
-            <a class="header-back" href="/admin/<%= id %>">戻る</a>
+                <a class="header-back" href="/admin/<%= id %>">戻る</a>
             <% } %>
             <% if (adminMenu) { %>
-            <a class="header-admin" href="/admin">管理者メニュー</a>
-            <p class="header-hosei">補正依頼</p>
+                <a class="header-admin" href="/admin">管理者メニュー</a>
+                <p class="header-hosei">補正依頼</p>
+                <span class="header-clock wow fadeInUp" id="RealtimeClockArea"></span>
             <% } %>
         </div>
     </div>
@@ -25,3 +26,13 @@
         <h1><%= title %></h1>
     </div>
 </div>
+<script>
+    setInterval( () => {
+      const nowTime = new Date(); //  現在日時を得る
+      const nowHour = ('0' + nowTime.getHours()).slice(-2); // 時を抜き出す
+      const nowMin  = ('0' + nowTime.getMinutes()).slice(-2); // 分を抜き出す
+      const nowSec  = ('0' + nowTime.getSeconds()).slice(-2); // 秒を抜き出す
+      const msg = `${nowHour}:${nowMin}:${nowSec}`;
+      document.getElementById("RealtimeClockArea").innerHTML = msg;
+    }, 1000);
+</script>

@@ -47,9 +47,9 @@
       <div class="items">
         <% userlist.forEach(function(user){ %>
         <% if ((user.time_start || user.time_start_upd) && (user.time_end || user.time_end_upd)){ %>
-        <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %> <%= user.time_start? user.time_start.slice(0,2):user.time_start_upd.slice(0,2) %>:<%= user.time_start? user.time_start.slice(-2):user.time_start_upd.slice(-2) %> - <%= user.time_end? user.time_end.slice(0,2):user.time_end_upd.slice(0,2) %>:<%= user.time_end? user.time_end.slice(-2):user.time_end_upd.slice(-2) %></a>
         <% } else if (user.time_start || user.time_start_upd) { %>
-        <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %> <%= user.time_start? user.time_start.slice(0,2):user.time_start_upd.slice(0,2) %>:<%= user.time_start? user.time_start.slice(-2):user.time_start_upd.slice(-2) %></a>
         <% } else { %>
         <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } %>
@@ -61,9 +61,9 @@
       <div class="items">
         <% parttimeuserlist.forEach(function(user){ %>
         <% if ((user.time_start || user.time_start_upd) && (user.time_end || user.time_end_upd)){ %>
-        <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_end wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %> <%= user.time_start? user.time_start.slice(0,2):user.time_start_upd.slice(0,2) %>:<%= user.time_start? user.time_start.slice(-2):user.time_start_upd.slice(-2) %> - <%= user.time_end? user.time_end.slice(0,2):user.time_end_upd.slice(0,2) %>:<%= user.time_end? user.time_end.slice(-2):user.time_end_upd.slice(-2) %></a>
         <% } else if (user.time_start || user.time_start_upd) { %>
-        <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
+        <a class="item_start wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %> <%= user.time_start? user.time_start.slice(0,2):user.time_start_upd.slice(0,2) %>:<%= user.time_start? user.time_start.slice(-2):user.time_start_upd.slice(-2) %></a>
         <% } else { %>
         <a class="item wow fadeInUp" href="/time/<%= user.id %>"><%= user.name %></a>
         <% } %>
@@ -74,12 +74,12 @@
     <div class="table-wrapper wow fadeInUp">
       <table class="table-content">
         <tr>
-          <th>登録年月日</th>
+          <th>登録日付</th>
           <th>登録者</th>
-          <th>補正対象年月日</th>
+          <th>補正対日付</th>
           <th>補正依頼内容</th>
           <th>補正者</th>
-          <th>補正年月日</th>
+          <th>補正日付</th>
         </tr>
         <% hoseilist.forEach(function(hosei){ %>
         <tr>
@@ -134,6 +134,7 @@
       let hosei = document.getElementsByClassName("area-hosei")[0];
       hosei.style.visibility = "hidden";
     });
+
   </script>
 </body>
 <%- include("./common/javascripts.ejs") %>
