@@ -59,7 +59,7 @@ const findYyyymmInfoByUserId = async (id_users) => {
 
 const insert = async (inObj) => {
     try {
-        const query = "insert into yyyymmdds values (" + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.yyyymmdd) + "," + common.retValueForSql(inObj.yyyymm_seisan) + "," + common.retValueForSql(inObj.time_start) + "," + common.retValueForSql(inObj.time_start_upd) + "," + common.retValueForSql(inObj.time_end) + "," + common.retValueForSql(inObj.time_end_upd) + "," + common.retValueForSql(inObj.makanai) + "," + common.retValueForSql(inObj.time_rest) + "," + common.retValueForSql(inObj.time_pay) + ")";
+        const query = "insert into yyyymmdds values (" + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.yyyymmdd) + "," + common.retValueForSql(inObj.yyyymm_seisan) + "," + common.retValueForSql(inObj.time_start) + "," + common.retValueForSql(inObj.time_end) + "," + common.retValueForSql(inObj.time_start_upd) + "," + common.retValueForSql(inObj.time_end_upd) + "," + common.retValueForSql(inObj.makanai) + "," + common.retValueForSql(inObj.time_rest) + "," + common.retValueForSql(inObj.time_pay) + ")";
         logger.info(query);
         const retObj = await knex.raw(query)
         return retObj[0];
