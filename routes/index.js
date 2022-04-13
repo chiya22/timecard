@@ -133,6 +133,7 @@ router.post("/hosei/add", function (req, res) {
     inObjHosei.id_users = req.body.id;
     inObjHosei.ymd_target = req.body.ymd_target.slice(0, 4) + req.body.ymd_target.slice(5, 7) + req.body.ymd_target.slice(-2);
     inObjHosei.message = req.body.message;
+    inObjHosei.yyyymmddhhmmss_add = common.getTodayTime();
     const retObjHosei = await hoseis.insert(inObjHosei);
     res.redirect("/");
   })();

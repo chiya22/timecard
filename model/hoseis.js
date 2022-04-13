@@ -33,7 +33,7 @@ const findAll = async () => {
 
 const insert = async (inObj) => {
     try {
-        const query = "insert into hoseis values (" + common.retValueForSql(inObj.ymd_irai) + "," + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.ymd_target) + "," + common.retValueForSql(inObj.message) + "," + common.retValueForSql(inObj.id_users_hosei) + "," + common.retValueForSql(inObj.ymd_hosei) + ")";
+        const query = "insert into hoseis values (" + common.retValueForSql(inObj.ymd_irai) + "," + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.ymd_target) + "," + common.retValueForSql(inObj.message) + "," + common.retValueForSql(inObj.id_users_hosei) + "," + common.retValueForSql(inObj.ymd_hosei) + "," + common.retValueForSql(inObj.yyyymmddhhmmss_add) + ")";
         logger.info(query);
         const retObj = await knex.raw(query)
         return retObj[0];
