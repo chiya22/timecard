@@ -96,6 +96,9 @@ router.post("/time/set", function (req, res) {
     // 出勤ボタンを押した場合
     if (req.body.shorikubun === "start") {
       inObjYyyymmdd.time_start = timevalue;
+      inObjYyyymmdd.time_end = req.body.time_end;
+      inObjYyyymmdd.time_start_upd = req.body.time_start_upd;
+      inObjYyyymmdd.time_end_upd = req.body.time_end_upd;
       const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
       action = "出勤";
 
@@ -103,7 +106,11 @@ router.post("/time/set", function (req, res) {
     } else {
       inObjYyyymmdd.time_start = req.body.time_start;
       inObjYyyymmdd.time_end = timevalue;
-      inObjYyyymmdd.time_pay = common.getPaytime(inObjYyyymmdd.time_start, inObjYyyymmdd.time_end, "0000");
+      inObjYyyymmdd.time_start_upd = req.body.time_start_upd;
+      inObjYyyymmdd.time_end_upd = req.body.time_end_upd;
+      const start = inObjYyyymmdd.time_start_upd?inObjYyyymmdd.time_start_upd:inObjYyyymmdd.time_start;
+      const end = inObjYyyymmdd.time_end_upd?inObjYyyymmdd.time_end_upd:inObjYyyymmdd.time_end;
+      inObjYyyymmdd.time_pay = common.getPaytime(start, end, "0000");
       inObjYyyymmdd.makanai = req.body.makanai;
       const retObjYyyymmddUpdate = await yyyymmdds.update(inObjYyyymmdd);
       action = "退勤";
