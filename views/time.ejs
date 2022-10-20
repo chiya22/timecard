@@ -30,24 +30,34 @@
                 }
             %> 
             <div class="action-area">
-                <div class="wow fadeIn" class="start-area">
-                    <% if (user_time_start) { %>
-                        <p id="startbtn" class="start nonactive"><%= user_time_start %></p>
-                    <% } else { %>
-                        <p id="startbtn" class="start">出勤</p>
-                    <% } %>
-                </div>
-                <div class="wow fadeIn" class="end-area">
-                    <% if (user_time_start) { %>
-                        <% if (user_time_end) { %>
-                            <p id="endbtn" class="end nonactive"><%= user_time_end %></p>
+                <% if (user.isYuukyuu === 1) { %>
+                    <div>有給休暇</div>
+                <% } else { %>
+                    <div class="wow fadeIn" class="start-area">
+                        <% if (user_time_start) { %>
+                            <p id="startbtn" class="start nonactive"><%= user_time_start %></p>
                         <% } else { %>
-                            <p id="endbtn" class="end">退勤</p>
+                            <p id="startbtn" class="start">出勤</p>
                         <% } %>
-                    <% } else { %>
-                        <p id="endbtn" class="end nonactive">退勤</p>
+                    </div>
+                    <div class="wow fadeIn" class="end-area">
+                        <% if (user_time_start) { %>
+                            <% if (user_time_end) { %>
+                                <p id="endbtn" class="end nonactive"><%= user_time_end %></p>
+                            <% } else { %>
+                                <p id="endbtn" class="end">退勤</p>
+                            <% } %>
+                        <% } else { %>
+                            <p id="endbtn" class="end nonactive">退勤</p>
+                        <% } %>
+                    </div>
+                    <% if ((!user_time_start) && (user.kubun === '1')) { %>
+                        <div class="wow fadeIn" class="yuukyuu-area">
+                            <p id="yuukyuubtn" class="end">有給休暇</p>
+                        </div>
                     <% } %>
-                </div>
+
+                <% } %>
                 <input type="hidden" name="yyyymmdd" value="<%= yyyymmdd %>" id="yyyymmdd">
                 <input type="hidden" name="time_start" value="<%= user.time_start %>">
                 <input type="hidden" name="time_end" value="<%= user.time_end %>">
@@ -78,16 +88,22 @@
                             }
                             let time_start;
                             let time_end;
-                            time_start = timeinfo.time_start_upd? timeinfo.time_start_upd.slice(0,2) + ':' + timeinfo.time_start_upd.slice(2,4): timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4);
-                            if (timeinfo.time_end_upd) {
-                                time_end = timeinfo.time_end_upd.slice(0,2) + ':' + timeinfo.time_end_upd.slice(2,4);
-                            } else if (timeinfo.time_end) {
-                                time_end = timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4);
+                            if ((timeinfo.isYuukyuu !== 1)) {
+                                time_start = timeinfo.time_start_upd? timeinfo.time_start_upd.slice(0,2) + ':' + timeinfo.time_start_upd.slice(2,4): timeinfo.time_start.slice(0,2) + ':' + timeinfo.time_start.slice(2,4);
+                                if (timeinfo.time_end_upd) {
+                                    time_end = timeinfo.time_end_upd.slice(0,2) + ':' + timeinfo.time_end_upd.slice(2,4);
+                                } else if (timeinfo.time_end) {
+                                    time_end = timeinfo.time_end.slice(0,2) + ':' + timeinfo.time_end.slice(2,4);
+                                }
                             }
                         %>
                         <div class="rireki-box <%= youbiclassname %>">
                             <p class="rireki-box-title"><%= timeinfo.yyyymmdd.slice(0,4) + '.' + timeinfo.yyyymmdd.slice(4,6) + '.'  + timeinfo.yyyymmdd.slice(-2) + ' (' + timeinfo.youbi + ')' %></p>
-                            <p class="rireki-box-time"><%=  time_start %> - <%= time_end %></p>
+                            <% if (timeinfo.isYuukyuu === 1) { %>
+                                <p class="rireki-box-time">有給休暇</p>
+                            <% } else { %>
+                                <p class="rireki-box-time"><%=  time_start %> - <%= time_end %></p>
+                            <%  } %>
                             <% if (timeinfo.makanai === 1) { %>
                                 <div class="<%= iconmakanai %>">
                                     <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="width: 20px; height: 20px; opacity: 1; margin: 0 10px;" xml:space="preserve">
@@ -158,6 +174,14 @@
                 document.timeform.submit();
             }
         });
+        let yuukyuubtn = document.getElementById("yuukyuubtn");
+        if (yuukyuubtn) {
+            yuukyuubtn.addEventListener('click', () => {
+                document.getElementById("shorikubun").value = "yuukyuu";
+                document.timeform.submit();
+            });
+        }
+
         // if (startbtn.innerHTML !== '出勤') {
         //     startbtn.classList.add("nonactive");
         // };

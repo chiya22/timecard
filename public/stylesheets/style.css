@@ -179,6 +179,18 @@ body {
   background-color:#CD5E42;
   color: white;
 }
+.action-area div {
+  display: inline-block;
+  width: 200px;
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  color : #CD5E42;
+  text-decoration: none;
+  margin: 5px;
+  font-size: 40px;
+}
+
 .nonactive {
   border: 1px solid #d3d3d3!important;
   background-color:#fff!important;

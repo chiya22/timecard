@@ -59,7 +59,7 @@ const remove = async (id) => {
 */
 const findByKubunWithYyyymmddInfo = async (kubun, ymd_end, yyyymmdd) => {
     try {
-        const query = "SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd FROM (SELECT * from users WHERE kubun = '" + kubun + "' and ymd_end > '" + ymd_end + "') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '" + yyyymmdd + "') yy ON u.id = yy.id_users ORDER BY u.id asc"
+        const query = "SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd, yy.isYuukyuu FROM (SELECT * from users WHERE kubun = '" + kubun + "' and ymd_end > '" + ymd_end + "') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '" + yyyymmdd + "') yy ON u.id = yy.id_users ORDER BY u.id asc"
         const retObj =await knex.raw(query)
         return retObj[0]
     } catch(err) {
@@ -72,7 +72,7 @@ IDと日付をもとに、出勤情報を取得する
 */
 const findByUserIDWithYyyymmddInfo = async (id_users, yyyymmdd) => {
     try {
-        const query = "SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd FROM (SELECT * from users WHERE id = '" + id_users + "') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '" + yyyymmdd + "') yy ON u.id = yy.id_users ORDER BY u.id asc"
+        const query = "SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd, yy.isYuukyuu FROM (SELECT * from users WHERE id = '" + id_users + "') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '" + yyyymmdd + "') yy ON u.id = yy.id_users ORDER BY u.id asc"
         const retObj =await knex.raw(query)
         return retObj[0]
     } catch(err) {

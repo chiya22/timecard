@@ -103,7 +103,7 @@ router.post("/time/set", function (req, res) {
       action = "出勤";
 
     // 退勤ボタンを押した場合
-    } else {
+    } else if (req.body.shorikubun === "end") {
       inObjYyyymmdd.time_start = req.body.time_start;
       inObjYyyymmdd.time_end = timevalue;
       inObjYyyymmdd.time_start_upd = req.body.time_start_upd;
@@ -113,7 +113,12 @@ router.post("/time/set", function (req, res) {
       inObjYyyymmdd.time_pay = common.getPaytime(start, end, "0000");
       inObjYyyymmdd.makanai = req.body.makanai;
       const retObjYyyymmddUpdate = await yyyymmdds.update(inObjYyyymmdd);
-      action = "退勤";
+      action = "退勤"; 
+    // 有給休暇ボタンを押した場合
+    } else {
+      inObjYyyymmdd.isYuukyuu = 1;
+      const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
+      action = "有給休暇"; 
     }
 
     const retObjUser = await users.findPKey(req.body.id);
@@ -216,6 +221,7 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
           time.time_rest = timeJisseki.time_rest ? timeJisseki.time_rest : null;
           time.time_pay = timeJisseki.time_pay ? timeJisseki.time_pay : null;
           time.makanai = timeJisseki.makanai ? timeJisseki.makanai : null;
+          time.isYuukyuu = timeJisseki.isYuukyuu ? timeJisseki.isYuukyuu : null;
           if (time.time_start || time.time_start_upd) {
             timelist.totalpayday += 1;
           }
@@ -253,6 +259,7 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
   const time_endupd_list = req.body.time_end_upd;
   const time_restlist = req.body.time_rest;
   const makanailist = req.body.makanai;
+  const isYuukyuulist = req.body.isYuukyuu;
 
   (async () => {
     let inObjYyyyymmdds = {};
@@ -260,26 +267,42 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
     let retObjtime = {};
 
     for (let i = 0; i < yyyymmddlist.length; i++) {
-      // 支払時間を求める
-      // 開始時刻、開始時刻（更新）、終了時刻、終了時刻（更新）のいずれかに値が設定されている場合
-      if (time_start_list[i] !== "" || time_startupd_list[i] !== "" || time_end_list[i] !== "" || time_endupd_list[i] !== "") {
-        retObjtime = common.getStartEndTime(time_start_list[i], time_end_list[i], time_startupd_list[i], time_endupd_list[i]);
+      // 開始時刻、開始時刻（更新）、終了時刻、終了時刻（更新）、賄、有給のいずれかに値が設定されている場合、強制的に更新対象とする
+      if (time_start_list[i] !== "" || time_startupd_list[i] !== "" || time_end_list[i] !== "" || time_endupd_list[i] !== "" || makanailist[i] !== "0" || isYuukyuulist[i] !== "0") {
+
+        // 支払時間を求める
         let time_pay;
-        if (retObjtime.time_start && retObjtime.time_end) {
-          time_pay = common.getPaytime(retObjtime.time_start, retObjtime.time_end, time_restlist[i]);
+        if (time_start_list[i] !== "" || time_startupd_list[i] !== "" || time_end_list[i] !== "" || time_endupd_list[i] !== "") {
+          retObjtime = common.getStartEndTime(time_start_list[i], time_end_list[i], time_startupd_list[i], time_endupd_list[i]);
+          if (retObjtime.time_start && retObjtime.time_end) {
+            time_pay = common.getPaytime(retObjtime.time_start, retObjtime.time_end, time_restlist[i]);
+          }
         }
 
-        // 明細情報の設定dz
+        // 明細情報の設定
         inObjYyyyymmdds.id_users = id;
         inObjYyyyymmdds.yyyymmdd = yyyymmddlist[i];
         inObjYyyyymmdds.yyyymm_seisan = yyyymm_seisan_list[i];
-        inObjYyyyymmdds.time_start = time_start_list[i] ? ("000" + time_start_list[i].replace(":", "")).slice(-4) : null;
-        inObjYyyyymmdds.time_start_upd = time_startupd_list[i] ? ("000" + time_startupd_list[i].replace(":", "")).slice(-4) : null;
-        inObjYyyyymmdds.time_end = time_end_list[i] ? ("000" + time_end_list[i].replace(":", "")).slice(-4) : null;
-        inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("000" + time_endupd_list[i].replace(":", "")).slice(-4) : null;
-        inObjYyyyymmdds.time_rest = time_restlist[i] ? ("000" + time_restlist[i].replace(":", "")).slice(-4) : null;
-        inObjYyyyymmdds.makanai = makanailist[i]? makanailist[i]: 0;
-        inObjYyyyymmdds.time_pay = time_pay;
+
+        if (isYuukyuulist[i] === "1") {
+          inObjYyyyymmdds.time_start = null;
+          inObjYyyyymmdds.time_start_upd = null;
+          inObjYyyyymmdds.time_end = null;
+          inObjYyyyymmdds.time_end_upd = null;
+          inObjYyyyymmdds.time_rest = null;
+          inObjYyyyymmdds.makanai = 0;
+          inObjYyyyymmdds.isYuukyuu = isYuukyuulist[i];
+          inObjYyyyymmdds.time_pay = null;
+        } else {
+          inObjYyyyymmdds.time_start = time_start_list[i] ? ("000" + time_start_list[i].replace(":", "")).slice(-4) : null;
+          inObjYyyyymmdds.time_start_upd = time_startupd_list[i] ? ("000" + time_startupd_list[i].replace(":", "")).slice(-4) : null;
+          inObjYyyyymmdds.time_end = time_end_list[i] ? ("000" + time_end_list[i].replace(":", "")).slice(-4) : null;
+          inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("000" + time_endupd_list[i].replace(":", "")).slice(-4) : null;
+          inObjYyyyymmdds.time_rest = time_restlist[i] ? ("000" + time_restlist[i].replace(":", "")).slice(-4) : null;
+          inObjYyyyymmdds.makanai = makanailist[i]? makanailist[i]: 0;
+          inObjYyyyymmdds.isYuukyuu = isYuukyuulist[i]? isYuukyuulist[i]: 0;
+          inObjYyyyymmdds.time_pay = time_pay? time_pay: null;
+        }
 
         retObjYyyymmdds = await yyyymmdds.findPKey(id, inObjYyyyymmdds.yyyymmdd);
         if (retObjYyyymmdds.length !== 0) {
@@ -287,6 +310,8 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
         } else {
           retObj = await yyyymmdds.insert(inObjYyyyymmdds);
         }
+      } else {
+        retObj = await yyyymmdds.remove(id,yyyymmddlist[i]);
       }
     }
     res.redirect("/admin/" + id + "/" + yyyymm);
@@ -342,6 +367,8 @@ router.post("/admin/download", (req, res) => {
           "," +
           (timerow.makanai ? timerow.makanai : "") +
           "," +
+          (timerow.isYuukyuu ? timerow.isYuukyuu : "") +
+          "," +
           (timerow.time_pay ? timerow.time_pay : "") +
           "\r\n";
         })
@@ -355,6 +382,7 @@ router.post("/admin/download", (req, res) => {
             time.time_end_upd = row.time_end_upd;
             time.time_rest = row.time_rest;
             time.makanai = row.makanai;
+            time.isYuukyuu = row.isYuukyuu;
             time.time_pay = row.time_pay;
           }
         })
@@ -369,6 +397,7 @@ router.post("/admin/download", (req, res) => {
             time.time_end_upd = row.time_end_upd;
             time.time_rest = row.time_rest;
             time.makanai = row.makanai;
+            time.isYuukyuu = row.isYuukyuu;
             time.time_pay = row.time_pay;
           }
         })
@@ -393,6 +422,8 @@ router.post("/admin/download", (req, res) => {
       (timerow.time_rest ? timerow.time_rest : "") +
       "," +
       (timerow.makanai ? timerow.makanai : "") +
+      "," +
+      (timerow.isYuukyuu ? timerow.isYuukyuu : "") +
       "," +
       (timerow.time_pay ? timerow.time_pay : "") +
       "\r\n";

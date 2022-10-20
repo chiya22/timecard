@@ -59,7 +59,7 @@ const findYyyymmInfoByUserId = async (id_users) => {
 
 const insert = async (inObj) => {
     try {
-        const query = "insert into yyyymmdds values (" + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.yyyymmdd) + "," + common.retValueForSql(inObj.yyyymm_seisan) + "," + common.retValueForSql(inObj.time_start) + "," + common.retValueForSql(inObj.time_end) + "," + common.retValueForSql(inObj.time_start_upd) + "," + common.retValueForSql(inObj.time_end_upd) + "," + common.retValueForSql(inObj.makanai) + "," + common.retValueForSql(inObj.time_rest) + "," + common.retValueForSql(inObj.time_pay) + ")";
+        const query = "insert into yyyymmdds values (" + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.yyyymmdd) + "," + common.retValueForSql(inObj.yyyymm_seisan) + "," + common.retValueForSql(inObj.time_start) + "," + common.retValueForSql(inObj.time_end) + "," + common.retValueForSql(inObj.time_start_upd) + "," + common.retValueForSql(inObj.time_end_upd) + "," + common.retValueForSql(inObj.makanai) + "," +  common.retValueForSql(inObj.isYuukyuu) + "," + common.retValueForSql(inObj.time_rest) + "," + common.retValueForSql(inObj.time_pay) + ")";
         logger.info(query);
         const retObj = await knex.raw(query)
         return retObj[0];
@@ -70,7 +70,7 @@ const insert = async (inObj) => {
 
 const update = async (inObj) => {
     try {
-        const query = "update yyyymmdds set yyyymm_seisan = " + common.retValueForSql(inObj.yyyymm_seisan) + ", time_start = " + common.retValueForSql(inObj.time_start) + ", time_start_upd = " + common.retValueForSql(inObj.time_start_upd) + ", time_end = " + common.retValueForSql(inObj.time_end) + ", time_end_upd = " + common.retValueForSql(inObj.time_end_upd) + ", makanai = " + common.retValueForSql(inObj.makanai) + ", time_rest = "  + common.retValueForSql(inObj.time_rest) + ", time_pay = " + common.retValueForSql(inObj.time_pay) + " where id_users = '" + inObj.id_users + "' and yyyymmdd = '" + inObj.yyyymmdd + "';"
+        const query = "update yyyymmdds set yyyymm_seisan = " + common.retValueForSql(inObj.yyyymm_seisan) + ", time_start = " + common.retValueForSql(inObj.time_start) + ", time_start_upd = " + common.retValueForSql(inObj.time_start_upd) + ", time_end = " + common.retValueForSql(inObj.time_end) + ", time_end_upd = " + common.retValueForSql(inObj.time_end_upd) + ", makanai = " + common.retValueForSql(inObj.makanai) + ",  isYuukyuu = " + common.retValueForSql(inObj.isYuukyuu) + ", time_rest = "  + common.retValueForSql(inObj.time_rest) + ", time_pay = " + common.retValueForSql(inObj.time_pay) + " where id_users = '" + inObj.id_users + "' and yyyymmdd = '" + inObj.yyyymmdd + "';"
         logger.info(query);
         const retObj = await knex.raw(query)
         return retObj[0];
@@ -91,7 +91,7 @@ const remove = async (id_users, yyyymmdd) => {
 
 const download = async (yyyymm) => {
     try {
-        const query = "SELECT y.id_users, y.yyyymmdd, y.time_start, y.time_end, y.time_start_upd, y.time_end_upd, y.makanai, y.time_rest, y.time_pay FROM yyyymmdds y WHERE y.yyyymm_seisan = '" + yyyymm + "' ORDER BY y.id_users, y.yyyymmdd asc";
+        const query = "SELECT y.id_users, y.yyyymmdd, y.time_start, y.time_end, y.time_start_upd, y.time_end_upd, y.makanai, y.isYuukyuu, y.time_rest, y.time_pay FROM yyyymmdds y WHERE y.yyyymm_seisan = '" + yyyymm + "' ORDER BY y.id_users, y.yyyymmdd asc";
         logger.info(query);
         const retObj = await knex.raw(query);
         return retObj[0];
