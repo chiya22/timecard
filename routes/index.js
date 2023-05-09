@@ -5,6 +5,7 @@ const sendmail = require("../util/sendmail");
 const users = require("../model/users");
 const hoseis = require("../model/hoseis");
 const yyyymmdds = require("../model/yyyymmdds");
+const yyyymmdds_enso = require("../model/yyyymmdds_enso");
 const log4js = require("log4js");
 const logger = log4js.configure("./config/log4js-config.json").getLogger();
 
@@ -436,5 +437,81 @@ router.post("/admin/download", (req, res) => {
   })();
 
 });
+
+/*
+残留塩素濃度記入画面へ遷移
+*/
+router.get("/enso", (req, res) => {
+  (async () => {
+    const date = new Date();
+    const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2)
+    let objEnso = await yyyymmdds_enso.findPKey(yyyymmdd)
+    // const objUsersList = await users.findByYyyymmdd("20201009");
+    const objUsersList = await users.findByYyyymmdd(yyyymmdd);
+
+    // 存在しない場合は初期値
+    let enso = {};
+    if (objEnso.length === 0) {
+      enso = {
+        yyyymmdd: yyyymmdds_enso.findPKey(date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2)),
+        id_users:"",
+        level:0.3,
+        color:"1",
+        nigori:"0",
+        nioi:"1",
+        aji:"0",
+        bikou:"0",
+        yyyymmddhhmmss_add:"",
+        yyyymmddhhmmss_upd:"",
+      }
+    } else {
+      enso = objEnso[0]
+    }
+    // const retObjUser = await users.findPKey(req.params.id);
+    res.render("enso", {
+      userlist: objUsersList,
+      title: `残留塩素：${yyyy_mm_dd}`,
+      enso
+    });
+
+  })()
+});
+
+/**
+ * 残留塩素登録時の処理
+ */
+router.post("/enso", (req, res) => {
+  (async () => {
+    const date = new Date();
+    // const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+    const objEnso = await yyyymmdds_enso.findPKey(yyyymmdd);
+
+    let inObjEnso = {};
+    inObjEnso.yyyymmdd = yyyymmdd;
+    // inObjEnso.id_users = "yoshida";
+    inObjEnso.id_users = req.body.id_users;
+    inObjEnso.level = req.body.level;
+    inObjEnso.color = req.body.color;
+    inObjEnso.nigori = req.body.nigori;
+    inObjEnso.nioi = req.body.nioi;
+    inObjEnso.aji = req.body.aji;
+    inObjEnso.bikou = req.body.bikou;
+    inObjEnso.yyyymmddhhmmss_upd = common.getTodayTime();
+
+    if (objEnso.length === 0) {
+      inObjEnso.yyyymmddhhmmss_add = common.getTodayTime();
+      const retObjEnso = await yyyymmdds_enso.insert(inObjEnso);
+    } else {
+      inObjEnso.yyyymmddhhmmss_add = objEnso[0].yyyymmddhhmmss_add;
+      const retObjEnso = await yyyymmdds_enso.update(inObjEnso);
+    } 
+
+    res.redirect("/");
+
+  })();
+});
+
 
 module.exports = router;
