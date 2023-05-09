@@ -80,6 +80,21 @@ const findByUserIDWithYyyymmddInfo = async (id_users, yyyymmdd) => {
     }
 };
 
+/*
+日付をもとに、出勤情報を取得する
+ */
+const findByYyyymmdd = async (yyyymmdd) => {
+    try {
+        logger.info(yyyymmdd);
+        const query = "SELECT b.id, b.name FROM yyyymmdds a left outer join users b ON a.id_users = b.id where a.yyyymmdd = '" + yyyymmdd + "';"
+        logger.info(query);
+        const retObj =await knex.raw(query)
+        return retObj[0]
+    } catch(err) {
+        throw err
+    }
+};
+
 
 
 module.exports = {
@@ -87,6 +102,7 @@ module.exports = {
     findPKey: findPKey,
     findByKubunWithYyyymmddInfo: findByKubunWithYyyymmddInfo,
     findByUserIDWithYyyymmddInfo: findByUserIDWithYyyymmddInfo,
+    findByYyyymmdd: findByYyyymmdd,
     insert: insert,
     update: update,
     remove: remove,
