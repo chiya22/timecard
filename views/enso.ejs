@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <%- include("./common/stylesheets.ejs", {isAdmin: false}) %>
+    </head>
+
+  <body>
+    <div class="header">
+        <div class="header__main">
+            <div class="header_left">
+                <a href="/">
+                    <img class="header-logo" src="/static/images/building_logo.svg">
+                </a>
+            </div>
+            <div class="header__right">
+                <a class="header-back-enso" href="/">戻る</a>
+            </div>
+        </div>
+        <div class="title-enso">
+            <h1><%= title %></h1>
+        </div>
+    </div>
+    <div class="container-action">
+      <form method="POST" name="ensoform" action="/enso">
+        <%
+        let level005_checked = (enso.level===0.05?"checked":"");
+        let level01_checked = (enso.level===0.1?"checked":"");
+        let level03_checked = (enso.level===0.3?"checked":"");
+        let level05_checked = (enso.level===0.5?"checked":"");
+        let level07_checked = (enso.level===0.7?"checked":"");
+        let level10_checked = (enso.level===1.0?"checked":"");
+        let level15_checked = (enso.level===1.5?"checked":"");
+        let level20_checked = (enso.level===2.0?"checked":"");
+        let color_nashi_checked = (enso.color==="0"?"checked":""); let color_ari_checked = (enso.color==="1"?"checked":"");
+        let nigori_nashi_checked = (enso.nigori==="0"?"checked":""); let nigori_ari_checked = (enso.nigori==="1"?"checked":"");
+        let nioi_nashi_checked = (enso.nioi==="0"?"checked":""); let nioi_ari_checked = (enso.nioi==="1"?"checked":"");
+        let aji_nashi_checked = (enso.aji==="0"?"checked":""); let aji_ari_checked = (enso.aji==="1"?"checked":"");
+        %>
+        <div class="action-area-enso">
+            <!-- 検査者 ★プルダウンにする★　-->
+            <dt>検査者</dt>
+            <dd>
+                <fieldset>
+                    <% userlist.forEach( user =>  { %>
+                        <% let users_checked = user.id === enso.id_users? "checked": "" %> 
+                        <input id="<%= user.id %>" class="radio" type="radio" name="id_users" value="<%= user.id %>" <%= users_checked %>/>
+                        <label for="<%= user.id %>" class="radio-label"><%= user.name %></label>
+                    <% }) %>
+                </fieldset>
+            </dd>
+
+          <dt>遊離残留塩素</dt>
+          <dd class="oneline-dd">
+            <fieldset>
+              <input id="level005" class="radio" type="radio" name="level" value="0.05" <%= level005_checked %> />
+              <label for="level005" class="radio-label"> 0.05 </label>
+              <input id="level01" class="radio" type="radio" name="level" value="0.1" <%= level01_checked %> />
+              <label for="level01" class="radio-label"> 0.1 </label>
+              <input id="level03" class="radio" type="radio" name="level" value="0.3" <%= level03_checked %> />
+              <label for="level03" class="radio-label"> 0.3 </label>
+              <input id="level05" class="radio" type="radio" name="level" value="0.5" <%= level05_checked %> />
+              <label for="level05" class="radio-label"> 0.5 </label>
+              <input id="level07" class="radio" type="radio" name="level" value="0.7" <%= level07_checked %> />
+              <label for="level07" class="radio-label"> 0.7 </label>
+              <input id="level10" class="radio" type="radio" name="level" value="1.0" <%= level10_checked %> />
+              <label for="level10" class="radio-label"> 1.0 </label>
+              <input id="level15" class="radio" type="radio" name="level" value="1.5" <%= level15_checked %> />
+              <label for="level15" class="radio-label"> 1.5 </label>
+              <input id="level20" class="radio" type="radio" name="level" value="2.0" <%= level20_checked %> />
+              <label for="level20" class="radio-label"> 2.0 </label>
+            </fieldset>
+          </dd>
+          <dt>色</dt>
+          <dd class="oneline-dd">
+            <fieldset>
+              <input id="color-ari" class="radio" type="radio" name="color" value="1" <%= color_ari_checked %> />
+              <label for="color-ari" class="radio-label"> 有 </label>
+              <input id="color-nashi" class="radio" type="radio" name="color" value="0" <%= color_nashi_checked %> />
+              <label for="color-nashi" class="radio-label"> 無 </label>
+            </fieldset>
+          </dd>
+          <dt>濁り</dt>
+          <dd class="oneline-dd">
+            <fieldset>
+              <input id="nigori-ari" class="radio" type="radio" name="nigori" value="1" <%= nigori_ari_checked %> />
+              <label for="nigori-ari" class="radio-label"> 有 </label>
+              <input id="nigori-nashi" class="radio" type="radio" name="nigori" value="0" <%= nigori_nashi_checked %> />
+              <label for="nigori-nashi" class="radio-label"> 無 </label>
+            </fieldset>
+          </dd>
+          <dt>臭い</dt>
+          <dd class="oneline-dd">
+            <fieldset>
+              <input id="nioi-ari" class="radio" type="radio" name="nioi" value="1" <%= nioi_ari_checked %> />
+              <label for="nioi-ari" class="radio-label"> 有 </label>
+              <input id="nioi-nashi" class="radio" type="radio" name="nioi" value="0" <%= nioi_nashi_checked %> />
+              <label for="nioi-nashi" class="radio-label"> 無 </label>
+            </fieldset>
+          </dd>
+          <dt>味</dt>
+          <dd class="oneline-dd">
+            <fieldset>
+              <input id="aji-ari" class="radio" type="radio" name="aji" value="1" <%= aji_ari_checked %> />
+              <label for="aji-ari" class="radio-label"> 有 </label>
+              <input id="aji-nashi" class="radio" type="radio" name="aji" value="0" <%= aji_nashi_checked %> />
+              <label for="aji-nashi" class="radio-label"> 無 </label>
+            </fieldset>
+          </dd>
+          <!-- <dt>備考</dt>
+          <dd class="oneline-dd">
+            <fieldset>
+                <textarea name="bikou"></textarea>
+            </fieldset>
+          </dd> -->
+        </div>
+        <div class="btn-area">
+            <input class="btn-action" id="btnTouroku" type="button" value="登録" />
+          </div>
+      </form>
+    </div>
+    <script>
+      const btnTouroku = document.getElementById("btnTouroku");
+      btnTouroku.addEventListener("click", () => {
+        let userlist = document.getElementsByName("id_users");
+        let isChecked = false;
+        for (let i=0; i<userlist.length; i++) {
+          if (userlist[i].checked) {
+            isChecked = true;
+          }
+        }
+        if (isChecked) {
+          document.ensoform.submit();
+        } else {
+          alert("『検査者』を選択してください。")
+        }
+      })
+
+    </script>
+  
+  </body>
+  <%- include("./common/javascripts.ejs") %>
+</html>
