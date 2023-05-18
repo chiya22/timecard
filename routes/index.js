@@ -6,6 +6,7 @@ const users = require("../model/users");
 const hoseis = require("../model/hoseis");
 const yyyymmdds = require("../model/yyyymmdds");
 const yyyymmdds_enso = require("../model/yyyymmdds_enso");
+const yyyymmdds_suido = require("../model/yyyymmdds_suido");
 const log4js = require("log4js");
 const logger = log4js.configure("./config/log4js-config.json").getLogger();
 
@@ -437,6 +438,40 @@ router.post("/admin/download", (req, res) => {
   })();
 
 });
+
+/**
+ * 水道メーター記入画面へ遷移
+ */
+router.get("/suido", (req, res) => {
+  (async () => {
+    const date = new Date();
+    const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+    let suido = await yyyymmdds_suido.findLastRecord();
+    if (suido.length === 0) {
+      suido.metervalue = 0
+    }
+    res.render("suido", {
+      title: `水道メーター：${yyyy_mm_dd}`,
+      suido: suido[0]
+    });
+  })()
+})
+
+/**
+ * 水道メーター登録時の処理
+ */
+router.post("/suido", (req,res) => {
+
+  (async () => {
+
+    let inObjSuido = {};
+    inObjSuido.metervalue = req.body.metervalue;
+    inObjSuido.yyyymmddhhmmss_add = common.getTodayTime();
+    const retObjSuido = await yyyymmdds_suido.insert(inObjSuido);
+  
+    res.redirect("/");
+  })()
+})
 
 /*
 残留塩素濃度記入画面へ遷移

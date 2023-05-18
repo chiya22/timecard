@@ -39,7 +39,7 @@ body {
   margin-right: 10px;
   cursor: default;
 }
-.header-admin, .header-back, .header-hosei, .header-enso {
+.header-admin, .header-back, .header-hosei, .header-enso, .header-suido {
   display: block;
   float: right;
   border-radius: 15px;
@@ -51,7 +51,7 @@ body {
   margin-right: 10px;
   cursor: pointer;
 }
-.header-admin:hover, .header-back:hover, .header-hosei:hover, .header-enso:hover {
+.header-admin:hover, .header-back:hover, .header-hosei:hover, .header-enso:hover, .header-suido:hover {
   background-color: #CD5E42;
   color:#fff;
 }
@@ -530,7 +530,7 @@ body {
   color: #143D56;
   border: 1px solid #143D56;
 }
-.header-back-enso {
+.header-back-enso, .header-back-suido {
   display: block;
   float: right;
   border-radius: 15px;
@@ -542,7 +542,61 @@ body {
   margin-right: 10px;
   cursor: pointer;
 }
-.header-back-enso:hover {
+.header-back-enso:hover, .header-back-suido:hover {
   background-color: #143D56;
   color:#fff;
+}
+
+
+/* ここから水道メーター */
+.title-suido {
+  width: 100%;
+  background-color:#c9daeb;
+  font-size: 24px;
+  font-weight: bold;
+  color: #143D56;
+  padding: 15px 0;
+  text-align: center;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+.action-area-suido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  margin: 0 auto 20px auto
+}
+.action-area-suido dt {
+  width: 50%;
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 24px;
+  color: #143D56;
+  font-weight: normal;
+  background-color: #c9daeb;
+  margin: 20px 10px;
+  border-radius: 10px;
+}
+.action-area-suido dd {
+  width: 45%;
+  padding: 30px 20px;
+  font-size: 32px;
+  color: #143D56;
+}
+
+.input-meter {
+  width: 300px;
+  height: 80px;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 5px 20px;
+}
+.input-meter-disabled {
+  width: 300px;
+  height: 80px;
+  border: 1px solid #c9daeb;
+  border-radius: 10px;
+  padding: 5px 20px;
 }

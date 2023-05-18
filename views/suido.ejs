@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <%- include("./common/stylesheets.ejs", {isAdmin: false}) %>
+    </head>
+
+  <body>
+    <div class="header">
+        <div class="header__main">
+            <div class="header_left">
+                <a href="/">
+                    <img class="header-logo" src="/static/images/building_logo.svg">
+                </a>
+            </div>
+            <div class="header__right">
+                <a class="header-back-suido" href="/">戻る</a>
+            </div>
+        </div>
+        <div class="title-suido">
+            <h1><%= title %></h1>
+        </div>
+    </div>
+    <div class="container-action">
+      <form method="POST" name="suidoform" action="/suido">
+        <div class="action-area-suido">
+          <dt>前回メーター値</dt>
+          <dd class="oneline-dd">
+            <input class="input-meter-disabled" type="number" id="beforemetervalue" name="beforemetervalue" disabled value="<%= suido.metervalue %>"/>
+          </dd>
+          <dt>今回メーター値</dt>
+          <dd class="oneline-dd">
+            <input class="input-meter" type="tel" id="metervalue" name="metervalue" value="0" autofocus />
+          </dd>
+          <div class="btn-area">
+            <input class="btn-action" id="btnTouroku" type="button" value="登録" />
+          </div>
+      </form>
+    </div>
+    <script>
+      const btnTouroku = document.getElementById("btnTouroku");
+      btnTouroku.addEventListener("click", () => {
+        const beforemeterObj = document.getElementById("beforemetervalue")
+        const meterObj = document.getElementById("metervalue")
+        const regexp = new RegExp(/^[0-9]+(\.[0-9]+)?$/);
+        if (!regexp.test(meterObj.value)) {
+          alert("【今回メーター値】には整数値を入力してください")
+        } else if (beforemeterObj.value > meterObj.value) {
+          alert("【今回メーター値】が【前回メーター値】を下回っています")
+        } else {
+          document.suidoform.submit();
+        }
+      })
+    </script>
+  </body>
+  <%- include("./common/javascripts.ejs") %>
+</html>
