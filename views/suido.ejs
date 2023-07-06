@@ -36,6 +36,10 @@
             <input class="btn-action" id="btnTouroku" type="button" value="登録" />
           </div>
       </form>
+      <div style="margin-top: 60px;">
+        <%= suidoLastFirst.yyyymmddhhmmss_add.slice(0,4) %>年<%= suidoLastFirst.yyyymmddhhmmss_add.slice(4,6) %>月<%= suidoLastFirst.yyyymmddhhmmss_add.slice(6,8) %>日<%= suidoLastFirst.yyyymmddhhmmss_add.slice(8,10) %>時<%= suidoLastFirst.yyyymmddhhmmss_add.slice(10,12) %>分のメーター値：
+        <%= suidoLastFirst.metervalue %>
+      </div>
     </div>
     <script>
       const btnTouroku = document.getElementById("btnTouroku");
