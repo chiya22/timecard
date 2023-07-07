@@ -586,6 +586,46 @@ body {
   color: #143D56;
 }
 
+.rireki-btn-suido {
+  display: block;
+  padding: 10px 20px;
+  border: 1px solid #143D56;
+  border-radius: 10px;
+  color: #143D56;
+  margin: 30px;
+  cursor: pointer;
+  width: 150px;
+  text-align: center;
+  margin: 0 auto;
+}
+.rireki-btn-suido:hover {
+  background-color: #143D56;
+  color: #fff;
+}
+
+.rireki-area-suido {
+  display: block;
+}
+.rireki-area-suido dt {
+  display: inline-block;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  color: #143D56;
+  font-weight: bold;
+  background-color: #c9daeb;
+  border-radius: 0;
+  width:auto;
+  margin: 0px 0px 5px 0px;
+}
+.rireki-area-suido dd {
+  display: inline-block;
+  width: auto;
+  padding: 10px;
+  font-size: 14px;
+  color: #143D56;  
+}
+
 .input-meter {
   width: 300px;
   height: 80px;
