@@ -25,9 +25,9 @@ const insert = async (inObj) => {
   }
 };
 
-const findLastFirstRecord = async (yyyymm) => {
+const findsFromLastMonthToCurrent = async (yyyymm) => {
   try {
-    const query = `select * from yyyymmdds_suido ys where substr(ys.yyyymmddhhmmss_add,1,8) = '${yyyymm}01' order by ys.yyyymmddhhmmss_add asc limit 1`;
+    const query = `select * from yyyymmdds_suido ys where ys.yyyymmddhhmmss_add >= '${yyyymm}01' order by ys.yyyymmddhhmmss_add asc`;
     logger.info(query);
     const retObj = await knex.raw(query);
     return retObj[0];
@@ -39,5 +39,5 @@ const findLastFirstRecord = async (yyyymm) => {
 module.exports = {
   findLastRecord,
   insert,
-  findLastFirstRecord,
+  findsFromLastMonthToCurrent,
 };
