@@ -448,11 +448,11 @@ router.get("/suido", (req, res) => {
     const yyyy = d.getFullYear();
     // getMonth()の仕様上、1月の場合は12月を意図的に設定
     const mm = d.getMonth() === 0 ? "12" : ("00" + d.getMonth()).slice(-2);
-    const suidoLastFirst = await yyyymmdds_suido.findLastFirstRecord(yyyy + mm);
+    const suidolist = await yyyymmdds_suido.findsFromLastMonthToCurrent(yyyy + mm);
     res.render("suido", {
       title: `水道メーター：${yyyy_mm_dd}`,
       suido: suido[0],
-      suidoLastFirst: suidoLastFirst[0],
+      suidolist: suidolist,
     });
   })();
 });
