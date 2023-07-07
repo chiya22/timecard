@@ -315,8 +315,8 @@ body {
 .form-hosei-item dd input[type="text"],
 .form-hosei-item dd select {
   width: 100%;
-  padding: 5px;
-  border: 1px solid #000;
+  padding: 10px;
+  background-color: #eae8e1;
 }
 .hoseiarea__okbtn, 
 .hoseiarea__ngbtn {
@@ -325,7 +325,7 @@ body {
   border: 1px solid #CD5E42;
   border-radius: 5px;
   background-color: #fff;
-  padding: 5px 10px;
+  padding: 15px 30px;
   margin: 0 15px;
 }
 .hoseiarea__okbtn:hover, 
