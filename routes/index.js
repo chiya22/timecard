@@ -42,8 +42,8 @@ router.get("/admin", function (req, res) {
     const date = new Date();
     const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
     const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
-    const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, '19900101',yyyymmdd);
-    const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, '19900101',yyyymmdd);
+    const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, "19900101", yyyymmdd);
+    const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, "19900101", yyyymmdd);
     const retObjHosei = await hoseis.findAll();
     res.render("admin", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")",
@@ -69,7 +69,7 @@ router.get("/time/:id", function (req, res) {
     const timelistJisseki = await yyyymmdds.findByYyyymmSeisanAndUserid(yyyymm_seisan, req.params.id);
     timelistJisseki.forEach((timeJisseki) => {
       timeJisseki.youbi = common.getYoubi(timeJisseki.yyyymmdd);
-    })
+    });
 
     res.render("time", {
       title: yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ")：" + retObjUser[0].name,
@@ -104,29 +104,34 @@ router.post("/time/set", function (req, res) {
       const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
       action = "出勤";
 
-    // 退勤ボタンを押した場合
+      // 退勤ボタンを押した場合
     } else if (req.body.shorikubun === "end") {
       inObjYyyymmdd.time_start = req.body.time_start;
       inObjYyyymmdd.time_end = timevalue;
       inObjYyyymmdd.time_start_upd = req.body.time_start_upd;
       inObjYyyymmdd.time_end_upd = req.body.time_end_upd;
-      const start = inObjYyyymmdd.time_start_upd?inObjYyyymmdd.time_start_upd:inObjYyyymmdd.time_start;
-      const end = inObjYyyymmdd.time_end_upd?inObjYyyymmdd.time_end_upd:inObjYyyymmdd.time_end;
+      const start = inObjYyyymmdd.time_start_upd ? inObjYyyymmdd.time_start_upd : inObjYyyymmdd.time_start;
+      const end = inObjYyyymmdd.time_end_upd ? inObjYyyymmdd.time_end_upd : inObjYyyymmdd.time_end;
       inObjYyyymmdd.time_pay = common.getPaytime(start, end, "0000");
       inObjYyyymmdd.makanai = req.body.makanai;
       const retObjYyyymmddUpdate = await yyyymmdds.update(inObjYyyymmdd);
-      action = "退勤"; 
-    // 有給休暇ボタンを押した場合
+      action = "退勤";
+      // 有給休暇ボタンを押した場合
     } else {
       inObjYyyymmdd.isYuukyuu = 1;
       const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
-      action = "有給休暇"; 
+      action = "有給休暇";
     }
 
     const retObjUser = await users.findPKey(req.body.id);
-    if (retObjUser[0].kubun === '2') {
+    if (retObjUser[0].kubun === "2") {
       const title = `【出退勤管理：${retObjUser[0].name}】${action}`;
-      sendmail.send(title, `${req.body.yyyymmdd.slice(0,4)}年${req.body.yyyymmdd.slice(4,6)}月${req.body.yyyymmdd.slice(6,8)}日 ${timevalue.slice(0,2)}時${timevalue.slice(2,4)}分　『${retObjUser[0].name}』が${action}しました。`);
+      sendmail.send(
+        title,
+        `${req.body.yyyymmdd.slice(0, 4)}年${req.body.yyyymmdd.slice(4, 6)}月${req.body.yyyymmdd.slice(6, 8)}日 ${timevalue.slice(0, 2)}時${timevalue.slice(2, 4)}分　『${
+          retObjUser[0].name
+        }』が${action}しました。`
+      );
       logger.info("メール送信しました：【" + action + "】" + req.body.id);
     }
 
@@ -156,10 +161,8 @@ router.post("/hosei/add", function (req, res) {
 /*
 指定されたキー情報をもとに補正情報を完了にする
 */
-router.get("/admin/hosei/:key", function (req,res) {
-
+router.get("/admin/hosei/:key", function (req, res) {
   (async () => {
-
     const date = new Date();
     const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
 
@@ -167,7 +170,7 @@ router.get("/admin/hosei/:key", function (req,res) {
     const id_users = req.params.key.split("_")[1];
     const ymd_target = req.params.key.split("_")[2];
 
-    const retObjHosei = await hoseis.findPKey(ymd_irai,id_users,ymd_target);
+    const retObjHosei = await hoseis.findPKey(ymd_irai, id_users, ymd_target);
 
     let inObjHosei = {};
     inObjHosei.ymd_irai = ymd_irai;
@@ -175,13 +178,12 @@ router.get("/admin/hosei/:key", function (req,res) {
     inObjHosei.ymd_target = ymd_target;
     inObjHosei.message = retObjHosei.message;
     inObjHosei.ymd_hosei = yyyymmdd;
-    inObjHosei.id_users_hosei = 'yoshida';
+    inObjHosei.id_users_hosei = "yoshida";
 
     const retObjHoseiUpdate = await hoseis.update(inObjHosei);
     res.redirect("/admin");
-
   })();
-})
+});
 /*
 指定したユーザIDの実績が存在する年月（精算）を取得する
 */
@@ -228,16 +230,16 @@ router.get("/admin/:id/:yyyymm", function (req, res) {
             timelist.totalpayday += 1;
           }
           if (time.time_pay) {
-            timelist.totalpayhh += Number(time.time_pay.slice(0,2))
+            timelist.totalpayhh += Number(time.time_pay.slice(0, 2));
             timelist.totalpaymm += Number(time.time_pay.slice(-2));
           }
         }
       });
     });
 
-    timelist.totalpayhh += (parseInt(timelist.totalpaymm / 60, 10));
+    timelist.totalpayhh += parseInt(timelist.totalpaymm / 60, 10);
     timelist.totalpaymm = ("0" + (timelist.totalpaymm % 60)).slice(-2);
-  
+
     res.render("monthtime", {
       title: "管理者：" + req.params.yyyymm.slice(0, 4) + "年" + req.params.yyyymm.slice(-2) + "月：" + retObjUser[0].name,
       yyyymm: req.params.yyyymm,
@@ -271,7 +273,6 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
     for (let i = 0; i < yyyymmddlist.length; i++) {
       // 開始時刻、開始時刻（更新）、終了時刻、終了時刻（更新）、賄、有給のいずれかに値が設定されている場合、強制的に更新対象とする
       if (time_start_list[i] !== "" || time_startupd_list[i] !== "" || time_end_list[i] !== "" || time_endupd_list[i] !== "" || makanailist[i] !== "0" || isYuukyuulist[i] !== "0") {
-
         // 支払時間を求める
         let time_pay;
         if (time_start_list[i] !== "" || time_startupd_list[i] !== "" || time_end_list[i] !== "" || time_endupd_list[i] !== "") {
@@ -301,9 +302,9 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
           inObjYyyyymmdds.time_end = time_end_list[i] ? ("000" + time_end_list[i].replace(":", "")).slice(-4) : null;
           inObjYyyyymmdds.time_end_upd = time_endupd_list[i] ? ("000" + time_endupd_list[i].replace(":", "")).slice(-4) : null;
           inObjYyyyymmdds.time_rest = time_restlist[i] ? ("000" + time_restlist[i].replace(":", "")).slice(-4) : null;
-          inObjYyyyymmdds.makanai = makanailist[i]? makanailist[i]: 0;
-          inObjYyyyymmdds.isYuukyuu = isYuukyuulist[i]? isYuukyuulist[i]: 0;
-          inObjYyyyymmdds.time_pay = time_pay? time_pay: null;
+          inObjYyyyymmdds.makanai = makanailist[i] ? makanailist[i] : 0;
+          inObjYyyyymmdds.isYuukyuu = isYuukyuulist[i] ? isYuukyuulist[i] : 0;
+          inObjYyyyymmdds.time_pay = time_pay ? time_pay : null;
         }
 
         retObjYyyymmdds = await yyyymmdds.findPKey(id, inObjYyyyymmdds.yyyymmdd);
@@ -313,7 +314,7 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
           retObj = await yyyymmdds.insert(inObjYyyyymmdds);
         }
       } else {
-        retObj = await yyyymmdds.remove(id,yyyymmddlist[i]);
+        retObj = await yyyymmdds.remove(id, yyyymmddlist[i]);
       }
     }
     res.redirect("/admin/" + id + "/" + yyyymm);
@@ -324,9 +325,7 @@ router.post("/admin/:id/:yyyymm", (req, res) => {
 指定された年月の出退勤情報をダウンロードする
 */
 router.post("/admin/download", (req, res) => {
-
   (async () => {
-
     const yyyymm = req.body.target_yyyymm.replace("/", "");
 
     const retObjForDownload = await yyyymmdds.download(yyyymm);
@@ -335,7 +334,7 @@ router.post("/admin/download", (req, res) => {
     const yyyymmdd_start = common.getBeforeMonthYyyymm(yyyymm) + "16";
     const yyyymmdd_end = yyyymm + "15";
     let timelist = common.getInitialTimeListAll(retObjForDownload[0].id_users, yyyymmdd_start, yyyymmdd_end);
-    
+
     // keyの設定
     let key = "";
     let beforekey = retObjForDownload[0].id_users;
@@ -344,36 +343,34 @@ router.post("/admin/download", (req, res) => {
     let csv = "";
 
     retObjForDownload.forEach((row) => {
-
       // keyの設定
       key = row.id_users;
 
       if (beforekey !== key) {
-
         // csvへ出力
         timelist.forEach((timerow) => {
           csv +=
-          timerow.id_users +
-          "," +
-          timerow.yyyymmdd +
-          "," +
-          (timerow.time_start ? timerow.time_start : "") +
-          "," +
-          (timerow.time_end ? timerow.time_end : "") +
-          "," +
-          (timerow.time_start_upd ? timerow.time_start_upd : "") +
-          "," +
-          (timerow.time_end_upd ? timerow.time_end_upd : "") +
-          "," +
-          (timerow.time_rest ? timerow.time_rest : "") +
-          "," +
-          (timerow.makanai ? timerow.makanai : "") +
-          "," +
-          (timerow.isYuukyuu ? timerow.isYuukyuu : "") +
-          "," +
-          (timerow.time_pay ? timerow.time_pay : "") +
-          "\r\n";
-        })
+            timerow.id_users +
+            "," +
+            timerow.yyyymmdd +
+            "," +
+            (timerow.time_start ? timerow.time_start : "") +
+            "," +
+            (timerow.time_end ? timerow.time_end : "") +
+            "," +
+            (timerow.time_start_upd ? timerow.time_start_upd : "") +
+            "," +
+            (timerow.time_end_upd ? timerow.time_end_upd : "") +
+            "," +
+            (timerow.time_rest ? timerow.time_rest : "") +
+            "," +
+            (timerow.makanai ? timerow.makanai : "") +
+            "," +
+            (timerow.isYuukyuu ? timerow.isYuukyuu : "") +
+            "," +
+            (timerow.time_pay ? timerow.time_pay : "") +
+            "\r\n";
+        });
         // 次のユーザーの1カ月配列
         timelist = common.getInitialTimeListAll(row.id_users, yyyymmdd_start, yyyymmdd_end);
         timelist.forEach((time) => {
@@ -387,9 +384,8 @@ router.post("/admin/download", (req, res) => {
             time.isYuukyuu = row.isYuukyuu;
             time.time_pay = row.time_pay;
           }
-        })
+        });
         beforekey = row.id_users;
-
       } else {
         timelist.forEach((time) => {
           if (time.yyyymmdd === row.yyyymmdd) {
@@ -402,41 +398,39 @@ router.post("/admin/download", (req, res) => {
             time.isYuukyuu = row.isYuukyuu;
             time.time_pay = row.time_pay;
           }
-        })
+        });
       }
-    })
+    });
 
     // 残った情報をcsvへ出力
     timelist.forEach((timerow) => {
       csv +=
-      timerow.id_users +
-      "," +
-      timerow.yyyymmdd +
-      "," +
-      (timerow.time_start ? timerow.time_start : "") +
-      "," +
-      (timerow.time_end ? timerow.time_end : "") +
-      "," +
-      (timerow.time_start_upd ? timerow.time_start_upd : "") +
-      "," +
-      (timerow.time_end_upd ? timerow.time_end_upd : "") +
-      "," +
-      (timerow.time_rest ? timerow.time_rest : "") +
-      "," +
-      (timerow.makanai ? timerow.makanai : "") +
-      "," +
-      (timerow.isYuukyuu ? timerow.isYuukyuu : "") +
-      "," +
-      (timerow.time_pay ? timerow.time_pay : "") +
-      "\r\n";
-    })
+        timerow.id_users +
+        "," +
+        timerow.yyyymmdd +
+        "," +
+        (timerow.time_start ? timerow.time_start : "") +
+        "," +
+        (timerow.time_end ? timerow.time_end : "") +
+        "," +
+        (timerow.time_start_upd ? timerow.time_start_upd : "") +
+        "," +
+        (timerow.time_end_upd ? timerow.time_end_upd : "") +
+        "," +
+        (timerow.time_rest ? timerow.time_rest : "") +
+        "," +
+        (timerow.makanai ? timerow.makanai : "") +
+        "," +
+        (timerow.isYuukyuu ? timerow.isYuukyuu : "") +
+        "," +
+        (timerow.time_pay ? timerow.time_pay : "") +
+        "\r\n";
+    });
 
     res.setHeader("Content-disposition", "attachment; filename=data.csv");
     res.setHeader("Content-Type", "text/csv; charset=UTF-8");
     res.status(200).send(csv);
-
   })();
-
 });
 
 /**
@@ -448,8 +442,9 @@ router.get("/suido", (req, res) => {
     const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
     let suido = await yyyymmdds_suido.findLastRecord();
     if (suido.length === 0) {
-      suido.metervalue = 0
+      suido.metervalue = 0;
     }
+<<<<<<< HEAD
 
     // 現在の日付を取得
     const today = new Date();
@@ -470,24 +465,22 @@ router.get("/suido", (req, res) => {
       suido: suido[0],
       suidolist: suidolist,
     });
-  })()
-})
+  })();
+});
 
 /**
  * 水道メーター登録時の処理
  */
-router.post("/suido", (req,res) => {
-
+router.post("/suido", (req, res) => {
   (async () => {
-
     let inObjSuido = {};
     inObjSuido.metervalue = req.body.metervalue;
     inObjSuido.yyyymmddhhmmss_add = common.getTodayTime();
     const retObjSuido = await yyyymmdds_suido.insert(inObjSuido);
-  
+
     res.redirect("/");
-  })()
-})
+  })();
+});
 
 /*
 残留塩素濃度記入画面へ遷移
@@ -496,8 +489,8 @@ router.get("/enso", (req, res) => {
   (async () => {
     const date = new Date();
     const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
-    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2)
-    let objEnso = await yyyymmdds_enso.findPKey(yyyymmdd)
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+    let objEnso = await yyyymmdds_enso.findPKey(yyyymmdd);
     // const objUsersList = await users.findByYyyymmdd("20201009");
     const objUsersList = await users.findByYyyymmdd(yyyymmdd);
 
@@ -506,27 +499,26 @@ router.get("/enso", (req, res) => {
     if (objEnso.length === 0) {
       enso = {
         yyyymmdd: yyyymmdds_enso.findPKey(date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2)),
-        id_users:"",
-        level:0.3,
-        color:"1",
-        nigori:"0",
-        nioi:"1",
-        aji:"0",
-        bikou:"0",
-        yyyymmddhhmmss_add:"",
-        yyyymmddhhmmss_upd:"",
-      }
+        id_users: "",
+        level: 0.3,
+        color: "1",
+        nigori: "0",
+        nioi: "1",
+        aji: "0",
+        bikou: "0",
+        yyyymmddhhmmss_add: "",
+        yyyymmddhhmmss_upd: "",
+      };
     } else {
-      enso = objEnso[0]
+      enso = objEnso[0];
     }
     // const retObjUser = await users.findPKey(req.params.id);
     res.render("enso", {
       userlist: objUsersList,
       title: `残留塩素：${yyyy_mm_dd}`,
-      enso
+      enso,
     });
-
-  })()
+  })();
 });
 
 /**
@@ -557,12 +549,10 @@ router.post("/enso", (req, res) => {
     } else {
       inObjEnso.yyyymmddhhmmss_add = objEnso[0].yyyymmddhhmmss_add;
       const retObjEnso = await yyyymmdds_enso.update(inObjEnso);
-    } 
+    }
 
     res.redirect("/");
-
   })();
 });
-
 
 module.exports = router;
