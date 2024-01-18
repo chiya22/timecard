@@ -450,9 +450,25 @@ router.get("/suido", (req, res) => {
     if (suido.length === 0) {
       suido.metervalue = 0
     }
+
+    // 現在の日付を取得
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth(); // 月を取得（0から11）
+
+    // 一か月前の日付を作成
+    const lastMonth = month - 1;
+    const lastdate = new Date(year, lastMonth, "1");
+    const lastYear = lastdate.getFullYear();
+    const displastMonth = lastdate.getMonth() + 1;
+
+    // 一か月前の水道記入履歴リストを取得
+    const suidolist = await yyyymmdds_suido.findsFromLastMonthToCurrent("" + lastYear + ("0" +displastMonth).slice(-2));
+
     res.render("suido", {
       title: `水道メーター：${yyyy_mm_dd}`,
-      suido: suido[0]
+      suido: suido[0],
+      suidolist: suidolist,
     });
   })()
 })

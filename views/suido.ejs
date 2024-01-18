@@ -36,6 +36,23 @@
             <input class="btn-action" id="btnTouroku" type="button" value="登録" />
           </div>
       </form>
+      <div class="btn-area">
+        <p id="rireki-btn-suido" class="rireki-btn-suido">履歴表示</p>
+      </div>
+      <div id="rireki-area-suido" class="rireki-area-suido" style="margin-top: 60px;">
+        <% if (suidolist.length !== 0) { %>
+          <% suidolist.forEach((suidoinfo) => { %>
+            <div>
+              <dt>
+                <%= suidoinfo.yyyymmddhhmmss_add.slice(0,4) %>/<%= suidoinfo.yyyymmddhhmmss_add.slice(4,6) %>/<%= suidoinfo.yyyymmddhhmmss_add.slice(6,8) %> <%= suidoinfo.yyyymmddhhmmss_add.slice(8,10) %>:<%= suidoinfo.yyyymmddhhmmss_add.slice(10,12) %>
+              </dt>
+              <dd>
+                <%= suidoinfo.metervalue %>
+              </dd>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
     </div>
     <script>
       const btnTouroku = document.getElementById("btnTouroku");
@@ -51,6 +68,18 @@
           document.suidoform.submit();
         }
       })
+      let rirekibtn = document.getElementById("rireki-btn-suido");
+      let rirekiarea = document.getElementById("rireki-area-suido");
+      if (rirekiarea) {
+          rirekiarea.style.visibility = "hidden";
+      }
+      if (rirekibtn) {
+          rirekibtn.addEventListener('click', () => {
+          rirekiarea.style.visibility = "visible";
+          rirekibtn.style.display = "none";
+          })
+      }
+
     </script>
   </body>
   <%- include("./common/javascripts.ejs") %>
