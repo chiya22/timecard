@@ -444,7 +444,6 @@ router.get("/suido", (req, res) => {
     if (suido.length === 0) {
       suido.metervalue = 0;
     }
-<<<<<<< HEAD
 
     // 現在の日付を取得
     const today = new Date();
