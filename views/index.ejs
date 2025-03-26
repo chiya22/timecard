@@ -7,7 +7,7 @@
 </head>
 
 <body>
-  <%- include("./common/header.ejs", {adminMenu: true, backMenu: false, backAdmin: false, backToMonth: false, id: null}) %>
+  <%- include("./common/header.ejs", {menu:true, adminMenu:false, backMenu: false, backAdmin: false, backToMonth: false, id: null}) %>
   <div class="area-hosei">
     <div class="form-hosei">
       <form name="hoseiform" method="POST" action="/hosei/add">
@@ -72,6 +72,7 @@
         <% }) %>
       </div>
     </div>
+    
     <% if (hoseilist.length !== 0) { %>
     <div class="table-wrapper wow fadeInUp">
       <table class="table-content">
@@ -80,7 +81,7 @@
           <th>登録者</th>
           <th>補正対日付</th>
           <th>補正依頼内容</th>
-          <th>補正者</th>
+          <th>補正状況</th>
           <th>補正日付</th>
         </tr>
         <% hoseilist.forEach(function(hosei){ %>
@@ -89,7 +90,7 @@
           <td><%= hosei.u_id_users_name %></td>
           <td><%= hosei.ymd_target.slice(0,4) + '/' + hosei.ymd_target.slice(4,6) + '/' + hosei.ymd_target.slice(-2) %></td>
           <td><%= hosei.message %></td>
-          <td><%= hosei.u_id_users_hosei_name? hosei.u_id_users_hosei_name: '' %></td>
+          <td><%= hosei.u_id_users_hosei_name? "完了": '' %></td>
           <td><%= hosei.ymd_hosei? hosei.ymd_hosei.slice(0,4) + '/' + hosei.ymd_hosei.slice(4,6) + '/' + hosei.ymd_hosei.slice(-2): '' %></td>
         </tr>
         <% }) %>
