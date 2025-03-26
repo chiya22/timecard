@@ -1,15 +1,15 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const exressSession = require('express-session');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const indexRouter = require('./routes/index');
+const basicAuth = require('basic-auth-connect');
+const connectFlash = require("connect-flash");
 
-var indexRouter = require('./routes/index');
-
-var basicAuth = require('basic-auth-connect');
-
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -18,7 +18,6 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use('/static', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -28,6 +27,26 @@ app.all('/admin/*', basicAuth(function(user, password) {
 app.all('/admin', basicAuth(function(user, password) {
   return user === 'ps' && password === 'chiyoda';
 }));
+
+app.use(cookieParser("timecard"));
+app.use(
+  exressSession({
+    secret: "timecard",
+    cookie: {
+      maxAge:4000000
+    },
+    resave:false,
+    saveUninitialized: false
+  })
+);
+
+//connect-flashをミドルウェアとして設定
+app.use(connectFlash());
+//フラッシュメッセージをresのローカル変数のflashMessagesに代入
+app.use((req, res, next) => {
+  res.locals.flashMessages = req.flash();
+  next();
+});
 
 app.use('/', indexRouter);
 
