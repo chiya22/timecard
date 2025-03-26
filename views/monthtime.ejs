@@ -15,7 +15,7 @@
       <button class="msgarea__ngbtn">いいえ</button>
     </div>
   </div>
-  <%- include("./common/header.ejs", {adminMenu: false, backMenu: false, backAdmin: false, backToMonth: true, id: userinfo.id}) %>
+  <%- include("./common/header.ejs", {menu: false, adminMenu: false, backMenu: false, backAdmin: false, backToMonth: true, id: userinfo.id}) %>
   <div class="wow fadeIn container-top">
     <form method="POST" name="timelistform" action="/admin/<%= userinfo.id %>/<%= yyyymm %>">
       <div class="area-btn">

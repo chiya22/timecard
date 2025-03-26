@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <%- include("./common/header.ejs", {title: 'エラー', adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
+    <%- include("./common/header.ejs", {title: 'エラー', menu: false, adminMenu: false, backMenu: true, backAdmin: false, backToMonth: false, id: null}) %>
     <div class="container-top">
         <div class="stacktrace">
             <% if (error.status === 404) { %>
