@@ -7,9 +7,46 @@
 </head>
 
 <body>
-  <%- include("./common/header.ejs", {adminMenu: false, backMenu: false, backAdmin: true, backToMonth: false, id: null}) %>
+  <%- include("./common/header.ejs", {menu: false, adminMenu: false, backMenu: false, backAdmin: true, backToMonth: false, id: null}) %>
   <div class="container-top">
     <div class="area">
+      <div class="user-div-style">
+        <dl>
+          <dt class="user-dt-style">
+            ユーザーID
+          </dt>
+          <dd class="user-dd-style">
+            <%= user.id %>
+          </dd>
+          <dt class="user-dt-style">
+            ユーザー名
+          </dt>
+          <dd class="user-dd-style">
+            <%= user.name %>
+          </dd>
+          <dt class="user-dt-style">
+            区分　(1:社員、2：アルバイト)
+          </dt>
+          <dd class="user-dd-style">
+            <%= user.kubun %>
+          </dd>
+          <dt class="user-dt-style">
+            適用開始日
+          </dt>
+          <dd class="user-dd-style">
+            <%= user.ymd_start %>
+          </dd>
+          <dt class="user-dt-style">
+            適用終了日
+          </dt>
+          <dd class="user-dd-style">
+            <%= user.ymd_end %>
+          </dd>
+        </dl>
+        <div style="text-align: center;">
+          <a class="move-useraction-link" href="/admin/userupdate/<%= user.id %>">編集</a>
+        </div>
+        </div>
       <% if (yyyymmlist) { %>
           <div class="items mt-30">
             <% yyyymmlist.forEach(function(yyyymm){ %>
