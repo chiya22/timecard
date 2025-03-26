@@ -202,6 +202,100 @@ router.get("/admin/:id", function (req, res) {
   })();
 });
 
+/**
+ * ユーザ情報登録ボタンを押した場合
+ */
+router.get("/adminuseradd", (req, res) => {
+  (async () => {
+    const date = new Date();
+    const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+    res.render("userform", {
+      title: "管理者：" + yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ") ",
+      user:null
+    });
+  })();
+});
+
+/**
+ * ユーザー情報編集ボタンを押した場合
+ */
+router.get("/admin/userupdate/:id", function (req,res) {
+  (async () => {
+    const date = new Date();
+    const yyyy_mm_dd = date.getFullYear() + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + ("0" + date.getDate()).slice(-2);
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+    const retObjUser = await users.findPKey(req.params.id);
+    res.render("userform", {
+      title: "管理者：" + yyyy_mm_dd + "(" + common.getYoubi(yyyymmdd) + ") ：" + retObjUser[0].name,
+      user: retObjUser[0],
+    });
+  })();
+})
+
+/**
+ * ユーザー情報を登録する
+ */
+router.post("/admin/insert", (req, res) => {
+
+  (async () => {
+    const date = new Date();
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+
+    let inObjUser = {};
+    inObjUser.yyyymmdd = yyyymmdd;
+
+    inObjUser.id = req.body.id;
+    inObjUser.name = req.body.name;
+    inObjUser.kubun = req.body.kubun;
+    inObjUser.ymd_start = req.body.ymd_start.replaceAll("/","");
+    inObjUser.ymd_end = req.body.ymd_end.replaceAll("/","");
+    inObjUser.ymd_upd = yyyymmdd;
+
+    try {
+      const retObjUser = await users.insert(inObjUser);
+      res.redirect("/admin");
+    } catch(err) {
+      req.flash("error", err.message);
+      res.redirect("/adminuseradd");
+    }
+  })();
+
+});
+
+/**
+ * ユーザー情報を更新する
+ */
+router.post("/admin/update", (req, res) => {
+
+  (async () => {
+    const date = new Date();
+    const yyyymmdd = date.getFullYear() + ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2);
+
+    let inObjUser = {};
+    inObjUser.yyyymmdd = yyyymmdd;
+
+    inObjUser.id = req.body.id;
+    inObjUser.name = req.body.name;
+    inObjUser.kubun = req.body.kubun;
+    inObjUser.ymd_start = req.body.ymd_start.replaceAll("/","");
+    inObjUser.ymd_end = req.body.ymd_end.replaceAll("/","");
+    inObjUser.ymd_upd = yyyymmdd;
+
+    res.redirect("/admin");
+    try {
+      const retObjUser = await users.update(inObjUser);
+      res.redirect("/admin");
+    } catch(err) {
+      req.flash("error", err.message);
+      res.redirect(`/admim/update/${inObjUser.id}`);
+    }
+
+  })();
+
+});
+
+
 /*
 指定されたユーザIDの指定された年月の実績を表示する
 */
@@ -553,5 +647,9 @@ router.post("/enso", (req, res) => {
     res.redirect("/");
   })();
 });
+
+
+
+
 
 module.exports = router;
