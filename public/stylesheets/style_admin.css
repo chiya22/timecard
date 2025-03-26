@@ -37,6 +37,7 @@ body {
   text-decoration: none;
   color:#808080;
   border: 1px solid #808080;
+  margin-right: 10px;
 }
 .header-admin:hover, .header-back:hover {
   background-color: #808080;
@@ -388,13 +389,17 @@ body {
 }
 
 
+/*
 .flatpickr-calendar {
   width: 130px!important;
 }
 .flatpickr-monthSelect-theme-light {
   width: 300px!important;
 }
-
+*/
+.flatpickr2 {
+  width: 1000px; /* 必要に応じてサイズを変更 */
+}
 
 /* hosei */
 .hosei-table-wrapper {
@@ -470,4 +475,108 @@ body {
   padding:2px 15px;
 }
 
+/* userform */
+.user-div-style {
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 64px;
+  margin-top: 32px;
+}
+.user-dt-style {
+  display: inline-block;
+  background-color: #e6e6e6;
+  color:#333;
+  padding: 10px 30px 10px 20px;
+  /* border-radius: 16px; */
+  width:250px;
+  font-weight: normal;
+  font-size: 12px;
+  margin-bottom: 24px;
+  text-align: right;
+}
+.user-dd-style {
+  display: inline-block;
+  color:#333333;
+  padding: 10px 30px;
+  width: 250px;
+  font-size: 14px;
+}
+.user-dd-input-style {
+  width: 250px;
+  display: inline-block;
+}
+.user-dd-input-style input {
+  color:#333333;
+  display: inline-block;
+  width: 250px;
+  line-height: 12px;
+  padding: 10px 30px 10px 20px;
+  border: 1px solid #ccc;
+  /* border-radius: 15px; */
+  background-clip: padding-box;
+  background-color: #fff;
+  font-size: 12px;
+  letter-spacing: 1.2px;
+}
+.user-dd-input-style input:focus {
+  outline: none;
+  color: #CD5E42;
+  border: 1px solid #CD5E42;
+}
+
+.move-useraction-link {
+  width: 150px;
+  height: 50px;
+  text-align: center;
+  padding: 10px 20px;
+  line-height: 50px;
+  border: 1px solid #808080;
+  border-radius: 15px;
+  color : #808080;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.move-useraction-link:hover {
+  border: 1px solid #808080;
+  background-color:#808080;
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(0,0,0,.2);
+}
+
+.move-useraction-btn {
+  width: 150px;
+  height: 50px;
+  text-align: center;
+  padding: 10px 20px;
+  border: 1px solid #808080;
+  border-radius: 15px;
+  color : #808080;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.move-useraction-btn:hover {
+  border: 1px solid #808080;
+  background-color:#808080;
+  color: white;
+  transform: translateY(-5px);
+  box-shadow: 0 0 30px rgba(0,0,0,.2);
+}
+
+/* フラッシュメッセージ */
+.flashes {
+  display:inline-block;
+  padding: 10px 30px;
+  border-radius: 15px;
+  background-color: #e6e6e6;
+}
+.flash {
+  font-size:14px;
+}
+.error {
+  color:red;
+}
 
