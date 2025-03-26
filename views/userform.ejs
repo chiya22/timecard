@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=yes">
+  <title>ユーザー追加</title>
+  <%- include("./common/stylesheets.ejs", {isAdmin: true}) %>
+</head>
+
+<body>
+  <%- include("./common/header.ejs", {menu: false, adminMenu:false, backMenu: false, backAdmin: true, backToMonth: false, id: null}) %>
+  <div class="container-top">
+    <!-- メッセージ -->
+    <% if (flashMessages) { %>
+      <% if (flashMessages.success) { %>
+        <div class="flashes">
+          <div class="flash success"><%= flashMessages.success %></div>
+        </div>
+      <% } else if (flashMessages.error) { %>
+        <div class="flashes">
+          <div class="flash error"><%= flashMessages.error %></div>
+        </div>
+      <% } %>
+  <% } %>
+  <form class="form-area" name="userform" method="POST">
+        <div class="user-div-style">
+        <% if (!user) { %>
+          <dl>
+            <dt class="user-dt-style">ID</dt>
+            <dd class="user-dd-input-style"><input type="text" name="id" placeholder="ID" value="" autofocus required></dd>
+            <dt class="user-dt-style">名前</dt>
+            <dd class="user-dd-input-style"><input type="text" name="name" placeholder="3文字がベスト" value="" required></dd>
+            <dt class="user-dt-style">区分　(1：社員、2：バイト)</dt>
+            <dd class="user-dd-input-style"><input type="text" placeholder="1：社員、2：バイト" name="kubun" required></dd>
+            <dt class="user-dt-style">適用開始日</dt>
+            <dd class="user-dd-input-style"><input type="text" class="flatpickr2" placeholder="適用開始日" name="ymd_start" required></dd>
+            <dt class="user-dt-style">適用終了日</dt>
+            <dd class="user-dd-input-style"><input type="text" class="flatpickr2" placeholder="適用終了日" value="9999/12/31" name="ymd_end" required></dd>
+          </dl>
+          <div style="width:100%;text-align: center;margin: 24px 0">
+            <input class="move-useraction-btn" type="button" id="btn_insert" value="登録" />
+          </div>
+            <% } else { %>
+            <dl>
+              <%
+              const ymd_start = `${user.ymd_start.slice(0,4)}/${user.ymd_start.slice(4,6)}/${user.ymd_start.slice(-2)}`
+              const ymd_end = `${user.ymd_end.slice(0,4)}/${user.ymd_end.slice(4,6)}/${user.ymd_end.slice(-2)}`
+              %>
+              <dt class="user-dt-style">ID</dt>
+              <dd class="user-dd-style"><%= user.id %></dd>
+              <dt class="user-dt-style">名前</dt>
+              <dd class="user-dd-input-style"><input type="text" name="name" value=<%= user.name %> required></dd>
+              <dt class="user-dt-style">区分　(1：社員、2：バイト)</dt>
+              <dd class="user-dd-input-style"><input type="text" value=<%= user.kubun %> name="kubun" required></dd>
+              <dt class="user-dt-style">適用開始日</dt>
+              <dd class="user-dd-input-style"><input type="text" class="flatpickr2" value=<%= ymd_start %> name="ymd_start" reqiored></dd>
+              <dt class="user-dt-style">適用終了日</dt>
+              <dd class="user-dd-input-style"><input type="text" class="flatpickr2" value=<%= ymd_end %> name="ymd_end" required></dd>
+              <p style="margin-bottom: 36px;font-size:14px; line-height: 20px;">
+                ※IDは更新することができません。<br>更新したい場合は管理者まで連絡してください。
+              </p>
+                <input type="hidden" name="id" value=<%= user.id %> />
+            </dl>
+            <div style="width:100%;text-align: center;margin: 24px 0">
+              <input class="move-useraction-btn" type="button" id="btn_update" value="更新"/>
+            </div>
+          <% } %>
+        </div>
+      </form>
+    </div>
+  <script>
+    let insertbtn = document.getElementById("btn_insert");
+    let updatebtn = document.getElementById("btn_update");
+    if (insertbtn) {
+      insertbtn.addEventListener("click", () => {
+        const objKubun = document.getElementsByName("kubun")[0];
+        const objYmdstart = document.getElementsByName("ymd_start")[0];
+        const objYmdend = document.getElementsByName("ymd_end")[0];
+        if (objKubun.value !== "1" && objKubun.value !== "2") {
+          document.getElementsByName("kubun")[0].focus();
+          return false;
+        } else if (objYmdstart.value === '') {
+          document.getElementsByName("ymd_start")[0].focus();
+          return false;
+        } else if (objYmdend.value === '') {
+          document.getElementsByName("ymd_end")[0].focus();
+          return false;
+        } else {
+          document.userform.action = "/admin/insert";
+          document.userform.submit();
+        }
+      })
+    }
+    if (updatebtn) {
+      updatebtn.addEventListener("click", () => {
+        const objKubun = document.getElementsByName("kubun")[0];
+        const objYmdstart = document.getElementsByName("ymd_start")[0];
+        const objYmdend = document.getElementsByName("ymd_end")[0];
+        if (objKubun.value !== "1" && objKubun.value !== "2") {
+          document.getElementsByName("kubun")[0].focus();
+          return false;
+        } else if (objYmdstart.value === '') {
+          document.getElementsByName("ymd_start")[0].focus();
+          return false;
+        } else if (objYmdend.value === '') {
+          document.getElementsByName("ymd_end")[0].focus();
+          return false;
+        } else {
+          document.userform.action = "/admin/update";
+          document.userform.submit();
+        }
+      })
+    }
+  </script>
+</body>
+<%- include("./common/javascripts.ejs") %>
+
+</html>
