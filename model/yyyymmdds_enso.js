@@ -1,37 +1,37 @@
 const knex = require('../db/knex.js').connect();
-const log4js = require("log4js");
-const logger = log4js.configure("./config/log4js-config.json").getLogger();
+const log4js = require('log4js');
+const logger = log4js.configure('./config/log4js-config.json').getLogger();
 const common = require('../util/common');
 
 const findPKey = async (yyyymmdd) => {
-    try {
-        const retObj = await knex.from("yyyymmdds_enso").where({yyyymmdd: yyyymmdd })
-        return retObj;
-    } catch(err) {
-        throw err;
-    }
+  try {
+    const retObj = await knex.from('yyyymmdds_enso').where({yyyymmdd: yyyymmdd });
+    return retObj;
+  } catch(err) {
+    throw err;
+  }
 };
 
 const insert = async (inObj) => {
-    try {
-        const query = "insert into yyyymmdds_enso values (" + common.retValueForSql(inObj.yyyymmdd) + "," + common.retValueForSql(inObj.id_users) + "," + common.retValueForSql(inObj.level) + "," + common.retValueForSql(inObj.color) + "," + common.retValueForSql(inObj.nigori) + "," + common.retValueForSql(inObj.nioi) + "," + common.retValueForSql(inObj.aji) + "," + common.retValueForSql(inObj.bikou) + "," +  common.retValueForSql(inObj.yyyymmddhhmmss_add) + "," + common.retValueForSql(inObj.yyyymmddhhmmss_upd) + ");"
-        logger.info(query);
-        const retObj = await knex.raw(query)
-        return retObj[0];
-    } catch(err) {
-        throw err;
-    }
+  try {
+    const query = 'insert into yyyymmdds_enso values (' + common.retValueForSql(inObj.yyyymmdd) + ',' + common.retValueForSql(inObj.id_users) + ',' + common.retValueForSql(inObj.level) + ',' + common.retValueForSql(inObj.color) + ',' + common.retValueForSql(inObj.nigori) + ',' + common.retValueForSql(inObj.nioi) + ',' + common.retValueForSql(inObj.aji) + ',' + common.retValueForSql(inObj.bikou) + ',' +  common.retValueForSql(inObj.yyyymmddhhmmss_add) + ',' + common.retValueForSql(inObj.yyyymmddhhmmss_upd) + ');';
+    logger.info(query);
+    const retObj = await knex.raw(query);
+    return retObj[0];
+  } catch(err) {
+    throw err;
+  }
 };
 
 const update = async (inObj) => {
-    try {
-        const query = "update yyyymmdds_enso set id_users = " + common.retValueForSql(inObj.id_users) + ", level = " + parseFloat(inObj.level) + ", color = " + common.retValueForSql(inObj.color) + ", nigori = " + common.retValueForSql(inObj.nigori) + ", nioi = " + common.retValueForSql(inObj.nioi) + ", aji = " + common.retValueForSql(inObj.aji) + ",  bikou = " + common.retValueForSql(inObj.bikou) + ", yyyymmddhhmmss_add = "  + common.retValueForSql(inObj.yyyymmddhhmmss_add) + ", yyyymmddhhmmss_upd = " + common.retValueForSql(inObj.yyyymmddhhmmss_add) + " where yyyymmdd = '" + inObj.yyyymmdd + "';"
-        logger.info(query);
-        const retObj = await knex.raw(query)
-        return retObj[0];
-    } catch(err) {
-        throw err;
-    }
+  try {
+    const query = 'update yyyymmdds_enso set id_users = ' + common.retValueForSql(inObj.id_users) + ', level = ' + parseFloat(inObj.level) + ', color = ' + common.retValueForSql(inObj.color) + ', nigori = ' + common.retValueForSql(inObj.nigori) + ', nioi = ' + common.retValueForSql(inObj.nioi) + ', aji = ' + common.retValueForSql(inObj.aji) + ',  bikou = ' + common.retValueForSql(inObj.bikou) + ', yyyymmddhhmmss_add = '  + common.retValueForSql(inObj.yyyymmddhhmmss_add) + ', yyyymmddhhmmss_upd = ' + common.retValueForSql(inObj.yyyymmddhhmmss_add) + ' where yyyymmdd = \'' + inObj.yyyymmdd + '\';';
+    logger.info(query);
+    const retObj = await knex.raw(query);
+    return retObj[0];
+  } catch(err) {
+    throw err;
+  }
 };
 
 // const remove = async (id_users, yyyymmdd) => {
@@ -56,7 +56,7 @@ const update = async (inObj) => {
 // }
 
 module.exports = {
-    findPKey,
-    insert,
-    update,
+  findPKey,
+  insert,
+  update,
 };
