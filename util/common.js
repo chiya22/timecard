@@ -1,11 +1,9 @@
-const fs = require('fs');
+const fs = require('node:fs');
 
 /*
 値が設定されているかどうかで、SQL用へのバインド用文字列を返却する
 */
-const retValueForSql = (value) => {
-  return value ? `'${value}'` : null;
-};
+const retValueForSql = (value) => (value ? `'${value}'` : null);
 
 /*
 引数の日付をもとに、精算対象月を求める
@@ -15,50 +13,53 @@ yyyymm01⇒yyyymm
 yyyymm15⇒yyyymm
  */
 const getYyyymmSeisan = (yyyymmdd) => {
-  let yyyy = Number(yyyymmdd.slice(0, 4));
-  let mm = Number(yyyymmdd.slice(4, 6));
-  let dd = Number(yyyymmdd.slice(-2));
-  // 15日締めのため
-  // 01-15日⇒現在の月のファイルへ出力
-  // 16-31日⇒現在の次の月のファイルへ出力
+  const yyyy = Number(yyyymmdd.slice(0, 4));
+  let resultMonth = Number(yyyymmdd.slice(4, 6));
+  const dd = Number(yyyymmdd.slice(-2));
+  let resultYear = yyyy;
   if (dd >= 16) {
-    if (mm === 12) {
-      mm = 1;
-      yyyy += 1;
+    if (resultMonth === 12) {
+      resultMonth = 1;
+      resultYear += 1;
     } else {
-      mm += 1;
+      resultMonth += 1;
     }
   }
-  return '' + yyyy + ('0' + mm).slice(-2);
+  return `${resultYear}${String(resultMonth).padStart(2, '0')}`;
 };
 
 /*
 年月をもとに、前月を求める
  */
 const getBeforeMonthYyyymm = (yyyymm) => {
-  let date = new Date(yyyymm.slice(0, 4), yyyymm.slice(-2) - 1, '01');
+  const date = new Date(yyyymm.slice(0, 4), Number(yyyymm.slice(-2)) - 1, 1);
   date.setMonth(date.getMonth() - 1);
   const yyyy = date.getFullYear();
-  const mm = ('0' + (date.getMonth() + 1)).slice(-2);
-  return '' + yyyy + mm;
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  return `${yyyy}${mm}`;
 };
 
 /*
 日付をもとに、曜日を返却する
 */
 const getYoubi = (yyyymmdd) => {
-  const date = new Date(yyyymmdd.slice(0, 4) + '/' + yyyymmdd.slice(4, 6) + '/' + yyyymmdd.slice(-2));
+  const date = new Date(`${yyyymmdd.slice(0, 4)}/${yyyymmdd.slice(4, 6)}/${yyyymmdd.slice(-2)}`);
   const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
   let youbi = weekdays[date.getDay()];
-  //祝日カレンダー
-  let filecontent = fs.readFileSync('./data/holiday.dat', 'utf-8');
+  let filecontent;
+  try {
+    filecontent = fs.readFileSync('./data/holiday.dat', 'utf-8');
+  } catch (err) {
+    // holiday.datが存在しない場合や読み込みエラー時は祝日判定をスキップ
+    return youbi;
+  }
   const holidaylist = filecontent.split('\r\n');
-  holidaylist.forEach((holiday) => {
+  for (const holiday of holidaylist) {
     if (holiday === yyyymmdd) {
       youbi = '祝';
-      return;
+      break;
     }
-  });
+  }
   return youbi;
 };
 /*
@@ -66,48 +67,43 @@ const getYoubi = (yyyymmdd) => {
 true：平日
 false：土日祝
 */
-const isWeekDay = function (yyyymmdd) {
+const isWeekDay = (yyyymmdd) => {
   const youbi = getYoubi(yyyymmdd);
-  if (youbi === '祝' || youbi === '日' || youbi === '土') {
-    return false;
-  } else {
-    return true;
-  }
+  return !(youbi === '祝' || youbi === '日' || youbi === '土');
 };
 
 /*
 ユーザーID、開始年月日、終了年月日をもとに、初期設定用のタイムリストを作成し返却する
 */
-const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) {
+const getInitialTimeListAll = (id_users, yyyymmdd_start, yyyymmdd_end) => {
   const afteryear = yyyymmdd_end.slice(0, 4);
   const aftermonth = yyyymmdd_end.slice(4, 6);
   const afterstartday = 1;
   const afterendday = 15;
-
   const beforeyear = yyyymmdd_start.slice(0, 4);
   const beforemonth = yyyymmdd_start.slice(4, 6);
   const beforestartday = 16;
-  let date = new Date(yyyymmdd_end.slice(0, 4) + '/' + yyyymmdd_end.slice(4, 6) + '/01');
+  const date = new Date(`${yyyymmdd_end.slice(0, 4)}/${yyyymmdd_end.slice(4, 6)}/01`);
   date.setDate(date.getDate() - 1);
   const beforeendday = date.getDate();
-
-  let timeInfoList = [];
-  let timeInfo = {};
+  const timeInfoList = [];
   for (let i = beforestartday; i <= beforeendday; i++) {
-    timeInfo.id_users = id_users;
-    timeInfo.yyyymmdd = beforeyear + beforemonth + ('0' + i).slice(-2);
-    timeInfo.yyyymm_seisan = getYyyymmSeisan(timeInfo.yyyymmdd);
-    timeInfo.youbi = getYoubi(timeInfo.yyyymmdd);
+    const timeInfo = {
+      id_users,
+      yyyymmdd: beforeyear + beforemonth + String(i).padStart(2, '0'),
+      yyyymm_seisan: getYyyymmSeisan(beforeyear + beforemonth + String(i).padStart(2, '0')),
+      youbi: getYoubi(beforeyear + beforemonth + String(i).padStart(2, '0')),
+    };
     timeInfoList.push(timeInfo);
-    timeInfo = {};
   }
   for (let i = afterstartday; i <= afterendday; i++) {
-    timeInfo.id_users = id_users;
-    timeInfo.yyyymmdd = afteryear + aftermonth + ('0' + i).slice(-2);
-    timeInfo.yyyymm_seisan = getYyyymmSeisan(timeInfo.yyyymmdd);
-    timeInfo.youbi = getYoubi(timeInfo.yyyymmdd);
+    const timeInfo = {
+      id_users,
+      yyyymmdd: afteryear + aftermonth + String(i).padStart(2, '0'),
+      yyyymm_seisan: getYyyymmSeisan(afteryear + aftermonth + String(i).padStart(2, '0')),
+      youbi: getYoubi(afteryear + aftermonth + String(i).padStart(2, '0')),
+    };
     timeInfoList.push(timeInfo);
-    timeInfo = {};
   }
   return timeInfoList;
 };
@@ -121,33 +117,26 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
 
 */
 const getPaytime = (time_start, time_end, time_rest) => {
-  const starthh = parseInt( ('000' + time_start.replace(':','')).slice(-4).slice(0,2) );
-  const startmm = parseInt(time_start.slice(-2));
-  const endhh = parseInt( ('000' + time_end.replace(':','')).slice(-4).slice(0, 2) );
-  const endmm = parseInt(time_end.slice(-2));
-
-  //starttimeとendtimeの大小比較
-  let time_calcstart = starthh * 60 + startmm;
-  let time_calcend = endhh * 60 + endmm;
+  const starthh = Number.parseInt(`${'000'}${time_start.replace(':', '')}`.slice(-4).slice(0, 2), 10);
+  const startmm = Number.parseInt(time_start.slice(-2), 10);
+  const endhh = Number.parseInt(`${'000'}${time_end.replace(':', '')}`.slice(-4).slice(0, 2), 10);
+  const endmm = Number.parseInt(time_end.slice(-2), 10);
+  const time_calcstart = starthh * 60 + startmm;
+  const time_calcend = endhh * 60 + endmm;
   if (time_calcend < time_calcstart) {
     return false;
   }
-
   let time_calcrest = 0;
   if (time_rest) {
-    const resthh = parseInt( ('000' + time_rest.replace(':','')).slice(-4).slice(0, 2) );
-    const restmm = parseInt(time_rest.slice(-2));
+    const resthh = Number.parseInt(`${'000'}${time_rest.replace(':', '')}`.slice(-4).slice(0, 2), 10);
+    const restmm = Number.parseInt(time_rest.slice(-2), 10);
     time_calcrest = resthh * 60 + restmm;
   }
-
-  let time_pay = 0;
-  time_pay = time_calcend - time_calcstart - time_calcrest;
-
-  //15分単位で区切る
-  time_pay = time_pay - (time_pay % 15);
-  const payhh = ('0' + parseInt(time_pay / 60, 10)).slice(-2);
-  const paymm = ('0' + (time_pay % 60)).slice(-2);
-  return '' + payhh + paymm;
+  let time_pay = time_calcend - time_calcstart - time_calcrest;
+  time_pay -= time_pay % 15;
+  const payhh = String(Math.floor(time_pay / 60)).padStart(2, '0');
+  const paymm = String(time_pay % 60).padStart(2, '0');
+  return `${payhh}${paymm}`;
 };
 
 /*
@@ -158,23 +147,23 @@ const getPaytime = (time_start, time_end, time_rest) => {
 退勤時間＜退勤時間修正
 */
 const getStartEndTime = (time_start, time_end, time_startupd, time_endupd) => {
-  const stime = time_startupd ? time_startupd : time_start;
-  const etime = time_endupd ? time_endupd : time_end;
+  const stime = time_startupd || time_start;
+  const etime = time_endupd || time_end;
   return {
-    time_start: stime.replace(':',''),
-    time_end: etime.replace(':',''),
+    time_start: stime.replace(':', ''),
+    time_end: etime.replace(':', ''),
   };
 };
 
 
 const getTodayTime = () => {
   const d = new Date();
-  let mm = ('00' + (d.getMonth() + 1)).slice(-2);
-  let dd = ('00' + d.getDate()).slice(-2);
-  let hh = ('00' + d.getHours()).slice(-2);
-  let mi = ('00' + d.getMinutes()).slice(-2);
-  let ss = ('00' + d.getSeconds()).slice(-2);
-  return d.getFullYear() + mm + dd + hh + mi + ss;
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  return `${d.getFullYear()}${mm}${dd}${hh}${mi}${ss}`;
 };
 
 module.exports = {

@@ -34,10 +34,10 @@ const send = (title, content) => {
     auth    : auth
   };    
 
-  let transporter = nodemailer.createTransport(smtp_config);
+  const transporter = nodemailer.createTransport(smtp_config);
 
   // メール情報
-  let message = {
+  const message = {
     from: process.env.MAIL_FROM,
     to: process.env.MAIL_TO,
     subject: title,
@@ -45,7 +45,7 @@ const send = (title, content) => {
   };
 
   // メール送信
-  transporter.sendMail(message, function (err) {
+  transporter.sendMail(message, (err) => {
     if (err) {
       logger.info(`[err]${err}`);
     }

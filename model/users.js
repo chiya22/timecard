@@ -13,22 +13,21 @@ const find = async () => {
 };
 
 const insert = async (inObj) => {
-  const query = 'insert into users values (\'' + inObj.id + '\',\'' + inObj.name + '\',\'' + inObj.kubun + '\',\'' + inObj.ymd_start + '\',\'' + inObj.ymd_end + '\',\'' + inObj.ymd_upd + '\')';
+  const query = `insert into users values ('${inObj.id}','${inObj.name}','${inObj.kubun}','${inObj.ymd_start}','${inObj.ymd_end}','${inObj.ymd_upd}')`;
   logger.info(query);
   const retObj = await knex.raw(query);
   return retObj[0];
 };
 
 const update = async (inObj) => {
-  let query;
-  query = 'update users set name = \'' + inObj.name + '\', kubun = ' + inObj.kubun + ', ymd_start = \'' + inObj.ymd_start + '\', ymd_end = \'' + inObj.ymd_end + '\', ymd_upd = \'' + inObj.ymd_upd + '\' where id = \'' + inObj.id + '\'';
+  const query = `update users set name = '${inObj.name}', kubun = ${inObj.kubun}, ymd_start = '${inObj.ymd_start}', ymd_end = '${inObj.ymd_end}', ymd_upd = '${inObj.ymd_upd}' where id = '${inObj.id}'`;
   logger.info(query);
   const retObj = await knex.raw(query);
   return retObj[0];
 };
 
 const remove = async (id) => {
-  const query = 'delete from users where id = \'' + id + '\'';
+  const query = `delete from users where id = '${id}'`;
   const retObj = await knex.raw(query);
   return retObj[0];
 };
@@ -38,8 +37,8 @@ const remove = async (id) => {
 その日付時点で有効な社員情報に指定された日付の出勤情報を付帯した、社員情報一覧を返却する
 */
 const findByKubunWithYyyymmddInfo = async (kubun, ymd_end, yyyymmdd) => {
-  const query = 'SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd, yy.isYuukyuu FROM (SELECT * from users WHERE kubun = \'' + kubun + '\' and ymd_end > \'' + ymd_end + '\') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = \'' + yyyymmdd + '\') yy ON u.id = yy.id_users ORDER BY u.id asc';
-  const retObj =await knex.raw(query);
+  const query = `SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd, yy.isYuukyuu FROM (SELECT * from users WHERE kubun = '${kubun}' and ymd_end > '${ymd_end}') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '${yyyymmdd}') yy ON u.id = yy.id_users ORDER BY u.id asc`;
+  const retObj = await knex.raw(query);
   return retObj[0];
 };
 
@@ -47,8 +46,8 @@ const findByKubunWithYyyymmddInfo = async (kubun, ymd_end, yyyymmdd) => {
 IDと日付をもとに、出勤情報を取得する
 */
 const findByUserIDWithYyyymmddInfo = async (id_users, yyyymmdd) => {
-  const query = 'SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd, yy.isYuukyuu FROM (SELECT * from users WHERE id = \'' + id_users + '\') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = \'' + yyyymmdd + '\') yy ON u.id = yy.id_users ORDER BY u.id asc';
-  const retObj =await knex.raw(query);
+  const query = `SELECT u.*, yy.yyyymmdd, yy.time_start, yy.time_end, yy.time_start_upd, yy.time_end_upd, yy.isYuukyuu FROM (SELECT * from users WHERE id = '${id_users}') AS u LEFT OUTER JOIN ( SELECT * FROM yyyymmdds y WHERE y.yyyymmdd = '${yyyymmdd}') yy ON u.id = yy.id_users ORDER BY u.id asc`;
+  const retObj = await knex.raw(query);
   return retObj[0];
 };
 
@@ -57,9 +56,9 @@ const findByUserIDWithYyyymmddInfo = async (id_users, yyyymmdd) => {
  */
 const findByYyyymmdd = async (yyyymmdd) => {
   logger.info(yyyymmdd);
-  const query = 'SELECT b.id, b.name FROM yyyymmdds a left outer join users b ON a.id_users = b.id where a.yyyymmdd = \'' + yyyymmdd + '\';';
+  const query = `SELECT b.id, b.name FROM yyyymmdds a left outer join users b ON a.id_users = b.id where a.yyyymmdd = '${yyyymmdd}';`;
   logger.info(query);
-  const retObj =await knex.raw(query);
+  const retObj = await knex.raw(query);
   return retObj[0];
 };
 

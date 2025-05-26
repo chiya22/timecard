@@ -11,7 +11,7 @@ const findLastRecord = async () => {
 };
 
 const insert = async (inObj) => {
-  const query = 'insert into yyyymmdds_suido values (' + common.retValueForSql(inObj.yyyymmddhhmmss_add) + ',' + common.retValueForSql(inObj.metervalue) + ');';
+  const query = `insert into yyyymmdds_suido values (${common.retValueForSql(inObj.yyyymmddhhmmss_add)},${common.retValueForSql(inObj.metervalue)});`;
   logger.info(query);
   const retObj = await knex.raw(query);
   return retObj[0];
