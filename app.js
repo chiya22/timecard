@@ -7,7 +7,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const indexRouter = require('./routes/index');
 const basicAuth = require('basic-auth-connect');
-const connectFlash = require("connect-flash");
+const connectFlash = require('connect-flash');
 
 const app = express();
 
@@ -28,10 +28,10 @@ app.all('/admin', basicAuth(function(user, password) {
   return user === 'ps' && password === 'chiyoda';
 }));
 
-app.use(cookieParser("timecard"));
+app.use(cookieParser('timecard'));
 app.use(
   exressSession({
-    secret: "timecard",
+    secret: 'timecard',
     cookie: {
       maxAge:4000000
     },

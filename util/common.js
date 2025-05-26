@@ -1,4 +1,4 @@
-const fs = require("fs");
+const fs = require('fs');
 
 /*
 値が設定されているかどうかで、SQL用へのバインド用文字列を返却する
@@ -29,40 +29,36 @@ const getYyyymmSeisan = (yyyymmdd) => {
       mm += 1;
     }
   }
-  return "" + yyyy + ("0" + mm).slice(-2);
+  return '' + yyyy + ('0' + mm).slice(-2);
 };
 
 /*
 年月をもとに、前月を求める
  */
 const getBeforeMonthYyyymm = (yyyymm) => {
-  let date = new Date(yyyymm.slice(0, 4), yyyymm.slice(-2) - 1, "01");
+  let date = new Date(yyyymm.slice(0, 4), yyyymm.slice(-2) - 1, '01');
   date.setMonth(date.getMonth() - 1);
   const yyyy = date.getFullYear();
-  const mm = ("0" + (date.getMonth() + 1)).slice(-2);
-  return "" + yyyy + mm;
+  const mm = ('0' + (date.getMonth() + 1)).slice(-2);
+  return '' + yyyy + mm;
 };
 
 /*
 日付をもとに、曜日を返却する
 */
 const getYoubi = (yyyymmdd) => {
-  const date = new Date(yyyymmdd.slice(0, 4) + "/" + yyyymmdd.slice(4, 6) + "/" + yyyymmdd.slice(-2));
-  const weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+  const date = new Date(yyyymmdd.slice(0, 4) + '/' + yyyymmdd.slice(4, 6) + '/' + yyyymmdd.slice(-2));
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
   let youbi = weekdays[date.getDay()];
-  try {
-    //祝日カレンダー
-    let filecontent = fs.readFileSync("./data/holiday.dat", "utf-8");
-    const holidaylist = filecontent.split("\r\n");
-    holidaylist.forEach((holiday) => {
-      if (holiday === yyyymmdd) {
-        youbi = "祝";
-        return;
-      }
-    });
-  } catch (err) {
-    throw err;
-  }
+  //祝日カレンダー
+  let filecontent = fs.readFileSync('./data/holiday.dat', 'utf-8');
+  const holidaylist = filecontent.split('\r\n');
+  holidaylist.forEach((holiday) => {
+    if (holiday === yyyymmdd) {
+      youbi = '祝';
+      return;
+    }
+  });
   return youbi;
 };
 /*
@@ -72,7 +68,7 @@ false：土日祝
 */
 const isWeekDay = function (yyyymmdd) {
   const youbi = getYoubi(yyyymmdd);
-  if (youbi === "祝" || youbi === "日" || youbi === "土") {
+  if (youbi === '祝' || youbi === '日' || youbi === '土') {
     return false;
   } else {
     return true;
@@ -91,7 +87,7 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
   const beforeyear = yyyymmdd_start.slice(0, 4);
   const beforemonth = yyyymmdd_start.slice(4, 6);
   const beforestartday = 16;
-  let date = new Date(yyyymmdd_end.slice(0, 4) + "/" + yyyymmdd_end.slice(4, 6) + "/01");
+  let date = new Date(yyyymmdd_end.slice(0, 4) + '/' + yyyymmdd_end.slice(4, 6) + '/01');
   date.setDate(date.getDate() - 1);
   const beforeendday = date.getDate();
 
@@ -99,7 +95,7 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
   let timeInfo = {};
   for (let i = beforestartday; i <= beforeendday; i++) {
     timeInfo.id_users = id_users;
-    timeInfo.yyyymmdd = beforeyear + beforemonth + ("0" + i).slice(-2);
+    timeInfo.yyyymmdd = beforeyear + beforemonth + ('0' + i).slice(-2);
     timeInfo.yyyymm_seisan = getYyyymmSeisan(timeInfo.yyyymmdd);
     timeInfo.youbi = getYoubi(timeInfo.yyyymmdd);
     timeInfoList.push(timeInfo);
@@ -107,7 +103,7 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
   }
   for (let i = afterstartday; i <= afterendday; i++) {
     timeInfo.id_users = id_users;
-    timeInfo.yyyymmdd = afteryear + aftermonth + ("0" + i).slice(-2);
+    timeInfo.yyyymmdd = afteryear + aftermonth + ('0' + i).slice(-2);
     timeInfo.yyyymm_seisan = getYyyymmSeisan(timeInfo.yyyymmdd);
     timeInfo.youbi = getYoubi(timeInfo.yyyymmdd);
     timeInfoList.push(timeInfo);
@@ -125,9 +121,9 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
 
 */
 const getPaytime = (time_start, time_end, time_rest) => {
-  const starthh = parseInt( ("000" + time_start.replace(":","")).slice(-4).slice(0,2) );
+  const starthh = parseInt( ('000' + time_start.replace(':','')).slice(-4).slice(0,2) );
   const startmm = parseInt(time_start.slice(-2));
-  const endhh = parseInt( ("000" + time_end.replace(":","")).slice(-4).slice(0, 2) );
+  const endhh = parseInt( ('000' + time_end.replace(':','')).slice(-4).slice(0, 2) );
   const endmm = parseInt(time_end.slice(-2));
 
   //starttimeとendtimeの大小比較
@@ -139,7 +135,7 @@ const getPaytime = (time_start, time_end, time_rest) => {
 
   let time_calcrest = 0;
   if (time_rest) {
-    const resthh = parseInt( ("000" + time_rest.replace(":","")).slice(-4).slice(0, 2) );
+    const resthh = parseInt( ('000' + time_rest.replace(':','')).slice(-4).slice(0, 2) );
     const restmm = parseInt(time_rest.slice(-2));
     time_calcrest = resthh * 60 + restmm;
   }
@@ -149,9 +145,9 @@ const getPaytime = (time_start, time_end, time_rest) => {
 
   //15分単位で区切る
   time_pay = time_pay - (time_pay % 15);
-  const payhh = ("0" + parseInt(time_pay / 60, 10)).slice(-2);
-  const paymm = ("0" + (time_pay % 60)).slice(-2);
-  return "" + payhh + paymm;
+  const payhh = ('0' + parseInt(time_pay / 60, 10)).slice(-2);
+  const paymm = ('0' + (time_pay % 60)).slice(-2);
+  return '' + payhh + paymm;
 };
 
 /*
@@ -165,8 +161,8 @@ const getStartEndTime = (time_start, time_end, time_startupd, time_endupd) => {
   const stime = time_startupd ? time_startupd : time_start;
   const etime = time_endupd ? time_endupd : time_end;
   return {
-    time_start: stime.replace(":",""),
-    time_end: etime.replace(":",""),
+    time_start: stime.replace(':',''),
+    time_end: etime.replace(':',''),
   };
 };
 
@@ -179,7 +175,7 @@ const getTodayTime = () => {
   let mi = ('00' + d.getMinutes()).slice(-2);
   let ss = ('00' + d.getSeconds()).slice(-2);
   return d.getFullYear() + mm + dd + hh + mi + ss;
-}
+};
 
 module.exports = {
   retValueForSql,
