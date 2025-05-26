@@ -117,7 +117,7 @@ const getInitialTimeListAll = function (id_users, yyyymmdd_start, yyyymmdd_end) 
 支給時間を算出し返却する
 
 ※休憩時間は引数で設定されている場合は、その値を優先的に使用する
-　引数で設定されていない場合は、ルールに従って設定される
+引数で設定されていない場合は、ルールに従って設定される
 
 */
 const getPaytime = (time_start, time_end, time_rest) => {

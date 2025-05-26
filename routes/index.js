@@ -82,7 +82,7 @@ router.get('/time/:id', function (req, res) {
 
 /*
 指定されたユーザIDの出退勤情報を登録・更新する
-req.body.shorikubun　⇒　start：出勤、end：退勤
+req.body.shorikubun⇒start：出勤、end：退勤
 */
 router.post('/time/set', function (req, res) {
   (async () => {
@@ -101,7 +101,7 @@ router.post('/time/set', function (req, res) {
       inObjYyyymmdd.time_end = req.body.time_end;
       inObjYyyymmdd.time_start_upd = req.body.time_start_upd;
       inObjYyyymmdd.time_end_upd = req.body.time_end_upd;
-      const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
+      await yyyymmdds.insert(inObjYyyymmdd);
       action = '出勤';
 
       // 退勤ボタンを押した場合
@@ -114,12 +114,12 @@ router.post('/time/set', function (req, res) {
       const end = inObjYyyymmdd.time_end_upd ? inObjYyyymmdd.time_end_upd : inObjYyyymmdd.time_end;
       inObjYyyymmdd.time_pay = common.getPaytime(start, end, '0000');
       inObjYyyymmdd.makanai = req.body.makanai;
-      const retObjYyyymmddUpdate = await yyyymmdds.update(inObjYyyymmdd);
+      await yyyymmdds.update(inObjYyyymmdd);
       action = '退勤';
       // 有給休暇ボタンを押した場合
     } else {
       inObjYyyymmdd.isYuukyuu = 1;
-      const retObjYyyymmddInsert = await yyyymmdds.insert(inObjYyyymmdd);
+      await yyyymmdds.insert(inObjYyyymmdd);
       action = '有給休暇';
     }
 
@@ -153,7 +153,7 @@ router.post('/hosei/add', function (req, res) {
     inObjHosei.ymd_target = req.body.ymd_target.slice(0, 4) + req.body.ymd_target.slice(5, 7) + req.body.ymd_target.slice(-2);
     inObjHosei.message = req.body.message;
     inObjHosei.yyyymmddhhmmss_add = common.getTodayTime();
-    const retObjHosei = await hoseis.insert(inObjHosei);
+    await hoseis.insert(inObjHosei);
     res.redirect('/');
   })();
 });
@@ -180,7 +180,7 @@ router.get('/admin/hosei/:key', function (req, res) {
     inObjHosei.ymd_hosei = yyyymmdd;
     inObjHosei.id_users_hosei = 'yoshida';
 
-    const retObjHoseiUpdate = await hoseis.update(inObjHosei);
+    await hoseis.update(inObjHosei);
     res.redirect('/admin');
   })();
 });
@@ -253,7 +253,7 @@ router.post('/admin/insert', (req, res) => {
     inObjUser.ymd_upd = yyyymmdd;
 
     try {
-      const retObjUser = await users.insert(inObjUser);
+      await users.insert(inObjUser);
       res.redirect('/admin');
     } catch(err) {
       req.flash('error', err.message);
@@ -284,7 +284,7 @@ router.post('/admin/update', (req, res) => {
 
     res.redirect('/admin');
     try {
-      const retObjUser = await users.update(inObjUser);
+      await users.update(inObjUser);
       res.redirect('/admin');
     } catch(err) {
       req.flash('error', err.message);
@@ -403,12 +403,12 @@ router.post('/admin/:id/:yyyymm', (req, res) => {
 
         retObjYyyymmdds = await yyyymmdds.findPKey(id, inObjYyyyymmdds.yyyymmdd);
         if (retObjYyyymmdds.length !== 0) {
-          retObj = await yyyymmdds.update(inObjYyyyymmdds);
+          await yyyymmdds.update(inObjYyyyymmdds);
         } else {
-          retObj = await yyyymmdds.insert(inObjYyyyymmdds);
+          await yyyymmdds.insert(inObjYyyyymmdds);
         }
       } else {
-        retObj = await yyyymmdds.remove(id, yyyymmddlist[i]);
+        await yyyymmdds.remove(id, yyyymmddlist[i]);
       }
     }
     res.redirect('/admin/' + id + '/' + yyyymm);
@@ -569,7 +569,7 @@ router.post('/suido', (req, res) => {
     let inObjSuido = {};
     inObjSuido.metervalue = req.body.metervalue;
     inObjSuido.yyyymmddhhmmss_add = common.getTodayTime();
-    const retObjSuido = await yyyymmdds_suido.insert(inObjSuido);
+    await yyyymmdds_suido.insert(inObjSuido);
 
     res.redirect('/');
   })();
@@ -638,10 +638,10 @@ router.post('/enso', (req, res) => {
 
     if (objEnso.length === 0) {
       inObjEnso.yyyymmddhhmmss_add = common.getTodayTime();
-      const retObjEnso = await yyyymmdds_enso.insert(inObjEnso);
+      await yyyymmdds_enso.insert(inObjEnso);
     } else {
       inObjEnso.yyyymmddhhmmss_add = objEnso[0].yyyymmddhhmmss_add;
-      const retObjEnso = await yyyymmdds_enso.update(inObjEnso);
+      await yyyymmdds_enso.update(inObjEnso);
     }
 
     res.redirect('/');

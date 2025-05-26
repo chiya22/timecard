@@ -1,3 +1,6 @@
+const log4js = require('log4js');
+const logger = log4js.configure('./config/log4js-config.json').getLogger();
+
 const nodemailer = require('nodemailer');
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -42,7 +45,7 @@ const send = (title, content) => {
   };
 
   // メール送信
-  transporter.sendMail(message, function (err, response) {
+  transporter.sendMail(message, function (err) {
     if (err) {
       logger.info(`[err]${err}`);
     }
