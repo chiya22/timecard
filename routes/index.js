@@ -45,14 +45,18 @@ router.get('/admin', async (req, res) => {
   const dd = String(date.getDate()).padStart(2, '0');
   const yyyy_mm_dd = `${yyyy}/${mm}/${dd}`;
   const yyyymmdd = `${yyyy}${mm}${dd}`;
-  const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, '19900101', yyyymmdd);
-  const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, '19900101', yyyymmdd);
+  const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, yyyymmdd, yyyymmdd);
+  const retObjUsersEnd = await users.findEndByKubunWithYyyymmddInfo(1, yyyymmdd, yyyymmdd);
+  const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, yyyymmdd, yyyymmdd);
+  const retObjUsersParttimeEnd = await users.findEndByKubunWithYyyymmddInfo(2, yyyymmdd, yyyymmdd);
   const retObjHosei = await hoseis.findAll();
   res.render('admin', {
     title: `管理者：${yyyy_mm_dd}(${common.getYoubi(yyyymmdd)})`,
     userlist: retObjUsers,
+    userEndlist: retObjUsersEnd,
     hoseilist: retObjHosei,
     parttimeuserlist: retObjUsersParttime,
+    parttimeuserEndlist: retObjUsersParttimeEnd,
   });
 });
 
