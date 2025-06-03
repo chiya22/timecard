@@ -1,13 +1,13 @@
 const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
+const path = require('node:path'); // Node.js組み込みモジュールはnode:プロトコルでimport
 const exressSession = require('express-session');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const indexRouter = require('./routes/index');
 const basicAuth = require('basic-auth-connect');
-const connectFlash = require("connect-flash");
+const connectFlash = require('connect-flash');
 
 const app = express();
 
@@ -18,20 +18,16 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use('/static', express.static(__dirname + '/public'));
+app.use('/static', express.static(`${__dirname}/public`)); // テンプレートリテラルに変更
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.all('/admin/*', basicAuth(function(user, password) {
-  return user === 'ps' && password === 'chiyoda';
-}));
-app.all('/admin', basicAuth(function(user, password) {
-  return user === 'ps' && password === 'chiyoda';
-}));
+app.all('/admin/*', basicAuth((user, password) => user === 'ps' && password === 'chiyoda'));
+app.all('/admin', basicAuth((user, password) => user === 'ps' && password === 'chiyoda'));
 
-app.use(cookieParser("timecard"));
+app.use(cookieParser('timecard'));
 app.use(
   exressSession({
-    secret: "timecard",
+    secret: 'timecard',
     cookie: {
       maxAge:4000000
     },
@@ -51,12 +47,12 @@ app.use((req, res, next) => {
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

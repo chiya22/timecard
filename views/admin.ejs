@@ -26,6 +26,14 @@
         <% }) %>
       </div>
     </div>
+  	<div style="margin-bottom:20px"></div>
+    <div class="area">  
+      <div class="enditems">
+        <% userEndlist.forEach(function(user){ %>
+        <a class="wow fadeIn" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
     <div class="area_divide"></div>
     <div class="area">
       <div class="items">
@@ -34,9 +42,17 @@
         <% }) %>
       </div>
     </div>
-    <div class="area_divide"></div>
+  	<div style="margin-bottom:20px"></div>
+    <div class="area">
+      <div class="enditems">
+        <% parttimeuserEndlist.forEach(function(user){ %>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
+	<div style="margin-bottom:40px"></div>
     <div class="area_admin">
-      <p id="downloadbtn" class="downloadbtn monthtimebtn">ダウンロード</p>
+      <p id="downloadbtn" class="downloadbtn monthtimebtn wow fadeInUp">ダウンロード</p>
     </div>
     <div class="area_divide"></div>
     <% if (hoseilist.length !== 0) { %>
