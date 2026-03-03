@@ -33,7 +33,7 @@ const remove = async (id) => {
 };
 
 /*
-区分（1：社員、2：バイト）と日付をもとに、
+区分（1：社員、2：バイト、3：清掃）と日付をもとに、
 その日付時点で有効な社員情報に指定された日付の出勤情報を付帯した、社員情報一覧を返却する
 */
 const findByKubunWithYyyymmddInfo = async (kubun, ymd_end, yyyymmdd) => {
@@ -43,7 +43,7 @@ const findByKubunWithYyyymmddInfo = async (kubun, ymd_end, yyyymmdd) => {
 };
 
 /*
-区分（1：社員、2：バイト）と日付をもとに、
+区分（1：社員、2：バイト、3：清掃）と日付をもとに、
 その日付時点で無効な社員情報に指定された日付の出勤情報を付帯した、社員情報一覧を返却する
 */
 const findEndByKubunWithYyyymmddInfo = async (kubun, ymd_end, yyyymmdd) => {
