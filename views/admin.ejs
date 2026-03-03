@@ -50,6 +50,22 @@
         <% }) %>
       </div>
     </div>
+    <div class="area_divide"></div>
+    <div class="area">
+      <div class="items">
+        <% cleanStafflist.forEach(function(user){ %>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
+  	<div style="margin-bottom:20px"></div>
+    <div class="area">
+      <div class="enditems">
+        <% cleanStaffEndlist.forEach(function(user){ %>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
 	<div style="margin-bottom:40px"></div>
     <div class="area_admin">
       <p id="downloadbtn" class="downloadbtn monthtimebtn wow fadeInUp">ダウンロード</p>
@@ -102,6 +118,11 @@
       let targetyyyymm = document.getElementsByName("target_yyyymm")[0];
       if (targetyyyymm.value) {
         document.downloadform.submit();
+        // ダウンロード開始後に子画面を閉じる
+        setTimeout(function() {
+          let dl = document.getElementsByClassName("download")[0];
+          dl.style.visibility = "hidden";
+        }, 100);
       } else {
         targetyyyymm.style.backgroundColor = "rgba(255, 0, 0, 0.3)";
         return false;
