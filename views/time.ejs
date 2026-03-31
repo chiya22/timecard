@@ -165,7 +165,7 @@
         });
         endbtn.addEventListener('click', () => {
             document.getElementById("shorikubun").value = "end";
-            if (document.getElementById("kubun").value === '2') {
+            if ((document.getElementById("kubun").value === '2') || (document.getElementById("kubun").value === '3')) {
                 scrollTo(0, 0);
                 let msg = document.getElementsByClassName("msg")[0];
                 msg.style.visibility = "visible";
