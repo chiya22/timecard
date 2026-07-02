@@ -66,6 +66,22 @@
         <% }) %>
       </div>
     </div>
+    <div class="area_divide"></div>
+    <div class="area">
+      <div class="items">
+        <% cafeStafflist.forEach(function(user){ %>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
+  	<div style="margin-bottom:20px"></div>
+    <div class="area">
+      <div class="enditems">
+        <% cafeStaffEndlist.forEach(function(user){ %>
+        <a class="wow fadeInUp" href="admin/<%= user.id %>"><%= user.name %></a>
+        <% }) %>
+      </div>
+    </div>
 	<div style="margin-bottom:40px"></div>
     <div class="area_admin">
       <p id="downloadbtn" class="downloadbtn monthtimebtn wow fadeInUp">ダウンロード</p>

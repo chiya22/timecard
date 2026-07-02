@@ -25,6 +25,7 @@ router.get('/', async (req, res) => {
   const retObjUsers = await users.findByKubunWithYyyymmddInfo(1, yyyymmdd, yyyymmdd);
   const retObjUsersParttime = await users.findByKubunWithYyyymmddInfo(2, yyyymmdd, yyyymmdd);
   const retObjCleanStaff = await users.findByKubunWithYyyymmddInfo(3, yyyymmdd, yyyymmdd);
+  const retObjCafeStaff = await users.findByKubunWithYyyymmddInfo(4, yyyymmdd, yyyymmdd);
   const retObjHoseis = await hoseis.findAll();
   res.render('index', {
     title: `${yyyy_mm_dd}(${common.getYoubi(yyyymmdd)})`,
@@ -33,6 +34,7 @@ router.get('/', async (req, res) => {
     hoseilist: retObjHoseis,
     selectuserlist: retObjAllUsers,
     cleanStafflist: retObjCleanStaff,
+    cafeStafflist: retObjCafeStaff,
   });
 });
 
@@ -53,6 +55,8 @@ router.get('/admin', async (req, res) => {
   const retObjUsersParttimeEnd = await users.findEndByKubunWithYyyymmddInfo(2, yyyymmdd, yyyymmdd);
   const retObjUsersCleanStaff = await users.findByKubunWithYyyymmddInfo(3, yyyymmdd, yyyymmdd);
   const retObjUsersCleanStaffEnd = await users.findEndByKubunWithYyyymmddInfo(3, yyyymmdd, yyyymmdd);
+  const retObjUsersCafeStaff = await users.findByKubunWithYyyymmddInfo(4, yyyymmdd, yyyymmdd);
+  const retObjUsersCafeStaffEnd = await users.findEndByKubunWithYyyymmddInfo(4, yyyymmdd, yyyymmdd);
   const retObjHosei = await hoseis.findAll();
   res.render('admin', {
     title: `管理者：${yyyy_mm_dd}(${common.getYoubi(yyyymmdd)})`,
@@ -63,6 +67,8 @@ router.get('/admin', async (req, res) => {
     parttimeuserEndlist: retObjUsersParttimeEnd,
     cleanStafflist: retObjUsersCleanStaff,
     cleanStaffEndlist: retObjUsersCleanStaffEnd,
+    cafeStafflist: retObjUsersCafeStaff,
+    cafeStaffEndlist: retObjUsersCafeStaffEnd,
   });
 });
 
