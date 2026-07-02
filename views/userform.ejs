@@ -30,8 +30,8 @@
             <dd class="user-dd-input-style"><input type="text" name="id" placeholder="ID" value="" autofocus required></dd>
             <dt class="user-dt-style">名前</dt>
             <dd class="user-dd-input-style"><input type="text" name="name" placeholder="3文字がベスト" value="" required></dd>
-            <dt class="user-dt-style">区分　(1：社員 2：ｱﾙﾊﾞｲﾄ 3：清掃)</dt>
-            <dd class="user-dd-input-style"><input type="text" placeholder="1：社員 2：ｱﾙﾊﾞｲﾄ 3：清掃" name="kubun" required></dd>
+            <dt class="user-dt-style">区分　(1：社員 2：ｱﾙﾊﾞｲﾄ 3：清掃 4：カフェ)</dt>
+            <dd class="user-dd-input-style"><input type="text" placeholder="1：社員 2：ｱﾙﾊﾞｲﾄ 3：清掃 4：カフェ" name="kubun" required></dd>
             <dt class="user-dt-style">適用開始日</dt>
             <dd class="user-dd-input-style"><input type="text" class="flatpickr2" placeholder="適用開始日" name="ymd_start" required></dd>
             <dt class="user-dt-style">適用終了日</dt>
@@ -50,7 +50,7 @@
               <dd class="user-dd-style"><%= user.id %></dd>
               <dt class="user-dt-style">名前</dt>
               <dd class="user-dd-input-style"><input type="text" name="name" value=<%= user.name %> required></dd>
-              <dt class="user-dt-style">区分　(1：社員 2：ｱﾙﾊﾞｲﾄ 3：清掃)</dt>
+              <dt class="user-dt-style">区分　(1：社員 2：ｱﾙﾊﾞｲﾄ 3：清掃 4：カフェ)</dt>
               <dd class="user-dd-input-style"><input type="text" value=<%= user.kubun %> name="kubun" required></dd>
               <dt class="user-dt-style">適用開始日</dt>
               <dd class="user-dd-input-style"><input type="text" class="flatpickr2" value=<%= ymd_start %> name="ymd_start" reqiored></dd>
@@ -76,7 +76,7 @@
         const objKubun = document.getElementsByName("kubun")[0];
         const objYmdstart = document.getElementsByName("ymd_start")[0];
         const objYmdend = document.getElementsByName("ymd_end")[0];
-        if (objKubun.value !== "1" && objKubun.value !== "2" && objKubun.value !== "3") {
+        if (objKubun.value !== "1" && objKubun.value !== "2" && objKubun.value !== "3" && objKubun.value !== "4") {
           document.getElementsByName("kubun")[0].focus();
           return false;
         } else if (objYmdstart.value === '') {
@@ -96,7 +96,7 @@
         const objKubun = document.getElementsByName("kubun")[0];
         const objYmdstart = document.getElementsByName("ymd_start")[0];
         const objYmdend = document.getElementsByName("ymd_end")[0];
-        if (objKubun.value !== "1" && objKubun.value !== "2" && objKubun.value !== "3") {
+        if (objKubun.value !== "1" && objKubun.value !== "2" && objKubun.value !== "3" && objKubun.value !== "4") {
           document.getElementsByName("kubun")[0].focus();
           return false;
         } else if (objYmdstart.value === '') {
