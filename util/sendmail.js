@@ -6,7 +6,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-const send = (title, content) => {
+const send = (title, content, to = process.env.MAIL_TO) => {
 
   // SMTP情報
   // const smtp_config = {
@@ -39,7 +39,7 @@ const send = (title, content) => {
   // メール情報
   const message = {
     from: process.env.MAIL_FROM,
-    to: process.env.MAIL_TO,
+    to,
     subject: title,
     text: content,
   };

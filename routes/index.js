@@ -141,13 +141,12 @@ router.post('/time/set', async (req, res) => {
   }
 
   const retObjUser = await users.findPKey(req.body.id);
-  if (retObjUser[0].kubun === '2') {
+  if (retObjUser[0].kubun === '2' || retObjUser[0].kubun === '4') {
     const title = `【出退勤管理：${retObjUser[0].name}】${action}`;
-    sendmail.send(
-      title,
-      `${req.body.yyyymmdd.slice(0, 4)}年${req.body.yyyymmdd.slice(4, 6)}月${req.body.yyyymmdd.slice(6, 8)}日 ${hh}時${min}分 『${retObjUser[0].name}』が${action}しました。`
-    );
-    logger.info(`メール送信しました：【${action}】${req.body.id}`);
+    const content = `${req.body.yyyymmdd.slice(0, 4)}年${req.body.yyyymmdd.slice(4, 6)}月${req.body.yyyymmdd.slice(6, 8)}日 ${hh}時${min}分 『${retObjUser[0].name}』が${action}しました。`;
+    const to = retObjUser[0].kubun === '4' ? process.env.MAIL_TO_CAFE : process.env.MAIL_TO;
+    sendmail.send(title, content, to);
+    logger.info(`メール送信しました：【${action}】${req.body.id} -> ${to}`);
   }
 
   res.redirect('/');
